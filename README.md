@@ -10,6 +10,4 @@
   <h1>Привет, мир!</h1>
 </body>
 </html>
-git add .
-git commit -m "Первая версия сайта"
-git push
+
