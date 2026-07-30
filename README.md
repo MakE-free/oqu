@@ -1,3 +1,12 @@
 # oqu
 онлайн тренажер для подготовки к магистратуре
-<h1>Привет, мир! Это мой сайт!</h1>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Мой сайт</title>
+</head>
+<body>
+  <h1>Привет, мир!</h1>
+</body>
+</html>
