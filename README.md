@@ -27,7 +27,7 @@
           📞 <span>+7 (727) 344 95 95</span>
         </div>
         <div class="search-icon">🔍</div>
-        <button class="cta-btn">Сдать пробный тест</button>
+        <button id="authBtn" class="cta-btn" onclick="handleAuthClick()">Вход</button>
         <div class="lang">
           🌐 <span>Русский</span> ▾
         </div>
@@ -38,8 +38,45 @@
   <section class="section">
     <h1>Привет, мир!</h1>
     <p>Это главная страница моего сайта.</p>
-    <button onclick="sayHello()">Нажми на меня</button>
   </section>
+
+  <!-- Окно входа/регистрации -->
+  <div id="authModal" class="modal-overlay hidden">
+    <div class="modal">
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+
+      <div class="modal-tabs">
+        <button id="tabLogin" class="tab-btn active" onclick="switchTab('login')">Войти</button>
+        <button id="tabRegister" class="tab-btn" onclick="switchTab('register')">Регистрация</button>
+      </div>
+
+      <form id="loginForm" onsubmit="return loginUser(event)">
+        <input type="email" id="loginEmail" placeholder="Почта" required>
+        <input type="password" id="loginPassword" placeholder="Пароль" required>
+        <button type="submit" class="modal-submit">Войти</button>
+        <p id="loginError" class="error-text"></p>
+      </form>
+
+      <form id="registerForm" class="hidden" onsubmit="return registerUser(event)">
+        <input type="text" id="regNick" placeholder="Никнейм" required>
+        <input type="email" id="regEmail" placeholder="Почта" required>
+        <input type="password" id="regPassword" placeholder="Пароль" required>
+        <button type="submit" class="modal-submit">Зарегистрироваться</button>
+        <p id="registerError" class="error-text"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Окно профиля -->
+  <div id="profileModal" class="modal-overlay hidden">
+    <div class="modal">
+      <span class="modal-close" onclick="closeProfileModal()">&times;</span>
+      <h2>Мой профиль</h2>
+      <p><strong>Никнейм:</strong> <span id="profileNick"></span></p>
+      <p><strong>Почта:</strong> <span id="profileEmail"></span></p>
+      <button class="modal-submit" onclick="logoutUser()">Выйти из аккаунта</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
