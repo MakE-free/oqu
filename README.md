@@ -14,6 +14,14 @@
         <span>Oqu</span>
       </div>
 
+      <nav class="nav-links">
+        <a href="index.html" class="active">Главное</a>
+        <a href="english.html">Английский язык</a>
+        <a href="tgo.html">ТГО</a>
+        <a href="tests.html">Тесты</a>
+        <a href="probniki.html">Пробники</a>
+      </nav>
+
       <div class="top-bar-right">
         <div class="phone">
           📞 <span>+7 (727) 344 95 95</span>
@@ -25,14 +33,6 @@
         </div>
       </div>
     </div>
-
-    <nav class="bottom-bar">
-      <a href="index.html" class="active">Главное</a>
-      <a href="english.html">Английский язык</a>
-      <a href="tgo.html">ТГО</a>
-      <a href="tests.html">Тесты</a>
-      <a href="probniki.html">Пробники</a>
-    </nav>
   </header>
 
   <section class="section">
