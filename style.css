@@ -146,7 +146,7 @@ header {
 }
 
 .lang-btn {
-  background-color: transparent;
+  background-color: #E8F1F7;
   color: #333333;
   border: none;
   padding: 12px 20px;
@@ -188,7 +188,7 @@ header {
 }
 
 .lang-btn:hover {
-  background-color: #f0f0f0;
+  background-color: #d4e4f0;
 }
 
 .lang-dropdown {
