@@ -1,3 +1,148 @@
+/* ===== Хедер ===== */
+header {
+  background-color: #ffffff;
+  border-bottom: 2px solid #f0f0f0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.top-bar {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+}
+
+/* Логотип */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 24px;
+  color: #1e1e2f;
+}
+
+.logo-circle {
+  width: 40px;
+  height: 40px;
+  background-color: #2DAAFC;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+/* Навигация */
+.nav-links {
+  display: flex;
+  gap: 30px;
+  flex: 1;
+  margin-left: 50px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #1e1e2f;
+  font-weight: 500;
+  font-size: 15px;
+  padding: 8px 0;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #2DAAFC;
+  border-bottom-color: #2DAAFC;
+}
+
+.nav-links a.active {
+  color: #2DAAFC;
+  border-bottom-color: #2DAAFC;
+}
+
+/* Правая часть хедера */
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.phone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1e1e2f;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.search-icon {
+  cursor: pointer;
+  font-size: 18px;
+  transition: transform 0.2s;
+}
+
+.search-icon:hover {
+  transform: scale(1.1);
+}
+
+.cta-btn {
+  background-color: #2DAAFC;
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.cta-btn:hover {
+  background-color: #1c8fe0;
+}
+
+.lang {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #1e1e2f;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.lang:hover {
+  color: #2DAAFC;
+}
+
+/* ===== Основной контент ===== */
+.section {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.section h1 {
+  color: #1e1e2f;
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.section p {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
 /* ===== Модальные окна ===== */
 .hidden {
   display: none !important;
@@ -94,4 +239,34 @@
 .modal h2 {
   color: #2DAAFC;
   margin-top: 0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .top-bar {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .nav-links {
+    margin-left: 0;
+    gap: 15px;
+    order: 3;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .top-bar-right {
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .phone {
+    display: none;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    gap: 20px;
+  }
 }
