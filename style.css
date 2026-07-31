@@ -1,6 +1,6 @@
 /* ===== Хедер ===== */
 header {
-  background-color: #ffffff;
+  background-color: #FF8C42;
   border-bottom: 2px solid #f0f0f0;
   position: sticky;
   top: 0;
@@ -24,18 +24,18 @@ header {
   gap: 8px;
   font-weight: bold;
   font-size: 24px;
-  color: #1e1e2f;
+  color: #ffffff;
 }
 
 .logo-circle {
   width: 40px;
   height: 40px;
-  background-color: #2DAAFC;
+  background-color: #ffffff;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #ffffff;
+  color: #FF8C42;
   font-weight: bold;
   font-size: 22px;
 }
@@ -50,7 +50,7 @@ header {
 
 .nav-links a {
   text-decoration: none;
-  color: #1e1e2f;
+  color: #ffffff;
   font-weight: 500;
   font-size: 15px;
   padding: 8px 0;
@@ -59,13 +59,13 @@ header {
 }
 
 .nav-links a:hover {
-  color: #2DAAFC;
-  border-bottom-color: #2DAAFC;
+  color: #ffebcd;
+  border-bottom-color: #ffffff;
 }
 
 .nav-links a.active {
-  color: #2DAAFC;
-  border-bottom-color: #2DAAFC;
+  color: #ffffff;
+  border-bottom-color: #ffffff;
 }
 
 /* Правая часть хедера */
@@ -79,7 +79,7 @@ header {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #1e1e2f;
+  color: #ffffff;
   font-size: 14px;
   font-weight: 500;
 }
@@ -88,6 +88,7 @@ header {
   cursor: pointer;
   font-size: 18px;
   transition: transform 0.2s;
+  color: #ffffff;
 }
 
 .search-icon:hover {
@@ -95,8 +96,8 @@ header {
 }
 
 .cta-btn {
-  background-color: #2DAAFC;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #FF8C42;
   border: none;
   padding: 10px 24px;
   border-radius: 6px;
@@ -107,21 +108,21 @@ header {
 }
 
 .cta-btn:hover {
-  background-color: #1c8fe0;
+  background-color: #ffebcd;
 }
 
 .lang {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #1e1e2f;
+  color: #ffffff;
   font-size: 14px;
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .lang:hover {
-  color: #2DAAFC;
+  color: #ffebcd;
 }
 
 /* ===== Основной контент ===== */
@@ -199,7 +200,7 @@ header {
 }
 
 .tab-btn.active {
-  background-color: #2DAAFC;
+  background-color: #FF8C42;
   color: #ffffff;
 }
 
@@ -217,7 +218,7 @@ header {
 }
 
 .modal-submit {
-  background-color: #2DAAFC;
+  background-color: #FF8C42;
   color: #ffffff;
   border: none;
   padding: 12px;
@@ -227,7 +228,7 @@ header {
 }
 
 .modal-submit:hover {
-  background-color: #1c8fe0;
+  background-color: #E67E2E;
 }
 
 .error-text {
@@ -237,7 +238,7 @@ header {
 }
 
 .modal h2 {
-  color: #2DAAFC;
+  color: #FF8C42;
   margin-top: 0;
 }
 
