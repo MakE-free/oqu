@@ -124,8 +124,8 @@ header {
 }
 
 .cta-btn {
-  background-color: #2DAAFC;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #2DAAFC;
   border: none;
   padding: 10px 24px;
   border-radius: 6px;
@@ -136,7 +136,7 @@ header {
 }
 
 .cta-btn:hover {
-  background-color: #1a95e8;
+  background-color: #e8f5ff;
 }
 
 /* ===== Селектор языков (Dropdown) ===== */
