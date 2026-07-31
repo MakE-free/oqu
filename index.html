@@ -19,10 +19,22 @@
         </div>
         <button id="authBtn" class="cta-btn" onclick="handleAuthClick()">Вход</button>
         <div class="language-selector">
-          <button class="lang-btn" onclick="toggleLangDropdown()">🌐 Русский ▾</button>
+          <button class="lang-btn" onclick="toggleLangDropdown()">
+            <span class="lang-flag" id="currentFlag">🇷🇺</span>
+            <span class="lang-name">
+              <span id="currentLang">Русский</span>
+              <span>▾</span>
+            </span>
+          </button>
           <div class="lang-dropdown" id="langDropdown">
-            <button class="lang-option selected" data-lang="ru" onclick="selectLanguage('ru')">Русский</button>
-            <button class="lang-option" data-lang="kk" onclick="selectLanguage('kk')">Қазақша</button>
+            <button class="lang-option selected" data-lang="ru" onclick="selectLanguage('ru', '🇷🇺', 'Русский')">
+              <span class="lang-option-flag">🇷🇺</span>
+              <span>Русский</span>
+            </button>
+            <button class="lang-option" data-lang="kk" onclick="selectLanguage('kk', '🇰🇿', 'Қазақша')">
+              <span class="lang-option-flag">🇰🇿</span>
+              <span>Қазақша</span>
+            </button>
           </div>
         </div>
       </div>
@@ -96,16 +108,14 @@
     }
 
     // Функция для выбора языка
-    function selectLanguage(lang) {
-      const langBtn = document.querySelector('.lang-btn');
+    function selectLanguage(lang, flag, name) {
+      const currentFlag = document.getElementById('currentFlag');
+      const currentLang = document.getElementById('currentLang');
       const dropdown = document.getElementById('langDropdown');
       const options = document.querySelectorAll('.lang-option');
 
-      if (lang === 'ru') {
-        langBtn.textContent = '🌐 Русский ▾';
-      } else if (lang === 'kk') {
-        langBtn.textContent = '🌐 Қазақша ▾';
-      }
+      currentFlag.textContent = flag;
+      currentLang.textContent = name;
 
       // Обновляем выбранный язык
       options.forEach(opt => {
