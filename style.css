@@ -26,7 +26,7 @@
   align-items: center;
   gap: 8px;
   color: #2DAAFC;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 600;
   font-family: 'Roboto', sans-serif;
 }
@@ -55,7 +55,7 @@ header {
   max-width: 1400px;
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 12px 20px;
 }
@@ -96,7 +96,7 @@ header {
   text-decoration: none;
   color: #ffffff;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 18px;
   padding: 8px 0;
   border-bottom: 3px solid transparent;
   transition: all 0.3s ease;
@@ -149,8 +149,8 @@ header {
 }
 
 .lang-btn {
-  background-color: #E8F1F7;
-  color: #333333;
+  background-color: #ffffff;
+  color: #2DAAFC;
   border: none;
   padding: 12px 20px;
   border-radius: 4px;
@@ -179,6 +179,7 @@ header {
   font-size: 18px;
   font-weight: 600;
   font-family: 'Roboto', sans-serif;
+  color: #2DAAFC;
 }
 
 .lang-arrow {
@@ -186,10 +187,11 @@ header {
   display: flex;
   align-items: center;
   margin-left: auto;
+  color: #2DAAFC;
 }
 
 .lang-btn:hover {
-  background-color: #d4e4f0;
+  background-color: #f0f0f0;
 }
 
 .lang-dropdown {
