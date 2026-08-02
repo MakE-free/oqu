@@ -58,6 +58,7 @@ header {
   justify-content: center;
   align-items: center;
   padding: 12px 20px;
+  width: 100%;
 }
 
 /* Логотип */
@@ -88,8 +89,8 @@ header {
 .nav-links {
   display: flex;
   gap: 30px;
-  flex: 1;
-  margin-left: 50px;
+  justify-content: center;
+  margin: 0;
 }
 
 .nav-links a {
