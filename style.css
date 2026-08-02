@@ -127,12 +127,16 @@ header {
   background-color: #ffffff;
   color: #2DAAFC;
   border: none;
-  padding: 10px 24px;
+  padding: 12px 20px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 18px;
   transition: background-color 0.3s ease;
+  min-width: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cta-btn:hover {
@@ -401,6 +405,11 @@ body {
   }
 
   .lang-btn {
+    padding: 10px 16px;
+    font-size: 16px;
+  }
+
+  .cta-btn {
     padding: 10px 16px;
     font-size: 16px;
   }
