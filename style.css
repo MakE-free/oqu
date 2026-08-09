@@ -252,6 +252,124 @@ header {
   font-weight: 600;
 }
 
+/* ===== Hero Section ===== */
+.hero {
+  background: linear-gradient(135deg, #2DAAFC 0%, #1a95e8 100%);
+  padding: 80px 0;
+  color: #ffffff;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.hero h1 {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.2;
+  font-family: 'Roboto', sans-serif;
+}
+
+.hero-subtitle {
+  font-size: 20px;
+  margin-bottom: 40px;
+  line-height: 1.6;
+  opacity: 0.95;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'Roboto', sans-serif;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  padding: 14px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+}
+
+.secondary-btn:hover {
+  background-color: #ffffff;
+  color: #2DAAFC;
+}
+
+/* ===== Features Section ===== */
+.features {
+  padding: 80px 0;
+  background-color: #f8f9fa;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 36px;
+  font-weight: 700;
+  color: #1e1e2f;
+  margin-bottom: 60px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.feature-card {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.feature-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1e1e2f;
+  margin-bottom: 15px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.feature-card p {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+  font-family: 'Roboto', sans-serif;
+}
+
 /* ===== Основной контент ===== */
 body {
   background-color: #ffffff;
