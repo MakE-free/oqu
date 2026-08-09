@@ -140,7 +140,8 @@ header {
 }
 
 .cta-btn:hover {
-  background-color: #e8f5ff;
+  background-color: #2DAAFC;
+  color: #ffffff;
 }
 
 /* ===== Селектор языков (Dropdown) ===== */
@@ -150,7 +151,7 @@ header {
 }
 
 .lang-btn {
-  background-color: #ffffff;
+  background-color: #e8f5ff;
   color: #2DAAFC;
   border: none;
   padding: 12px 20px;
