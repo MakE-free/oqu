@@ -103,3 +103,32 @@ function updateAuthButton() {
 }
 
 document.addEventListener('DOMContentLoaded', updateAuthButton);
+
+// ===== Анимация появления элементов при скролле =====
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+
+  document.querySelectorAll('.fade-in').forEach(el => {
+    observer.observe(el);
+  });
+}
+
+// Запуск анимаций после загрузки страницы
+document.addEventListener('DOMContentLoaded', initScrollAnimations);
+
+// Функция для плавного скролла к секции цен
+function scrollToPricing() {
+  const pricingSection = document.getElementById('pricing');
+  if (pricingSection) {
+    pricingSection.scrollIntoView({ behavior: 'smooth' });
+  }
+}
