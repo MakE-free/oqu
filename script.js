@@ -57,7 +57,7 @@
         })[c],
     );
   const BANK = window.OQU_QUESTIONS || [];
-  const TESTS = [
+  const LEARNING_TESTS = [
     {
       "id": "tgo-critical-1",
       "subject": "tgo",
@@ -208,7 +208,45 @@
       level: "Чтение",
     },
   ];
+  const BANK_BY_ID = new Map(BANK.map((question) => [question.id, question]));
+  function createMockTests() {
+    const englishIds = BANK.filter((q) => q.mockOnly && q.subject === "english").map((q) => q.id);
+    const englishSection = { key: "english", label: "Английский язык", questionIds: englishIds };
+    const tests = [];
+    for (let variant = 1; variant <= 3; variant++) {
+      const tgoSections = ["critical", "analytical"].map((topic) => ({
+        key: topic,
+        label: topic === "critical" ? "Критическое мышление" : "Аналитическое мышление",
+        questionIds: BANK.filter((q) => q.testId === `tgo-${topic}-${variant}`).map((q) => q.id),
+      }));
+      tests.push({ id: `mock-combined-${variant}`, direction: "mock", subject: "combined", variant,
+        title: `Пробник ${variant}: ТГО + английский`, description: "15 вопросов на критическое мышление, 15 на аналитическое и 50 по английскому.",
+        count: 80, minutes: 105, icon: "target", type: "Полный пробник", level: "ТГО + английский",
+        sections: [...tgoSections, englishSection], questionIds: [...tgoSections.flatMap((section) => section.questionIds), ...englishIds] });
+      tests.push({ id: `mock-tgo-${variant}`, direction: "mock", subject: "tgo", variant,
+        title: `ТГО: пробник ${variant}`, description: "Критическое и аналитическое мышление — по 15 вопросов в каждом блоке.",
+        count: 30, minutes: 45, icon: "brain", type: "Пробник ТГО", level: "Два блока мышления",
+        sections: tgoSections, questionIds: tgoSections.flatMap((section) => section.questionIds) });
+    }
+    tests.push({ id: "mock-english", direction: "mock", subject: "english",
+      title: "Английский язык: пробник", description: "50 вопросов: грамматика, лексика и чтение в одном тесте.",
+      count: 50, minutes: 60, icon: "book", type: "Пробник по английскому", level: "Grammar · vocabulary · reading",
+      sections: [englishSection], questionIds: englishIds });
+    return tests;
+  }
+  const TESTS = [...LEARNING_TESTS.map((test) => ({ ...test, direction: "learning" })), ...createMockTests()];
   const ACTIVE_TESTS = TESTS.filter((test) => !test.archived);
+  const subjectLabel = (test) => test.subject === "combined" ? "ТГО + английский" : test.subject === "tgo" ? "ТГО" : "Английский язык";
+  const sectionLabel = (question) => question.subject === "english" ? "Английский язык" : question.topic === "analytical" ? "Аналитическое мышление" : "Критическое мышление";
+  function mockBreakdown(test, result = null) {
+    if (!test.sections) return "";
+    const actual = result ? result.questions.map((q, i) => ({ question: BANK_BY_ID.get(q.id), answer: result.answers[i] })) : null;
+    return `<div class="mock-breakdown">${test.sections.map((section) => {
+      const rows = actual ? actual.filter(({ question }) => question && (section.key === "english" ? question.subject === "english" : question.subject === "tgo" && question.topic === section.key)) : null;
+      const value = rows ? `${rows.filter(({ question, answer }) => answer === question.answer).length} / ${rows.length}` : section.questionIds.length;
+      return `<span>${section.label}<strong>${value}</strong></span>`;
+    }).join("")}</div>`;
+  }
   const storage = {
     read(key, fallback) {
       try {
@@ -233,7 +271,8 @@
   const savedData = storage.read("saved", []),
     historyData = storage.read("history", []);
   const state = {
-    view: "all",
+    view: "home",
+    direction: "learning",
     filter: "all",
     search: "",
     saved: Array.isArray(savedData)
@@ -282,66 +321,50 @@
     $("#mobile-shade").classList.remove("visible");
     $("#menu-button").setAttribute("aria-expanded", "false");
   }
-  function navigate(view, filter = "all", scroll = false) {
+  function navigate(view, filter = "all", scroll = false, direction = state.direction) {
     state.view = view;
+    state.direction = direction;
     state.filter = filter;
     state.search = "";
     $("#test-search").value = "";
-    const special = view !== "all";
-    $("#hero").hidden = special || filter !== "all";
-    $("#subjects-section").hidden = special || filter !== "all";
-    $("#practice-note").hidden = view === "history";
-    $("#page-title").innerHTML =
-      `${view === "saved" ? "Сохранённые" : view === "history" ? "История тестов" : filter === "tgo" ? "ТГО" : filter === "english" ? "Английский язык" : "Тесты"}<span class="heading-dot">.</span>`;
-    $("#page-subtitle").textContent =
-      view === "saved"
-        ? "Тесты, к которым хочется вернуться. Всё нужное под рукой."
-        : view === "history"
-          ? "Каждая попытка — часть твоего пути. Следи за своим прогрессом."
-          : filter === "tgo"
-            ? "Два направления подготовки: критическое и аналитическое мышление."
-            : filter === "english"
-              ? "Шаг за шагом к уверенному английскому: грамматика, лексика и чтение."
-              : "Готовься в своём темпе. Становись увереннее с каждым тестом.";
-    $("#breadcrumb-current").textContent =
-      view === "saved"
-        ? "Сохранённые"
-        : view === "history"
-          ? "История"
-          : "Тесты";
+    const home = view === "home", special = view === "saved" || view === "history";
+    const mock = direction === "mock", directionTitle = mock ? "Пробники" : "Обучение";
+    $("#hero").hidden = !home;
+    $("#subjects-section").hidden = !home;
+    $("#catalog").hidden = home;
+    $("#practice-note").hidden = home || view === "history";
+    const title = home ? "Подготовка к КТ" : view === "saved" ? "Сохранённые" : view === "history" ? "История тестов" : mock ? filter === "tgo" ? "Пробники ТГО" : filter === "english" ? "Пробник по английскому" : "Пробники" : filter === "tgo" ? "ТГО" : filter === "english" ? "Английский язык" : "Обучение";
+    $("#page-title").innerHTML = `${title}<span class="heading-dot">.</span>`;
+    $("#page-subtitle").textContent = home ? "Выбери пробник для проверки знаний или обучение по темам." : view === "saved" ? "Тесты из обоих направлений, к которым хочется вернуться." : view === "history" ? "Результаты пробников и учебных тестов в одном месте." : mock ? "Проверь знания в полном пробнике или пройди отдельный предмет." : filter === "tgo" ? "Критическое и аналитическое мышление: практика по 15 вопросов." : "Занимайся по темам, разбирай ответы и закрепляй знания.";
+    $("#breadcrumb-current").textContent = home ? "Главная" : special ? view === "saved" ? "Сохранённые" : "История" : directionTitle;
     document.querySelectorAll("[data-nav]").forEach((el) => {
-      const active = el.dataset.nav === (special ? view : filter);
+      const group = el.classList.contains("direction-nav");
+      const active = !home && (special ? el.dataset.nav === view && !el.dataset.direction : el.dataset.direction === direction && (group || el.dataset.nav === filter));
       el.classList.toggle("active", active);
-      active
-        ? el.setAttribute("aria-current", "page")
-        : el.removeAttribute("aria-current");
+      active && (!group || filter === "all") ? el.setAttribute("aria-current", "page") : el.removeAttribute("aria-current");
     });
-    $("#catalog-title").textContent =
-      view === "saved"
-        ? "Твои сохранённые тесты"
-        : view === "history"
-          ? "Пройденные тесты"
-          : filter === "tgo"
-            ? "Подразделы ТГО"
-            : filter === "english"
-              ? "Тесты по английскому"
-              : "Все тесты";
+    $("#catalog-title").textContent = view === "saved" ? "Твои сохранённые тесты" : view === "history" ? "Пройденные тесты" : mock ? filter === "tgo" ? "Пробники ТГО" : filter === "english" ? "Пробник по английскому" : "Полные пробники" : filter === "tgo" ? "Подразделы ТГО" : filter === "english" ? "Тесты по английскому" : "Учебные тесты";
     $("#catalog-toolbar").hidden = view === "history";
     $(".catalog-caption").hidden = special;
+    $("#direction-intro").hidden = home || special;
+    $("#direction-intro-label").textContent = directionTitle.toUpperCase();
+    $("#direction-intro-icon").innerHTML = icon(mock ? "target" : "book");
+    $("#direction-intro-copy").textContent = mock ? filter === "tgo" ? "По 15 вопросов на критическое и аналитическое мышление — 30 в каждом пробнике." : filter === "english" ? "50 вопросов по грамматике, лексике и чтению. Результат и разбор после завершения." : "80 вопросов: 15 на критическое мышление, 15 на аналитическое и 50 по английскому." : "Текущая учебная практика: короткие тесты по ТГО и английскому с объяснениями.";
     renderCatalog();
     closeMenu();
-    if (scroll)
-      $("#catalog").scrollIntoView({ behavior: "smooth", block: "start" });
+    if (scroll && !home) $("#catalog").scrollIntoView({ behavior: "smooth", block: "start" });
     else window.scrollTo({ top: 0, behavior: "instant" });
   }
   function renderCatalog() {
     updateSavedCount();
+    const special = state.view === "saved" || state.view === "history";
     document.querySelectorAll("[data-filter]").forEach((el) => {
       const active = el.dataset.filter === state.filter;
       el.classList.toggle("active", active);
       el.setAttribute("aria-pressed", String(active));
+      el.hidden = !special && (state.direction === "mock" ? el.dataset.filter === "all" : el.dataset.filter === "combined");
     });
-    const showTgoSections = state.view === "all" && state.filter === "tgo";
+    const showTgoSections = state.view === "all" && state.direction === "learning" && state.filter === "tgo";
     $("#tgo-sections").hidden = !showTgoSections;
     $(".search-field").hidden = showTgoSections;
     $("#test-grid").hidden = state.view === "history" || showTgoSections;
@@ -355,35 +378,24 @@
     }
     $("#tgo-critical-tests").innerHTML = "";
     $("#tgo-analytical-tests").innerHTML = "";
-    if (state.view === "history") {
-      renderHistory();
-      return;
-    }
-    const tests = ACTIVE_TESTS.filter(
-      (t) =>
-        (state.filter === "all" || t.subject === state.filter) &&
-        (state.view !== "saved" || state.saved.includes(t.id)) &&
-        `${t.title} ${t.description} ${t.level} ${t.subject === "english" ? "английский язык" : "ТГО"}`
-          .toLowerCase()
-          .includes(state.search.toLowerCase().trim()),
-    );
+    if (state.view === "home") { $("#test-grid").innerHTML = ""; return; }
+    if (state.view === "history") { renderHistory(); return; }
+    const tests = ACTIVE_TESTS.filter((test) =>
+      (state.view === "saved" ? state.saved.includes(test.id) : test.direction === state.direction) &&
+      (state.filter === "all" || test.subject === state.filter) &&
+      `${test.title} ${test.description} ${test.level} ${subjectLabel(test)} ${test.direction === "mock" ? "Пробники" : "Обучение"}`.toLowerCase().includes(state.search.toLowerCase().trim()));
     $("#test-count").textContent = tests.length;
-    $("#test-grid").innerHTML = tests
-      .map((t) => {
-        const saved = state.saved.includes(t.id),
-          last = state.history.find((h) => h.testId === t.id);
-        return `<article class="test-card ${t.subject}"><div class="test-card-top"><span class="test-type">${t.type}</span><button class="icon-button save-button ${saved ? "is-saved" : ""}" data-save="${t.id}" aria-label="${saved ? "Убрать из сохранённых" : "Сохранить тест"}: ${t.title}" aria-pressed="${saved}">${icon("bookmark")}</button></div><div class="test-subject-icon">${icon(t.icon)}</div><div class="test-subject-label">${t.subject === "tgo" ? "ТГО" : "АНГЛИЙСКИЙ ЯЗЫК"}</div><h3>${t.title}</h3><p class="test-description">${t.description}</p><div class="test-meta"><span>${icon("file")}${t.count} вопросов</span><span>${icon("clock")}${t.minutes} мин</span></div><div class="test-card-footer"><span class="test-level ${last ? "completed-label" : ""}">${last ? icon("check-circle") + `${last.correct} из ${last.total} · пройден` : t.level}</span><button class="test-start" data-start="${t.id}">${last ? "Ещё раз" : "Начать"}${icon("arrow-right")}</button></div></article>`;
-      })
-      .join("");
+    $("#test-grid").innerHTML = tests.map((test) => {
+      const saved = state.saved.includes(test.id), last = state.history.find((attempt) => attempt.testId === test.id);
+      return `<article class="test-card ${test.subject} ${test.direction === "mock" ? "mock" : ""}"><div class="test-card-top"><span class="test-type">${test.type}</span><button class="icon-button save-button ${saved ? "is-saved" : ""}" data-save="${test.id}" aria-label="${saved ? "Убрать из сохранённых" : "Сохранить тест"}: ${test.title}" aria-pressed="${saved}">${icon("bookmark")}</button></div><div class="test-subject-icon">${icon(test.icon)}</div><div class="test-subject-label">${subjectLabel(test).toUpperCase()}</div><h3>${test.title}</h3><p class="test-description">${test.description}</p><div class="test-meta"><span>${icon("file")}${test.count} вопросов</span><span>${icon("clock")}${test.minutes} мин</span></div><div class="test-card-footer"><span class="test-level ${last ? "completed-label" : ""}">${last ? icon("check-circle") + `${last.correct} из ${last.total} · пройден` : test.level}</span><button class="test-start" data-start="${test.id}">${last ? "Ещё раз" : "Начать"}${icon("arrow-right")}</button></div></article>`;
+    }).join("");
     $("#empty-state").hidden = tests.length > 0;
-    if (!tests.length)
-      $("#empty-state").innerHTML =
-        `<span class="empty-icon">${icon(state.search ? "search" : "bookmark")}</span><h3>${state.search ? "Таких тестов пока нет" : state.view === "saved" ? "Сохрани то, что интересно" : "Здесь пока нет тестов"}</h3><p>${state.search ? "Попробуй другое название или выбери другой предмет." : "Нажми на закладку на карточке теста — он появится здесь."}</p><button class="button button-green" data-action="reset-catalog">${state.search ? "Сбросить поиск" : "Посмотреть все тесты"}${icon("arrow-right")}</button>`;
+    if (!tests.length) $("#empty-state").innerHTML = `<span class="empty-icon">${icon(state.search ? "search" : "bookmark")}</span><h3>${state.search ? "Таких тестов пока нет" : "Сохрани то, что интересно"}</h3><p>${state.search ? "Попробуй другое название или выбери другой предмет." : "Добавляй пробники и учебные тесты в закладки на их карточках."}</p><button class="button button-green" data-action="reset-catalog">${state.search ? "Сбросить поиск" : "Посмотреть тесты"}${icon("arrow-right")}</button>`;
   }
   function renderTgoTests() {
     ["critical", "analytical"].forEach((topic) => {
       $(`#tgo-${topic}-tests`).innerHTML = ACTIVE_TESTS
-        .filter((test) => test.subject === "tgo" && test.topic === topic)
+        .filter((test) => test.direction === "learning" && test.subject === "tgo" && test.topic === topic)
         .map((test) => {
           const saved = state.saved.includes(test.id);
           const last = state.history.find((attempt) => attempt.testId === test.id);
@@ -407,7 +419,7 @@
       `<div class="history-stats"><div><span>Пройдено тестов</span><strong>${state.history.length}</strong></div><div><span>Решено вопросов</span><strong>${total}</strong></div><div><span>Правильных ответов</span><strong>${Math.round((correct / total) * 100)}<small>%</small></strong></div></div>${state.history
         .map((h) => {
           const t = TESTS.find((t) => t.id === h.testId);
-          return `<article class="history-row"><span class="history-subject-icon ${t.subject}">${icon(t.icon)}</span><div class="history-row-title"><h3>${t.title}</h3><span>${new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(new Date(h.date))} · ${formatDuration(h.elapsed)}</span></div><div class="history-result"><strong>${h.correct}<span> / ${h.total}</span></strong><span>${Math.round((h.correct / h.total) * 100)}% верно</span></div><button class="button button-white" data-review="${esc(h.id)}">Разбор${icon("arrow-right")}</button></article>`;
+          return `<article class="history-row"><span class="history-subject-icon ${t.direction === "mock" ? "mock" : t.subject}">${icon(t.icon)}</span><div class="history-row-title"><h3>${t.title}</h3><span>${new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(new Date(h.date))} · ${formatDuration(h.elapsed)}</span></div><div class="history-result"><strong>${h.correct}<span> / ${h.total}</span></strong><span>${Math.round((h.correct / h.total) * 100)}% верно</span></div><button class="button button-white" data-review="${esc(h.id)}">Разбор${icon("arrow-right")}</button></article>`;
         })
         .join(
           "",
@@ -458,14 +470,14 @@
     `<button class="icon-button dialog-close" data-action="close-dialog" aria-label="Закрыть">${icon("close")}</button>`;
   function showHelp() {
     openDialog(
-      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В ТГО — два подраздела, в английском — комплексная практика и отдельные темы.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">135 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
+      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В «Пробниках» — полные тесты и отдельные предметы. В «Обучении» — практика по темам.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">185 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
     );
   }
   function showSetup(id) {
     const t = ACTIVE_TESTS.find((t) => t.id === id);
     if (!t) return;
     openDialog(
-      `<div class="standard-modal setup-modal">${closeButton()}<span class="modal-icon ${t.subject}">${icon(t.icon)}</span><div class="eyebrow">${t.subject === "tgo" ? "ТГО" : "АНГЛИЙСКИЙ ЯЗЫК"} · ${t.type.toUpperCase()}</div><h2 id="dialog-title">${t.title}</h2><p class="modal-intro">${t.description}</p><div class="setup-stats"><div>${icon("file")}<strong>${t.count}</strong><span>вопросов</span></div><div>${icon("clock")}<strong>${t.minutes} мин</strong><span>на прохождение</span></div><div>${icon("bulb")}<strong>С разбором</strong><span>каждого ответа</span></div></div><label class="setting-row"><div><strong>Тест с таймером</strong><span>Поможет привыкнуть к ограничению по времени</span></div><input id="timer-setting" type="checkbox" role="switch" checked /><span class="switch-track"></span></label><label class="setting-row"><div><strong>Перемешать вопросы</strong><span>Новый порядок при каждой попытке</span></div><input id="shuffle-setting" type="checkbox" role="switch" checked /><span class="switch-track"></span></label><p class="setup-hint">${icon("check-circle")}Можно пропускать вопросы и возвращаться к ним. Правильные ответы появятся после завершения.</p><div class="modal-info">Это учебная практика. Количество вопросов и время могут отличаться от официального экзамена КТ.</div><button class="button button-green button-full" data-begin="${t.id}">Начать тест${icon("arrow-right")}</button></div>`,
+      `<div class="standard-modal setup-modal">${closeButton()}<span class="modal-icon ${t.direction === "mock" ? "mock" : t.subject}">${icon(t.icon)}</span><div class="eyebrow">${subjectLabel(t).toUpperCase()} · ${t.type.toUpperCase()}</div><h2 id="dialog-title">${t.title}</h2><p class="modal-intro">${t.description}</p>${mockBreakdown(t)}<div class="setup-stats"><div>${icon("file")}<strong>${t.count}</strong><span>вопросов</span></div><div>${icon("clock")}<strong>${t.minutes} мин</strong><span>на прохождение</span></div><div>${icon("bulb")}<strong>С разбором</strong><span>каждого ответа</span></div></div><label class="setting-row"><div><strong>Тест с таймером</strong><span>Поможет привыкнуть к ограничению по времени</span></div><input id="timer-setting" type="checkbox" role="switch" checked /><span class="switch-track"></span></label><label class="setting-row"><div><strong>Перемешать вопросы</strong><span>Новый порядок при каждой попытке</span></div><input id="shuffle-setting" type="checkbox" role="switch" checked /><span class="switch-track"></span></label><p class="setup-hint">${icon("check-circle")}Можно пропускать вопросы и возвращаться к ним. Правильные ответы появятся после завершения.</p><div class="modal-info">Это учебная практика. Количество вопросов и время могут отличаться от официального экзамена КТ.</div><button class="button button-green button-full" data-begin="${t.id}">Начать тест${icon("arrow-right")}</button></div>`,
     );
   }
   function shuffle(arr) {
@@ -481,23 +493,24 @@
     if (!t) return;
     const timed = $("#timer-setting").checked,
       random = $("#shuffle-setting").checked;
-    let questions = BANK.filter(
-      (q) =>
-        q.subject === t.subject &&
-        (!t.topic || q.topic === t.topic) &&
-        (!t.questionSet || q.testId === t.questionSet),
-    );
-    if (!t.topic && t.subject === "tgo")
-      questions = ["critical", "math", "logic"].flatMap((topic) => {
-        const subset = questions.filter((q) => q.topic === topic);
-        return (random ? shuffle(subset) : subset).slice(0, 10);
+    let questions;
+    if (t.questionIds) {
+      const ids = t.sections.flatMap((section) => section.questionIds);
+      if (ids.length !== t.count || new Set(ids).size !== t.count || ids.some((id) => !BANK_BY_ID.has(id))) {
+        toast("Не удалось загрузить все вопросы. Обнови страницу и попробуй ещё раз.");
+        return;
+      }
+      questions = t.sections.flatMap((section) => {
+        const group = section.questionIds.map((id) => BANK_BY_ID.get(id));
+        return random ? shuffle(group) : group;
       });
-    if (random) questions = shuffle(questions);
-    questions = questions.slice(0, t.count);
+    } else {
+      questions = BANK.filter((q) => !q.mockOnly && q.subject === t.subject && (!t.topic || q.topic === t.topic) && (!t.questionSet || q.testId === t.questionSet));
+      if (random) questions = shuffle(questions);
+      questions = questions.slice(0, t.count);
+    }
     if (questions.length !== t.count) {
-      toast(
-        "Не удалось загрузить вопросы. Обнови страницу и попробуй ещё раз.",
-      );
+      toast("Не удалось загрузить вопросы. Обнови страницу и попробуй ещё раз.");
       return;
     }
     state.quiz = {
@@ -551,7 +564,7 @@
       answered = quiz.answers.filter((a) => a !== null).length;
     const previousScroll = dialog.scrollTop;
     openDialog(
-      `<div class="quiz-layout"><header class="quiz-header"><div><span class="eyebrow">${quiz.test.subject === "tgo" ? "ТГО" : "АНГЛИЙСКИЙ ЯЗЫК"}</span><h2 id="dialog-title">${quiz.test.title}</h2></div><div class="quiz-header-right"><div class="quiz-clock">${icon("clock")}<span id="quiz-timer">${timerText()}</span>${!quiz.ends ? "<small>без лимита</small>" : ""}</div><button class="icon-button" data-action="exit-quiz" aria-label="Выйти из теста">${icon("close")}</button></div></header><div class="quiz-progress-track"><span style="width:${(answered / quiz.questions.length) * 100}%"></span></div><div class="quiz-body"><section class="question-area"><div class="question-toolbar"><span>ВОПРОС ${quiz.index + 1} ИЗ ${quiz.questions.length}</span><button class="flag-button ${quiz.flags.includes(quiz.index) ? "flagged" : ""}" data-action="flag" aria-pressed="${quiz.flags.includes(quiz.index)}">${icon("flag")}${quiz.flags.includes(quiz.index) ? "Отмечен" : "Отметить"}</button></div>${q.passage ? `<div class="question-passage" lang="${quiz.test.subject === "english" ? "en" : "ru"}">${esc(q.passage)}</div>` : ""}<h3 class="question-prompt" id="question-prompt" tabindex="-1" lang="${quiz.test.subject === "english" ? "en" : "ru"}">${esc(q.prompt)}</h3><div class="answer-options" role="group" aria-labelledby="question-prompt">${q.options.map((o, i) => `<button class="answer-option ${quiz.answers[quiz.index] === i ? "selected" : ""}" data-answer="${i}" aria-pressed="${quiz.answers[quiz.index] === i}"><span class="answer-letter">${"ABCD"[i]}</span><span lang="${quiz.test.subject === "english" ? "en" : "ru"}">${esc(o)}</span><span class="answer-radio">${quiz.answers[quiz.index] === i ? icon("check") : ""}</span></button>`).join("")}</div><div class="quiz-question-footer"><button class="button button-white" data-action="previous" ${quiz.index === 0 ? "disabled" : ""}>${icon("arrow-left")}Назад</button><span>${quiz.answers[quiz.index] === null ? "Выбери один ответ" : "Ответ выбран"}</span><button class="button button-green" data-action="${quiz.index === quiz.questions.length - 1 ? "finish" : "next"}">${quiz.index === quiz.questions.length - 1 ? "Завершить" : "Далее"}${icon(quiz.index === quiz.questions.length - 1 ? "check" : "arrow-right")}</button></div></section><aside class="quiz-navigation"><h3>Твой прогресс</h3><p>Отвечено <strong>${answered} из ${quiz.questions.length}</strong></p><div class="question-numbers">${quiz.questions.map((_, i) => `<button class="question-number ${i === quiz.index ? "current" : ""} ${quiz.answers[i] !== null ? "answered" : ""} ${quiz.flags.includes(i) ? "flagged" : ""}" data-question="${i}" aria-label="Вопрос ${i + 1}${quiz.answers[i] !== null ? ", ответ выбран" : ""}${quiz.flags.includes(i) ? ", отмечен" : ""}" ${i === quiz.index ? 'aria-current="step"' : ""}>${i + 1}</button>`).join("")}</div><div class="navigator-legend"><span><i class="legend-answered"></i>Есть ответ</span><span><i class="legend-flagged"></i>Отмечен</span></div><div class="quiz-tip">${icon("bulb")}<p>Сложный вопрос? Отметь его и вернись позже.</p></div><button class="button button-white button-full" data-action="finish">Завершить тест</button></aside></div><div id="quiz-confirmation" class="quiz-confirmation" hidden></div></div>`,
+      `<div class="quiz-layout"><header class="quiz-header"><div><span class="eyebrow">${quiz.test.direction === "mock" ? "ПРОБНИК · " : ""}${subjectLabel(quiz.test).toUpperCase()}</span><h2 id="dialog-title">${quiz.test.title}</h2></div><div class="quiz-header-right"><div class="quiz-clock">${icon("clock")}<span id="quiz-timer">${timerText()}</span>${!quiz.ends ? "<small>без лимита</small>" : ""}</div><button class="icon-button" data-action="exit-quiz" aria-label="Выйти из теста">${icon("close")}</button></div></header><div class="quiz-progress-track"><span style="width:${(answered / quiz.questions.length) * 100}%"></span></div><div class="quiz-body"><section class="question-area"><div class="question-toolbar"><span>ВОПРОС ${quiz.index + 1} ИЗ ${quiz.questions.length}${quiz.test.direction === "mock" ? `<span class="quiz-section-label">${sectionLabel(q)}</span>` : ""}</span><button class="flag-button ${quiz.flags.includes(quiz.index) ? "flagged" : ""}" data-action="flag" aria-pressed="${quiz.flags.includes(quiz.index)}">${icon("flag")}${quiz.flags.includes(quiz.index) ? "Отмечен" : "Отметить"}</button></div>${q.passage ? `<div class="question-passage" lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.passage)}</div>` : ""}<h3 class="question-prompt" id="question-prompt" tabindex="-1" lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.prompt)}</h3><div class="answer-options" role="group" aria-labelledby="question-prompt">${q.options.map((o, i) => `<button class="answer-option ${quiz.answers[quiz.index] === i ? "selected" : ""}" data-answer="${i}" aria-pressed="${quiz.answers[quiz.index] === i}"><span class="answer-letter">${"ABCD"[i]}</span><span lang="${q.subject === "english" ? "en" : "ru"}">${esc(o)}</span><span class="answer-radio">${quiz.answers[quiz.index] === i ? icon("check") : ""}</span></button>`).join("")}</div><div class="quiz-question-footer"><button class="button button-white" data-action="previous" ${quiz.index === 0 ? "disabled" : ""}>${icon("arrow-left")}Назад</button><span>${quiz.answers[quiz.index] === null ? "Выбери один ответ" : "Ответ выбран"}</span><button class="button button-green" data-action="${quiz.index === quiz.questions.length - 1 ? "finish" : "next"}">${quiz.index === quiz.questions.length - 1 ? "Завершить" : "Далее"}${icon(quiz.index === quiz.questions.length - 1 ? "check" : "arrow-right")}</button></div></section><aside class="quiz-navigation"><h3>Твой прогресс</h3><p>Отвечено <strong>${answered} из ${quiz.questions.length}</strong></p><div class="question-numbers">${quiz.questions.map((_, i) => `<button class="question-number ${i === quiz.index ? "current" : ""} ${quiz.answers[i] !== null ? "answered" : ""} ${quiz.flags.includes(i) ? "flagged" : ""}" data-question="${i}" aria-label="Вопрос ${i + 1}${quiz.answers[i] !== null ? ", ответ выбран" : ""}${quiz.flags.includes(i) ? ", отмечен" : ""}" ${i === quiz.index ? 'aria-current="step"' : ""}>${i + 1}</button>`).join("")}</div><div class="navigator-legend"><span><i class="legend-answered"></i>Есть ответ</span><span><i class="legend-flagged"></i>Отмечен</span></div><div class="quiz-tip">${icon("bulb")}<p>Сложный вопрос? Отметь его и вернись позже.</p></div><button class="button button-white button-full" data-action="finish">Завершить тест</button></aside></div><div id="quiz-confirmation" class="quiz-confirmation" hidden></div></div>`,
       true,
     );
     if (focusQuestion) $("#question-prompt").focus({ preventScroll: true });
@@ -600,7 +613,7 @@
     const t = TESTS.find((t) => t.id === result.testId),
       percent = Math.round((result.correct / result.total) * 100);
     openDialog(
-      `<div class="result-modal standard-modal">${closeButton()}<div class="result-emblem">${icon("trophy")}<span>✳</span></div><div class="eyebrow">ЕЩЁ ОДИН ШАГ ВПЕРЁД</div><h2 id="dialog-title">${percent >= 80 ? "Отличная работа!" : percent >= 50 ? "Хорошее начало!" : "Практика — путь к результату"}</h2><p class="modal-intro">${t.title}${result.expired ? '<br /><span class="time-expired">Время вышло. Ответы сохранены автоматически.</span>' : ""}</p><div class="result-score"><strong>${result.correct}<span> / ${result.total}</span></strong><span>правильных ответов</span></div><div class="result-bar"><span style="width:${percent}%"></span></div><div class="result-details"><div><strong>${percent}%</strong><span>точность</span></div><div><strong>${formatDuration(result.elapsed)}</strong><span>время практики</span></div></div><div class="modal-info">${percent >= 80 ? "Так держать! Посмотри разбор, чтобы закрепить результат." : "Каждая ошибка подсказывает, что стоит повторить. В разборе есть объяснение к каждому вопросу."}</div><button class="button button-green button-full" data-action="open-review">Разобрать ответы${icon("arrow-right")}</button><button class="button button-plain button-full" data-retry="${t.id}">${icon("refresh")}Попробовать ещё раз</button><p class="result-saved">${icon("check-circle")}Результат добавлен в историю</p></div>`,
+      `<div class="result-modal standard-modal">${closeButton()}<div class="result-emblem">${icon("trophy")}<span>✳</span></div><div class="eyebrow">ЕЩЁ ОДИН ШАГ ВПЕРЁД</div><h2 id="dialog-title">${percent >= 80 ? "Отличная работа!" : percent >= 50 ? "Хорошее начало!" : "Практика — путь к результату"}</h2><p class="modal-intro">${t.title}${result.expired ? '<br /><span class="time-expired">Время вышло. Ответы сохранены автоматически.</span>' : ""}</p><div class="result-score"><strong>${result.correct}<span> / ${result.total}</span></strong><span>правильных ответов</span></div>${mockBreakdown(t, result)}<div class="result-bar"><span style="width:${percent}%"></span></div><div class="result-details"><div><strong>${percent}%</strong><span>точность</span></div><div><strong>${formatDuration(result.elapsed)}</strong><span>время практики</span></div></div><div class="modal-info">${percent >= 80 ? "Так держать! Посмотри разбор, чтобы закрепить результат." : "Каждая ошибка подсказывает, что стоит повторить. В разборе есть объяснение к каждому вопросу."}</div><button class="button button-green button-full" data-action="open-review">Разобрать ответы${icon("arrow-right")}</button><button class="button button-plain button-full" data-retry="${t.id}">${icon("refresh")}Попробовать ещё раз</button><p class="result-saved">${icon("check-circle")}Результат добавлен в историю</p></div>`,
     );
   }
   function showReview(result, errorsOnly = false) {
@@ -619,7 +632,7 @@
           ? questions
               .map(({ question: q, index: i }) => {
                 const correct = result.answers[i] === q.answer;
-                return `<article class="review-question"><div class="review-question-top"><span>ВОПРОС ${i + 1}</span><span class="review-status ${correct ? "correct" : "incorrect"}">${icon(correct ? "check-circle" : "close")}${correct ? "Верно" : result.answers[i] === null ? "Без ответа" : "Ошибка"}</span></div>${q.passage ? `<div class="question-passage" lang="${t.subject === "english" ? "en" : "ru"}">${esc(q.passage)}</div>` : ""}<h3 lang="${t.subject === "english" ? "en" : "ru"}">${esc(q.prompt)}</h3><div class="review-options">${q.options.map((o, n) => `<div class="review-option ${n === q.answer ? "is-correct" : n === result.answers[i] ? "is-incorrect" : ""}"><span>${"ABCD"[n]}</span><span lang="${t.subject === "english" ? "en" : "ru"}">${esc(o)}</span>${n === q.answer ? `<small>Правильный ответ ${icon("check")}</small>` : n === result.answers[i] ? `<small>Твой ответ ${icon("close")}</small>` : ""}</div>`).join("")}</div><div class="answer-explanation">${icon("bulb")}<div><strong>Почему так?</strong><p>${esc(q.explanation)}</p></div></div></article>`;
+                return `<article class="review-question"><div class="review-question-top"><span>ВОПРОС ${i + 1}${t.direction === "mock" ? `<span class="quiz-section-label">${sectionLabel(q)}</span>` : ""}</span><span class="review-status ${correct ? "correct" : "incorrect"}">${icon(correct ? "check-circle" : "close")}${correct ? "Верно" : result.answers[i] === null ? "Без ответа" : "Ошибка"}</span></div>${q.passage ? `<div class="question-passage" lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.passage)}</div>` : ""}<h3 lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.prompt)}</h3><div class="review-options">${q.options.map((o, n) => `<div class="review-option ${n === q.answer ? "is-correct" : n === result.answers[i] ? "is-incorrect" : ""}"><span>${"ABCD"[n]}</span><span lang="${q.subject === "english" ? "en" : "ru"}">${esc(o)}</span>${n === q.answer ? `<small>Правильный ответ ${icon("check")}</small>` : n === result.answers[i] ? `<small>Твой ответ ${icon("close")}</small>` : ""}</div>`).join("")}</div><div class="answer-explanation">${icon("bulb")}<div><strong>Почему так?</strong><p>${esc(q.explanation)}</p></div></div></article>`;
               })
               .join("")
           : `<div class="review-perfect">${icon("trophy")}<h3>Ни одной ошибки!</h3><p>Все ответы верные. Попробуй следующий тест.</p></div>`
@@ -628,27 +641,22 @@
     );
   }
   document.addEventListener("click", (event) => {
-    const nav = event.target.closest("[data-nav]");
-    if (nav) {
-      const v = nav.dataset.nav;
-      navigate(
-        ["saved", "history"].includes(v) ? v : "all",
-        ["tgo", "english"].includes(v) ? v : "all",
-      );
+    const openDirection = event.target.closest("[data-open-direction]");
+    if (openDirection) {
+      const direction = openDirection.dataset.openDirection;
+      navigate("all", direction === "mock" ? "combined" : "all", false, direction);
       return;
     }
-    const subject = event.target.closest("[data-subject]");
-    if (subject) {
-      navigate("all", subject.dataset.subject);
+    const nav = event.target.closest("[data-nav]");
+    if (nav) {
+      const value = nav.dataset.nav;
+      navigate(["saved", "history"].includes(value) ? value : "all", ["tgo", "english", "combined"].includes(value) ? value : "all", false, nav.dataset.direction || state.direction);
       return;
     }
     const filter = event.target.closest("[data-filter]");
     if (filter) {
       if (state.view === "all") navigate("all", filter.dataset.filter, true);
-      else {
-        state.filter = filter.dataset.filter;
-        renderCatalog();
-      }
+      else { state.filter = filter.dataset.filter; renderCatalog(); }
       return;
     }
     const saved = event.target.closest("[data-save]");
@@ -703,7 +711,7 @@
           state.search = "";
           $("#test-search").value = "";
           renderCatalog();
-        } else navigate("all");
+        } else navigate("all", state.direction === "mock" ? "combined" : "all");
         break;
       case "close-dialog":
         state.quiz ? showQuizConfirmation(true) : closeDialog();
@@ -754,12 +762,10 @@
     state.search = event.target.value;
     renderCatalog();
   });
-  $("#choose-test").addEventListener("click", () =>
-    $("#catalog").scrollIntoView({ behavior: "smooth", block: "start" }),
-  );
+  $("#choose-test").addEventListener("click", () => navigate("all", "combined", false, "mock"));
   $(".brand").addEventListener("click", (event) => {
     event.preventDefault();
-    navigate("all");
+    navigate("home");
   });
   $("#menu-button").addEventListener("click", () => {
     const open = $("#sidebar").classList.toggle("open");
@@ -816,7 +822,7 @@
     if (
       event.key === "/" &&
       !dialog.open &&
-      state.view !== "history" &&
+      state.view !== "history" && state.view !== "home" && !$(".search-field").hidden &&
       !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)
     ) {
       event.preventDefault();
@@ -834,5 +840,5 @@
   });
   $("#copyright-year").textContent = new Date().getFullYear();
   hydrateIcons();
-  renderCatalog();
+  navigate("home");
 })();

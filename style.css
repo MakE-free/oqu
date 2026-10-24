@@ -6194,3 +6194,236 @@ main {
     font-size: 19px;
   }
 }
+
+/* Two clear paths: exam practice and topic-based learning. */
+.sidebar:has(.nav-direction-group) > * {
+  flex-shrink: 0;
+}
+.sidebar:has(.nav-direction-group) .workspace-label {
+  margin-bottom: 20px;
+}
+.sidebar:has(.nav-direction-group) .sidebar-bottom {
+  padding-top: 24px;
+}
+.nav-direction-group {
+  min-width: 0;
+  margin-bottom: 5px;
+}
+.direction-nav {
+  font-weight: 750;
+}
+.nav-direction-group .subject-nav {
+  margin: 2px 0 5px 21px;
+}
+.nav-direction-group .subject-nav-item {
+  min-height: 34px;
+  padding: 7px 8px;
+  margin-left: -8px;
+  border-radius: 6px;
+  line-height: 1.4;
+}
+.nav-direction-group [data-direction="mock"].active {
+  background: #edf2f7;
+  color: #45627c;
+}
+.nav-direction-group [data-direction="learning"].active {
+  background: #edf3e9;
+  color: #48683f;
+}
+.nav-direction-group .subject-nav-item.active .nav-dot {
+  background: currentColor;
+}
+.direction-card {
+  --direction-ink: #47647c;
+  --direction-soft: #e0e9f1;
+  --direction-line: #d7e2eb;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 20px 22px 0;
+  border-color: var(--direction-line);
+  background: #f0f4f8;
+}
+.learning-direction-card {
+  --direction-ink: #526d43;
+  --direction-soft: #e5eddd;
+  --direction-line: #dce5d4;
+  background: #f2f5ed;
+}
+.direction-card:hover {
+  border-color: var(--direction-ink);
+  box-shadow: 0 6px 20px #44523b0a;
+}
+.direction-card .subject-card-top {
+  margin-bottom: 12px;
+}
+.direction-card .subject-symbol {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--direction-soft);
+  color: var(--direction-ink);
+}
+.direction-card .subject-symbol .icon {
+  width: 23px;
+  height: 23px;
+}
+.direction-card .subject-pill,
+.direction-card .subject-card-arrow,
+.direction-card h3,
+.direction-card .subject-card-bottom > strong {
+  color: var(--direction-ink);
+}
+.direction-card h3 {
+  font-size: 25px;
+  letter-spacing: -0.5px;
+}
+.direction-card > p {
+  margin: 5px 0 17px;
+  color: #58635d;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.direction-card .subject-card-bottom {
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding: 12px 0;
+  border-color: var(--direction-line);
+  color: #58635d;
+  line-height: 1.6;
+}
+.direction-intro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  margin-bottom: 20px;
+  padding: 12px 15px;
+  border: 1px solid #e2e7dc;
+  border-radius: 10px;
+  background: #f4f6f0;
+}
+.direction-intro-icon {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #e7eddf;
+  color: #526d43;
+}
+.direction-intro > div {
+  min-width: 0;
+}
+.direction-intro .eyebrow {
+  display: block;
+  margin-bottom: 3px;
+  color: #52634c;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.direction-intro p {
+  color: #58635a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.test-card.mock {
+  border-color: #dce5ec;
+  background: linear-gradient(180deg, #f8fafc, #fff 45%);
+}
+.test-card.mock:hover {
+  border-color: #a6bbc9;
+}
+.test-card.mock .test-subject-icon,
+.modal-icon.mock,
+.history-subject-icon.mock {
+  background: #e7eef4;
+  color: #47647d;
+}
+.test-card.mock .test-subject-label,
+.test-card.mock .test-start {
+  color: #47647d;
+}
+.mock-breakdown {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 1px;
+  overflow: hidden;
+  margin: 16px 0;
+  border: 1px solid #dfe6ec;
+  border-radius: 10px;
+  background: #dfe6ec;
+}
+.mock-breakdown > span {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 7px;
+  min-width: 0;
+  padding: 11px 10px;
+  background: #f4f7fa;
+  color: #586673;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.mock-breakdown strong {
+  color: #46627a;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.quiz-section-label {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #dce5ec;
+  border-radius: 6px;
+  background: #edf2f7;
+  color: #48637a;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.question-toolbar:has(.quiz-section-label) {
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+@media (max-height: 860px) {
+  .sidebar:has(.nav-direction-group) .sidebar-note {
+    display: none;
+  }
+  .sidebar:has(.nav-direction-group) .sidebar-bottom {
+    padding-top: 18px;
+  }
+}
+@media (max-width: 670px) {
+  .direction-card {
+    padding: 18px 18px 0;
+  }
+  .direction-card h3 {
+    font-size: 23px;
+  }
+  .direction-card .subject-card-bottom {
+    gap: 8px 14px;
+  }
+}
+@media (max-width: 380px) {
+  .direction-card {
+    padding: 16px 16px 0;
+  }
+  .direction-card .subject-pill {
+    font-size: 8px;
+    letter-spacing: 0.6px;
+  }
+  .direction-intro {
+    padding: 11px;
+    gap: 9px;
+  }
+  .mock-breakdown > span {
+    padding: 10px 7px;
+    font-size: 10px;
+  }
+}

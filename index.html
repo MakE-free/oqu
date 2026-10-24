@@ -6,19 +6,20 @@
     <meta name="theme-color" content="#31725a" />
     <meta
       name="description"
-      content="Oqu — подготовка к КТ в магистратуру. Учебные тесты по ТГО и английскому языку с объяснениями и сохранением прогресса без регистрации."
+      content="Oqu — пробники и обучение для подготовки к КТ в магистратуру. ТГО и английский, результаты по блокам и разбор ответов без регистрации."
     />
-    <title>Тесты для подготовки к КТ — Oqu</title>
+    <title>Пробники и обучение для подготовки к КТ — Oqu</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="style.css" />
     <script src="questions.js" defer></script>
+    <script src="mock-questions.js" defer></script>
     <script src="script.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Перейти к содержимому</a>
     <div class="mobile-shade" id="mobile-shade"></div>
     <aside class="sidebar" id="sidebar" aria-label="Основная навигация">
-      <a class="brand" href="#" aria-label="Oqu — все тесты"
+      <a class="brand" href="#" aria-label="Oqu — главная"
         ><span class="brand-symbol" aria-hidden="true"
           ><svg viewBox="0 0 32 32">
             <path d="M7 9 16 5l9 4v13l-9 5-9-5Z" />
@@ -31,29 +32,29 @@
           <strong>Подготовка к КТ</strong><span>Поступаем в магистратуру</span>
         </div>
       </div>
-      <div class="nav-caption">ТВОЁ ОБУЧЕНИЕ</div>
+      <div class="nav-caption">НАПРАВЛЕНИЯ</div>
       <nav class="main-nav">
-        <button class="nav-item active" data-nav="all" aria-current="page">
-          <span data-icon="grid"></span>Тесты<span class="nav-count">10</span>
-        </button>
-        <div class="subject-nav">
-          <button class="subject-nav-item" data-nav="tgo">
-            <span class="nav-dot purple"></span>ТГО</button
-          ><button class="subject-nav-item" data-nav="english">
-            <span class="nav-dot blue"></span>Английский язык
+        <div class="nav-direction-group">
+          <button class="nav-item direction-nav" data-direction="mock" data-nav="combined">
+            <span data-icon="target"></span>Пробники
           </button>
+          <div class="subject-nav">
+            <button class="subject-nav-item" data-direction="mock" data-nav="combined"><span class="nav-dot blue"></span>Пробники</button>
+            <button class="subject-nav-item" data-direction="mock" data-nav="tgo"><span class="nav-dot purple"></span>ТГО</button>
+            <button class="subject-nav-item" data-direction="mock" data-nav="english"><span class="nav-dot blue"></span>Английский язык</button>
+          </div>
         </div>
-        <button class="nav-item" data-nav="saved">
-          <span data-icon="bookmark"></span>Сохранённые<span
-            class="nav-count"
-            id="saved-count"
-            hidden
-            >0</span
-          >
-        </button>
-        <button class="nav-item" data-nav="history">
-          <span data-icon="history"></span>История тестов
-        </button>
+        <div class="nav-direction-group">
+          <button class="nav-item direction-nav" data-direction="learning" data-nav="all">
+            <span data-icon="book"></span>Обучение
+          </button>
+          <div class="subject-nav">
+            <button class="subject-nav-item" data-direction="learning" data-nav="tgo"><span class="nav-dot purple"></span>ТГО</button>
+            <button class="subject-nav-item" data-direction="learning" data-nav="english"><span class="nav-dot blue"></span>Английский язык</button>
+          </div>
+        </div>
+        <button class="nav-item" data-nav="saved"><span data-icon="bookmark"></span>Сохранённые<span class="nav-count" id="saved-count" hidden>0</span></button>
+        <button class="nav-item" data-nav="history"><span data-icon="history"></span>История тестов</button>
       </nav>
       <div class="sidebar-bottom">
         <div class="sidebar-note">
@@ -85,7 +86,7 @@
             <span data-icon="menu"></span></button
           ><span class="breadcrumb">Подготовка к КТ</span
           ><span class="breadcrumb-slash">/</span
-          ><strong id="breadcrumb-current">Тесты</strong>
+          ><strong id="breadcrumb-current">Главная</strong>
         </div>
         <div class="topbar-right">
           <span class="access-status"><span></span>Свободный доступ</span
@@ -102,9 +103,9 @@
         <div class="page-heading">
           <div>
             <div class="eyebrow">ПРАКТИКА, КОТОРАЯ ПРИБЛИЖАЕТ К ЦЕЛИ</div>
-            <h1 id="page-title">Тесты<span class="heading-dot">.</span></h1>
+            <h1 id="page-title">Подготовка к КТ<span class="heading-dot">.</span></h1>
             <p id="page-subtitle">
-              Готовься в своём темпе. Становись увереннее с каждым тестом.
+              Выбери пробник для проверки знаний или обучение по темам.
             </p>
           </div>
           <button class="button button-white how-button" data-action="help">
@@ -120,11 +121,10 @@
               Следующий шаг —<br /><span>магистратура.</span>
             </h2>
             <p>
-              ТГО и английский в одном месте.<br />Практикуйся, разбирай ошибки
-              и двигайся вперёд.
+              Проходи пробники или учись по темам.<br />ТГО и английский — на одной платформе.
             </p>
             <button class="button button-green" id="choose-test">
-              Выбрать тест<span data-icon="arrow-right"></span>
+              Открыть пробники<span data-icon="arrow-right"></span>
             </button>
             <div class="hero-footnote">
               <span data-icon="check-circle"></span>Бесплатно и без регистрации
@@ -207,41 +207,20 @@
         >
           <div class="section-heading">
             <h2 id="subjects-title">Выбери направление</h2>
-            <span>Два предмета. Одна большая цель.</span>
+            <span>Проверь знания или разбери отдельную тему.</span>
           </div>
           <div class="subject-grid">
-            <button class="subject-card tgo-card" data-subject="tgo">
-              <div class="subject-card-top">
-                <div class="subject-symbol tgo-symbol" data-icon="brain"></div>
-                <span class="subject-pill">ДВА НАПРАВЛЕНИЯ</span
-                ><span
-                  class="subject-card-arrow"
-                  data-icon="arrow-up-right"
-                ></span>
-              </div>
-              <h3>ТГО</h3>
-              <p>Тест на готовность к обучению</p>
-              <div class="subject-card-bottom">
-                <span>6 тестов<span class="meta-dot">·</span>90 вопросов</span
-                ><strong>К тестам<span data-icon="arrow-right"></span></strong>
-              </div></button
-            ><button class="subject-card english-card" data-subject="english">
-              <div class="subject-card-top">
-                <div class="subject-symbol english-symbol">
-                  Aa<span>↗</span>
-                </div>
-                <span class="subject-pill">ЯЗЫК И ВОЗМОЖНОСТИ</span
-                ><span
-                  class="subject-card-arrow"
-                  data-icon="arrow-up-right"
-                ></span>
-              </div>
-              <h3>Английский язык</h3>
-              <p>Grammar, vocabulary & reading</p>
-              <div class="subject-card-bottom">
-                <span>4 теста<span class="meta-dot">·</span>45 вопросов</span
-                ><strong>К тестам<span data-icon="arrow-right"></span></strong>
-              </div>
+            <button class="subject-card direction-card mock-direction-card" data-open-direction="mock">
+              <div class="subject-card-top"><div class="subject-symbol" data-icon="target"></div><span class="subject-pill">ПРОВЕРКА ЗНАНИЙ</span><span class="subject-card-arrow" data-icon="arrow-up-right"></span></div>
+              <h3>Пробники</h3>
+              <p>ТГО и английский в одном тесте. Проверь готовность и оцени результат.</p>
+              <div class="subject-card-bottom"><span>15 + 15 ТГО · 50 английских</span><strong>К пробникам<span data-icon="arrow-right"></span></strong></div>
+            </button>
+            <button class="subject-card direction-card learning-direction-card" data-open-direction="learning">
+              <div class="subject-card-top"><div class="subject-symbol" data-icon="book"></div><span class="subject-pill">ПРАКТИКА ПО ТЕМАМ</span><span class="subject-card-arrow" data-icon="arrow-up-right"></span></div>
+              <h3>Обучение</h3>
+              <p>Тематические тесты и разбор каждого ответа. Занимайся в своём темпе.</p>
+              <div class="subject-card-bottom"><span>ТГО · Английский язык</span><strong>К обучению<span data-icon="arrow-right"></span></strong></div>
             </button>
           </div>
         </section>
@@ -259,6 +238,10 @@
               <span data-icon="sliders"></span>Выбирай то, что хочешь улучшить
             </div>
           </div>
+          <div class="direction-intro" id="direction-intro" hidden>
+            <span class="direction-intro-icon" id="direction-intro-icon"></span>
+            <div><span class="eyebrow" id="direction-intro-label"></span><p id="direction-intro-copy"></p></div>
+          </div>
           <div class="catalog-toolbar" id="catalog-toolbar">
             <div class="filter-tabs" aria-label="Предмет">
               <button
@@ -266,8 +249,8 @@
                 data-filter="all"
                 aria-pressed="true"
               >
-                Все предметы</button
-              ><button
+                Все тесты</button
+              ><button class="filter-tab" data-filter="combined" aria-pressed="false" hidden>Пробники</button><button
                 class="filter-tab"
                 data-filter="tgo"
                 aria-pressed="false"
