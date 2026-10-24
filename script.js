@@ -72,6 +72,7 @@
     },
     {
       id: "tgo-critical",
+      archived: true,
       subject: "tgo",
       topic: "critical",
       title: "Критическое мышление",
@@ -123,6 +124,7 @@
       level: "Чтение",
     },
   ];
+  const ACTIVE_TESTS = TESTS.filter((test) => !test.archived);
   const storage = {
     read(key, fallback) {
       try {
@@ -151,7 +153,7 @@
     filter: "all",
     search: "",
     saved: Array.isArray(savedData)
-      ? savedData.filter((id) => TESTS.some((t) => t.id === id))
+      ? savedData.filter((id) => ACTIVE_TESTS.some((t) => t.id === id))
       : [],
     history: Array.isArray(historyData)
       ? historyData
@@ -213,7 +215,7 @@
         : view === "history"
           ? "Каждая попытка — часть твоего пути. Следи за своим прогрессом."
           : filter === "tgo"
-            ? "Анализируй аргументы, оценивай выводы и находи главное в тексте."
+            ? "Два направления подготовки: критическое и аналитическое мышление."
             : filter === "english"
               ? "Шаг за шагом к уверенному английскому: грамматика, лексика и чтение."
               : "Готовься в своём темпе. Становись увереннее с каждым тестом.";
@@ -236,7 +238,7 @@
         : view === "history"
           ? "Пройденные тесты"
           : filter === "tgo"
-            ? "Тесты по ТГО"
+            ? "Подразделы ТГО"
             : filter === "english"
               ? "Тесты по английскому"
               : "Все тесты";
@@ -255,13 +257,21 @@
       el.classList.toggle("active", active);
       el.setAttribute("aria-pressed", String(active));
     });
-    $("#test-grid").hidden = state.view === "history";
+    const showTgoSections = state.view === "all" && state.filter === "tgo";
+    $("#tgo-sections").hidden = !showTgoSections;
+    $(".search-field").hidden = showTgoSections;
+    $("#test-grid").hidden = state.view === "history" || showTgoSections;
     $("#history-list").hidden = state.view !== "history";
+    if (showTgoSections) {
+      $("#test-count").textContent = 2;
+      $("#empty-state").hidden = true;
+      return;
+    }
     if (state.view === "history") {
       renderHistory();
       return;
     }
-    const tests = TESTS.filter(
+    const tests = ACTIVE_TESTS.filter(
       (t) =>
         (state.filter === "all" || t.subject === state.filter) &&
         (state.view !== "saved" || state.saved.includes(t.id)) &&
@@ -348,11 +358,11 @@
     `<button class="icon-button dialog-close" data-action="close-dialog" aria-label="Закрыть">${icon("close")}</button>`;
   function showHelp() {
     openDialog(
-      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>ТГО или английский. Можно пройти комплексный тест или потренировать отдельную тему.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">60 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
+      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В ТГО — два подраздела, в английском — комплексная практика и отдельные темы.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">45 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
     );
   }
   function showSetup(id) {
-    const t = TESTS.find((t) => t.id === id);
+    const t = ACTIVE_TESTS.find((t) => t.id === id);
     if (!t) return;
     openDialog(
       `<div class="standard-modal setup-modal">${closeButton()}<span class="modal-icon ${t.subject}">${icon(t.icon)}</span><div class="eyebrow">${t.subject === "tgo" ? "ТГО" : "АНГЛИЙСКИЙ ЯЗЫК"} · ${t.type.toUpperCase()}</div><h2 id="dialog-title">${t.title}</h2><p class="modal-intro">${t.description}</p><div class="setup-stats"><div>${icon("file")}<strong>${t.count}</strong><span>вопросов</span></div><div>${icon("clock")}<strong>${t.minutes} мин</strong><span>на прохождение</span></div><div>${icon("bulb")}<strong>С разбором</strong><span>каждого ответа</span></div></div><label class="setting-row"><div><strong>Тест с таймером</strong><span>Поможет привыкнуть к ограничению по времени</span></div><input id="timer-setting" type="checkbox" role="switch" checked /><span class="switch-track"></span></label><label class="setting-row"><div><strong>Перемешать вопросы</strong><span>Новый порядок при каждой попытке</span></div><input id="shuffle-setting" type="checkbox" role="switch" checked /><span class="switch-track"></span></label><p class="setup-hint">${icon("check-circle")}Можно пропускать вопросы и возвращаться к ним. Правильные ответы появятся после завершения.</p><div class="modal-info">Это учебная практика. Количество вопросов и время могут отличаться от официального экзамена КТ.</div><button class="button button-green button-full" data-begin="${t.id}">Начать тест${icon("arrow-right")}</button></div>`,
@@ -367,7 +377,7 @@
     return result;
   }
   function startQuiz(id) {
-    const t = TESTS.find((t) => t.id === id);
+    const t = ACTIVE_TESTS.find((t) => t.id === id);
     if (!t) return;
     const timed = $("#timer-setting").checked,
       random = $("#shuffle-setting").checked;
@@ -510,7 +520,7 @@
               })
               .join("")
           : `<div class="review-perfect">${icon("trophy")}<h3>Ни одной ошибки!</h3><p>Все ответы верные. Попробуй следующий тест.</p></div>`
-      }</div><footer class="review-footer"><button class="button button-white" data-action="close-dialog">К тестам</button><button class="button button-green" data-retry="${t.id}">${icon("refresh")}Повторить тест</button></footer></div>`,
+      }</div><footer class="review-footer"><button class="button button-white" data-action="close-dialog">К тестам</button>${t.archived ? "" : `<button class="button button-green" data-retry="${t.id}">${icon("refresh")}Повторить тест</button>`}</footer></div>`,
       true,
     );
   }

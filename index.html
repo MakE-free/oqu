@@ -34,7 +34,7 @@
       <div class="nav-caption">ТВОЁ ОБУЧЕНИЕ</div>
       <nav class="main-nav">
         <button class="nav-item active" data-nav="all" aria-current="page">
-          <span data-icon="grid"></span>Тесты<span class="nav-count">5</span>
+          <span data-icon="grid"></span>Тесты<span class="nav-count">4</span>
         </button>
         <div class="subject-nav">
           <button class="subject-nav-item" data-nav="tgo">
@@ -213,7 +213,7 @@
             <button class="subject-card tgo-card" data-subject="tgo">
               <div class="subject-card-top">
                 <div class="subject-symbol tgo-symbol" data-icon="brain"></div>
-                <span class="subject-pill">КРИТИЧЕСКОЕ МЫШЛЕНИЕ</span
+                <span class="subject-pill">ДВА НАПРАВЛЕНИЯ</span
                 ><span
                   class="subject-card-arrow"
                   data-icon="arrow-up-right"
@@ -222,7 +222,7 @@
               <h3>ТГО</h3>
               <p>Тест на готовность к обучению</p>
               <div class="subject-card-bottom">
-                <span>1 тест<span class="meta-dot">·</span>15 вопросов</span
+                <span>2 подраздела</span
                 ><strong>К тестам<span data-icon="arrow-right"></span></strong>
               </div></button
             ><button class="subject-card english-card" data-subject="english">
@@ -253,7 +253,7 @@
           <div class="section-heading catalog-heading">
             <div class="title-with-count">
               <h2 id="catalog-title">Все тесты</h2>
-              <span class="count-pill" id="test-count">5</span>
+              <span class="count-pill" id="test-count">4</span>
             </div>
             <div class="catalog-caption">
               <span data-icon="sliders"></span>Выбирай то, что хочешь улучшить
@@ -291,6 +291,32 @@
                 autocomplete="off"
               /><kbd>/</kbd></label
             >
+          </div>
+          <div class="tgo-sections" id="tgo-sections" hidden>
+            <section class="tgo-subsection" aria-labelledby="tgo-critical-title">
+              <div class="tgo-subsection-top">
+                <span class="tgo-subsection-icon" data-icon="bulb"></span>
+                <span class="tgo-subsection-number">01</span>
+              </div>
+              <h3 id="tgo-critical-title">Критическое мышление</h3>
+              <p class="tgo-subsection-description">Анализ текстов, аргументов и выводов.</p>
+              <div class="tgo-subsection-empty">
+                <span data-icon="file"></span>
+                <p>В этом подразделе пока нет тестов.</p>
+              </div>
+            </section>
+            <section class="tgo-subsection tgo-subsection-analytical" aria-labelledby="tgo-analytical-title">
+              <div class="tgo-subsection-top">
+                <span class="tgo-subsection-icon" data-icon="logic"></span>
+                <span class="tgo-subsection-number">02</span>
+              </div>
+              <h3 id="tgo-analytical-title">Аналитическое мышление</h3>
+              <p class="tgo-subsection-description">Разбор условий, закономерностей и связей.</p>
+              <div class="tgo-subsection-empty">
+                <span data-icon="file"></span>
+                <p>В этом подразделе пока нет тестов.</p>
+              </div>
+            </section>
           </div>
           <div class="test-grid" id="test-grid"></div>
           <div class="empty-state" id="empty-state" hidden></div>
