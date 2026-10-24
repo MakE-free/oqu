@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#31725a" />
+    <meta name="theme-color" content="#009fe3" />
     <meta
       name="description"
       content="Oqu — пробники и обучение для подготовки к КТ в магистратуру. ТГО и английский, результаты по блокам и разбор ответов без регистрации."
     />
-    <title>Пробники и обучение для подготовки к КТ — Oqu</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="stylesheet" href="style.css" />
+    <title>Тренажер для подготовки к КТ — Oqu</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=blue-welcome-1" />
+    <link rel="stylesheet" href="style.css?v=blue-welcome-1" />
     <script src="questions.js" defer></script>
     <script src="mock-questions.js" defer></script>
-    <script src="script.js" defer></script>
+    <script src="script.js?v=blue-welcome-1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -29,7 +29,7 @@
       <div class="workspace-label">
         <span class="workspace-icon" data-icon="graduation"></span>
         <div>
-          <strong>Подготовка к КТ</strong><span>Поступаем в магистратуру</span>
+          <strong>Тренажер для подготовки к КТ</strong><span>Поступаем в магистратуру</span>
         </div>
       </div>
       <div class="nav-caption">НАПРАВЛЕНИЯ</div>
@@ -68,9 +68,6 @@
             data-icon="arrow-up-right"
           ></span>
         </button>
-        <div class="sidebar-footer">
-          Сделано для твоего будущего <span>✳</span>
-        </div>
       </div>
     </aside>
     <div class="app-shell">
@@ -84,7 +81,7 @@
             aria-controls="sidebar"
           >
             <span data-icon="menu"></span></button
-          ><span class="breadcrumb">Подготовка к КТ</span
+          ><span class="breadcrumb">Тренажер для подготовки к КТ</span
           ><span class="breadcrumb-slash">/</span
           ><strong id="breadcrumb-current">Главная</strong>
         </div>
@@ -102,8 +99,8 @@
       <main id="main" tabindex="-1">
         <div class="page-heading">
           <div>
-            <div class="eyebrow">ПРАКТИКА, КОТОРАЯ ПРИБЛИЖАЕТ К ЦЕЛИ</div>
-            <h1 id="page-title">Подготовка к КТ<span class="heading-dot">.</span></h1>
+            <div class="eyebrow">СЕГОДНЯШНИЕ ТРУДНОСТИ — ФУНДАМЕНТ ЗАВТРАШНЕГО УСПЕХА</div>
+            <h1 id="page-title">Тренажер для подготовки к КТ<span class="heading-dot">.</span></h1>
             <p id="page-subtitle">
               Выбери пробник для проверки знаний или обучение по темам.
             </p>
@@ -112,92 +109,15 @@
             <span data-icon="help"></span>Как это работает
           </button>
         </div>
-        <section class="hero" id="hero" aria-labelledby="hero-title">
-          <div class="hero-copy">
-            <div class="hero-tag">
-              <span class="tiny-star">✳</span> ТВОЯ ЦЕЛЬ — БЛИЖЕ, ЧЕМ КАЖЕТСЯ
+        <section class="hero welcome-note" id="hero" aria-labelledby="hero-title">
+          <div class="welcome-content">
+            <h2 id="hero-title">Привет, будущий магистрант!</h2>
+            <p class="welcome-message">Для тебя подготовил онлайн-тренажер для подготовки к КТ по собственной методологии, по которой получил <strong>123 балла</strong>, <strong>30/30 ТГО</strong> и <strong>45/50 Английский язык</strong>.</p>
+            <p class="welcome-luck">Удачи!</p>
+            <div class="welcome-footer">
+              <a class="welcome-contact" href="https://t.me/m_sailaubayev" target="_blank" rel="noopener noreferrer">По вопросам в тг: <strong>@m_sailaubayev</strong><span data-icon="arrow-up-right"></span></a>
+              <button class="button button-green" id="choose-test">Открыть пробники<span data-icon="arrow-right"></span></button>
             </div>
-            <h2 id="hero-title">
-              Следующий шаг —<br /><span>магистратура.</span>
-            </h2>
-            <p>
-              Проходи пробники или учись по темам.<br />ТГО и английский — на одной платформе.
-            </p>
-            <button class="button button-green" id="choose-test">
-              Открыть пробники<span data-icon="arrow-right"></span>
-            </button>
-            <div class="hero-footnote">
-              <span data-icon="check-circle"></span>Бесплатно и без регистрации
-            </div>
-          </div>
-          <div class="hero-art" aria-hidden="true">
-            <svg class="orbit-art" viewBox="0 0 480 340" fill="none">
-              <ellipse
-                cx="250"
-                cy="170"
-                rx="181"
-                ry="115"
-                transform="rotate(-27 250 170)"
-                stroke="#9cb9a2"
-                stroke-dasharray="5 7"
-              />
-              <circle cx="250" cy="170" r="121" stroke="#b4c9b4" />
-              <circle
-                cx="250"
-                cy="170"
-                r="86"
-                fill="#ccddc5"
-                fill-opacity=".5"
-              />
-              <path
-                d="M91 247c-12-20-30-23-42-13 1 16 17 26 42 13Z"
-                fill="#709e7d"
-              />
-              <path
-                d="M94 246c2-26 17-40 30-32 1 19-10 30-30 32Z"
-                fill="#9dbb89"
-              />
-              <path
-                d="M90 250c4 12 6 23 5 37"
-                stroke="#709e7d"
-                stroke-width="3"
-              />
-              <path
-                d="m383 60 3 12 12 3-12 4-3 12-4-12-12-4 12-3 4-12Z"
-                fill="#71977a"
-              />
-              <path
-                d="m146 44 2 8 8 2-8 3-2 8-3-8-8-3 8-2 3-8Z"
-                fill="#a0b98a"
-              />
-              <circle cx="396" cy="220" r="5" fill="#94b498" />
-              <circle cx="130" cy="137" r="4" fill="#789e7c" />
-            </svg>
-            <div class="art-card art-card-back">
-              <span class="art-mini-icon">Aa</span>
-              <div>
-                <span class="art-card-label">ENGLISH</span
-                ><strong>A little practice,<br />a lot of progress.</strong>
-              </div>
-              <div class="art-mini-line">
-                <span></span><span></span><span></span>
-              </div>
-            </div>
-            <div class="art-card art-card-front">
-              <div class="art-card-top">
-                <span class="art-brain" data-icon="brain"></span
-                ><span class="art-card-label">ТГО</span
-                ><span class="art-card-dots">•••</span>
-              </div>
-              <strong>Всё получится.</strong>
-              <p>Начни с одного вопроса.</p>
-              <div class="art-answer">
-                <span>А</span><i></i><span data-icon="check"></span>
-              </div>
-              <div class="art-answer muted"><span>B</span><i></i></div>
-            </div>
-            <div class="art-success"><span data-icon="check"></span></div>
-            <div class="art-sticker">+1 шаг к цели <span>↗</span></div>
           </div>
         </section>
         <section
@@ -308,7 +228,6 @@
             тоже часть подготовки. После каждого теста ты увидишь правильные
             ответы с объяснениями.
           </p>
-          <span class="practice-note-star">✳</span>
         </section>
         <footer class="page-footer">
           <span
