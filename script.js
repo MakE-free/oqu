@@ -59,6 +59,90 @@
   const BANK = window.OQU_QUESTIONS || [];
   const TESTS = [
     {
+      "id": "tgo-critical-1",
+      "subject": "tgo",
+      "topic": "critical",
+      "variant": 1,
+      "questionSet": "tgo-critical-1",
+      "title": "Критическое мышление: тест 1",
+      "description": "Анализ аргументов, оценка информации и обоснованные выводы.",
+      "count": 15,
+      "minutes": 20,
+      "icon": "bulb",
+      "type": "Практический тест",
+      "level": "Критическое мышление"
+    },
+    {
+      "id": "tgo-critical-2",
+      "subject": "tgo",
+      "topic": "critical",
+      "variant": 2,
+      "questionSet": "tgo-critical-2",
+      "title": "Критическое мышление: тест 2",
+      "description": "Анализ аргументов, оценка информации и обоснованные выводы.",
+      "count": 15,
+      "minutes": 20,
+      "icon": "bulb",
+      "type": "Практический тест",
+      "level": "Критическое мышление"
+    },
+    {
+      "id": "tgo-critical-3",
+      "subject": "tgo",
+      "topic": "critical",
+      "variant": 3,
+      "questionSet": "tgo-critical-3",
+      "title": "Критическое мышление: тест 3",
+      "description": "Анализ аргументов, оценка информации и обоснованные выводы.",
+      "count": 15,
+      "minutes": 20,
+      "icon": "bulb",
+      "type": "Практический тест",
+      "level": "Критическое мышление"
+    },
+    {
+      "id": "tgo-analytical-1",
+      "subject": "tgo",
+      "topic": "analytical",
+      "variant": 1,
+      "questionSet": "tgo-analytical-1",
+      "title": "Аналитическое мышление: тест 1",
+      "description": "Условия, закономерности, расчёты и логические связи.",
+      "count": 15,
+      "minutes": 25,
+      "icon": "logic",
+      "type": "Практический тест",
+      "level": "Аналитическое мышление"
+    },
+    {
+      "id": "tgo-analytical-2",
+      "subject": "tgo",
+      "topic": "analytical",
+      "variant": 2,
+      "questionSet": "tgo-analytical-2",
+      "title": "Аналитическое мышление: тест 2",
+      "description": "Условия, закономерности, расчёты и логические связи.",
+      "count": 15,
+      "minutes": 25,
+      "icon": "logic",
+      "type": "Практический тест",
+      "level": "Аналитическое мышление"
+    },
+    {
+      "id": "tgo-analytical-3",
+      "subject": "tgo",
+      "topic": "analytical",
+      "variant": 3,
+      "questionSet": "tgo-analytical-3",
+      "title": "Аналитическое мышление: тест 3",
+      "description": "Условия, закономерности, расчёты и логические связи.",
+      "count": 15,
+      "minutes": 25,
+      "icon": "logic",
+      "type": "Практический тест",
+      "level": "Аналитическое мышление"
+    },
+    {
       id: "english-mixed",
       subject: "english",
       topic: null,
@@ -265,8 +349,12 @@
     if (showTgoSections) {
       $("#test-count").textContent = 2;
       $("#empty-state").hidden = true;
+      $("#test-grid").innerHTML = "";
+      renderTgoTests();
       return;
     }
+    $("#tgo-critical-tests").innerHTML = "";
+    $("#tgo-analytical-tests").innerHTML = "";
     if (state.view === "history") {
       renderHistory();
       return;
@@ -291,6 +379,18 @@
     if (!tests.length)
       $("#empty-state").innerHTML =
         `<span class="empty-icon">${icon(state.search ? "search" : "bookmark")}</span><h3>${state.search ? "Таких тестов пока нет" : state.view === "saved" ? "Сохрани то, что интересно" : "Здесь пока нет тестов"}</h3><p>${state.search ? "Попробуй другое название или выбери другой предмет." : "Нажми на закладку на карточке теста — он появится здесь."}</p><button class="button button-green" data-action="reset-catalog">${state.search ? "Сбросить поиск" : "Посмотреть все тесты"}${icon("arrow-right")}</button>`;
+  }
+  function renderTgoTests() {
+    ["critical", "analytical"].forEach((topic) => {
+      $(`#tgo-${topic}-tests`).innerHTML = ACTIVE_TESTS
+        .filter((test) => test.subject === "tgo" && test.topic === topic)
+        .map((test) => {
+          const saved = state.saved.includes(test.id);
+          const last = state.history.find((attempt) => attempt.testId === test.id);
+          return `<article class="tgo-test-row"><div class="tgo-test-row-top"><h4>Тест ${test.variant}</h4><button class="icon-button save-button ${saved ? "is-saved" : ""}" data-save="${test.id}" aria-label="${saved ? "Убрать из сохранённых" : "Сохранить тест"}: ${test.title}" aria-pressed="${saved}">${icon("bookmark")}</button></div><p class="tgo-test-description">${test.description}</p>${last ? `<span class="tgo-test-completed">${icon("check-circle")}${last.correct} из ${last.total} · пройден</span>` : ""}<div class="tgo-test-row-footer"><span class="tgo-test-meta">${test.count} вопросов · ${test.minutes} мин</span><button class="test-start" data-start="${test.id}" aria-label="${last ? "Пройти ещё раз" : "Начать"}: ${test.title}">${last ? "Ещё раз" : "Начать"}${icon("arrow-right")}</button></div></article>`;
+        })
+        .join("");
+    });
   }
   function renderHistory() {
     $("#test-count").textContent = state.history.length;
@@ -358,7 +458,7 @@
     `<button class="icon-button dialog-close" data-action="close-dialog" aria-label="Закрыть">${icon("close")}</button>`;
   function showHelp() {
     openDialog(
-      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В ТГО — два подраздела, в английском — комплексная практика и отдельные темы.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">45 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
+      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В ТГО — два подраздела, в английском — комплексная практика и отдельные темы.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">135 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
     );
   }
   function showSetup(id) {
@@ -382,7 +482,10 @@
     const timed = $("#timer-setting").checked,
       random = $("#shuffle-setting").checked;
     let questions = BANK.filter(
-      (q) => q.subject === t.subject && (!t.topic || q.topic === t.topic),
+      (q) =>
+        q.subject === t.subject &&
+        (!t.topic || q.topic === t.topic) &&
+        (!t.questionSet || q.testId === t.questionSet),
     );
     if (!t.topic && t.subject === "tgo")
       questions = ["critical", "math", "logic"].flatMap((topic) => {
