@@ -1,83 +1,49 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Главная</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+# Oqu — подготовка к КТ
 
-  <header>
-    <div class="top-bar">
-      <div class="logo">
-        <div class="logo-circle">✓</div>
-        <span>Oqu</span>
-      </div>
+Адаптивный сайт с единственным режимом «Тесты» для подготовки к комплексному тестированию в магистратуру. Работает без регистрации, сервера приложений и внешних API.
 
-      <nav class="nav-links">
-        <a href="index.html" class="active">Главное</a>
-        <a href="english.html">Английский язык</a>
-        <a href="tgo.html">ТГО</a>
-        <a href="tests.html">Тесты</a>
-        <a href="probniki.html">Пробники</a>
-      </nav>
+## Запуск
 
-      <div class="top-bar-right">
-        <div class="phone">
-          📞 <span>+7 (727) 344 95 95</span>
-        </div>
-        <div class="search-icon">🔍</div>
-        <button id="authBtn" class="cta-btn" onclick="handleAuthClick()">Вход</button>
-        <div class="lang">
-          🌐 <span>Русский</span> ▾
-        </div>
-      </div>
-    </div>
-  </header>
+Из папки проекта:
 
-  <section class="section">
-    <h1>Привет, мир!</h1>
-    <p>Это главная страница моего сайта.</p>
-  </section>
+```sh
+python3 -m http.server 3000
+```
 
-  <!-- Окно входа/регистрации -->
-  <div id="authModal" class="modal-overlay hidden">
-    <div class="modal">
-      <span class="modal-close" onclick="closeModal()">&times;</span>
+Откройте http://localhost:3000. Для использования достаточно и обычного открытия `index.html`; HTTP-сервер обеспечивает стабильное сохранение истории в браузере. Статические файлы также можно разместить на GitHub Pages или любом статическом хостинге.
 
-      <div class="modal-tabs">
-        <button id="tabLogin" class="tab-btn active" onclick="switchTab('login')">Войти</button>
-        <button id="tabRegister" class="tab-btn" onclick="switchTab('register')">Регистрация</button>
-      </div>
+## GitHub Pages
 
-      <form id="loginForm" onsubmit="return loginUser(event)">
-        <input type="email" id="loginEmail" placeholder="Почта" required>
-        <input type="password" id="loginPassword" placeholder="Пароль" required>
-        <button type="submit" class="modal-submit">Войти</button>
-        <p id="loginError" class="error-text"></p>
-      </form>
+Сайт: https://make-free.github.io/oqu/
 
-      <form id="registerForm" class="hidden" onsubmit="return registerUser(event)">
-        <input type="text" id="regNick" placeholder="Никнейм" required>
-        <input type="email" id="regEmail" placeholder="Почта" required>
-        <input type="password" id="regPassword" placeholder="Пароль" required>
-        <button type="submit" class="modal-submit">Зарегистрироваться</button>
-        <p id="registerError" class="error-text"></p>
-      </form>
-    </div>
-  </div>
+Все файлы сайта хранятся в корне этого репозитория. GitHub Pages публикует ветку `main` из `/ (root)`. После обновления файлов в `main` сайт обновляется автоматически; сборка и зависимости не нужны. Файл `.nojekyll` отключает обработку Jekyll.
 
-  <!-- Окно профиля -->
-  <div id="profileModal" class="modal-overlay hidden">
-    <div class="modal">
-      <span class="modal-close" onclick="closeProfileModal()">&times;</span>
-      <h2>Мой профиль</h2>
-      <p><strong>Никнейм:</strong> <span id="profileNick"></span></p>
-      <p><strong>Почта:</strong> <span id="profileEmail"></span></p>
-      <button class="modal-submit" onclick="logoutUser()">Выйти из аккаунта</button>
-    </div>
-  </div>
+Сайт работает независимо от подписки и аккаунта ChatGPT. Его также можно скопировать на любой статический хостинг.
 
-  <script src="script.js"></script>
-</body>
-</html>
+История попыток и закладки хранятся в браузере отдельно для каждого домена. При переходе с другого адреса сайта они автоматически не переносятся.
+
+## Возможности
+
+- ТГО: критическое мышление.
+- Английский: grammar, vocabulary, reading.
+- 5 тестов: критическое мышление по ТГО, комплексный тест и три тематических по английскому.
+- 60 доступных авторских вопросов с объяснениями: 15 по ТГО и 45 по английскому, по 15 на тему.
+- Поиск, фильтры и сохранение тестов в закладки.
+- Настройка таймера и перемешивания вопросов.
+- Навигация по вопросам, флажки и изменение выбранных ответов до завершения.
+- Автоматическое завершение по таймеру; подтверждение при досрочном завершении или выходе.
+- Результат и разбор всех ответов, фильтр ошибок, повторное прохождение.
+- История последних 50 попыток и сводная статистика в localStorage этого браузера.
+- Мобильная версия и управление с клавиатуры. Клавиша `/` открывает поиск.
+
+Задания учебные, не являются официальным банком НЦТ. Количество вопросов и время практики могут отличаться от официального КТ. Тест по ТГО содержит 15 вопросов, комплексный тест по английскому — 45.
+
+## Файлы
+
+- `index.html` — страница и базовая навигация.
+- `style.css` — оформление и адаптивная верстка.
+- `script.js` — каталог, прохождение, результаты и история.
+- `questions.js` — вопросы, варианты, индексы правильных ответов и объяснения.
+- `fonts/` — локальный шрифт Manrope и его лицензия SIL OFL.
+
+Шрифт, иконки и данные хранятся в проекте. Сайт не обращается к внешним сервисам. История не синхронизируется между устройствами; незавершённая попытка не сохраняется после закрытия страницы.

@@ -1,203 +1,326 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Главная</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <!-- Верхняя полоса с контактами -->
-  <div class="top-strip">
-    <div class="strip-container">
-      <div class="strip-left">
-      </div>
-      <div class="strip-right">
-        <div class="phone-strip">
-          <span>+7 776 321 6244</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#31725a" />
+    <meta
+      name="description"
+      content="Oqu — подготовка к КТ в магистратуру. Учебные тесты по ТГО и английскому языку с объяснениями и сохранением прогресса без регистрации."
+    />
+    <title>Тесты для подготовки к КТ — Oqu</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="questions.js" defer></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Перейти к содержимому</a>
+    <div class="mobile-shade" id="mobile-shade"></div>
+    <aside class="sidebar" id="sidebar" aria-label="Основная навигация">
+      <a class="brand" href="#" aria-label="Oqu — все тесты"
+        ><span class="brand-symbol" aria-hidden="true"
+          ><svg viewBox="0 0 32 32">
+            <path d="M7 9 16 5l9 4v13l-9 5-9-5Z" />
+            <path d="m7 9 9 5 9-5M16 14v13M11 7l10 5" /></svg></span
+        ><span>oqu<span class="brand-dot">.</span></span></a
+      >
+      <div class="workspace-label">
+        <span class="workspace-icon" data-icon="graduation"></span>
+        <div>
+          <strong>Подготовка к КТ</strong><span>Поступаем в магистратуру</span>
         </div>
-        <button id="authBtn" class="cta-btn" onclick="handleAuthClick()">Вход</button>
-        <div class="language-selector">
-          <button class="lang-btn" onclick="toggleLangDropdown()">
-            <span class="lang-name">
-              <span id="currentLang">Русский</span>
-              <span>▾</span>
-            </span>
+      </div>
+      <div class="nav-caption">ТВОЁ ОБУЧЕНИЕ</div>
+      <nav class="main-nav">
+        <button class="nav-item active" data-nav="all" aria-current="page">
+          <span data-icon="grid"></span>Тесты<span class="nav-count">5</span>
+        </button>
+        <div class="subject-nav">
+          <button class="subject-nav-item" data-nav="tgo">
+            <span class="nav-dot purple"></span>ТГО</button
+          ><button class="subject-nav-item" data-nav="english">
+            <span class="nav-dot blue"></span>Английский язык
           </button>
-          <div class="lang-dropdown" id="langDropdown">
-            <button class="lang-option selected" data-lang="ru" onclick="selectLanguage('ru', 'Русский')">
-              <span class="lang-option-flag">🇷🇺</span>
-              <span>Русский</span>
-            </button>
-            <button class="lang-option" data-lang="kk" onclick="selectLanguage('kk', 'Қазақша')">
-              <span class="lang-option-flag">🇰🇿</span>
-              <span>Қазақша</span>
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <header>
-    <div class="top-bar">
-      <nav class="nav-links">
-        <a href="index.html" class="active">Главное</a>
-        <a href="english.html">Английский язык</a>
-        <a href="tgo.html">ТГО</a>
-        <a href="tests.html">Тесты</a>
-        <a href="probniki.html">Пробники</a>
+        <button class="nav-item" data-nav="saved">
+          <span data-icon="bookmark"></span>Сохранённые<span
+            class="nav-count"
+            id="saved-count"
+            hidden
+            >0</span
+          >
+        </button>
+        <button class="nav-item" data-nav="history">
+          <span data-icon="history"></span>История тестов
+        </button>
       </nav>
-
-      <div class="top-bar-right">
-      </div>
-    </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container hero-content">
-      <h1>Oqu — онлайн тренажёр для подготовки к магистратуре</h1>
-      <p class="hero-subtitle">Отрабатывай ТГО, английский язык и профильные тесты в удобном темпе, проверяй себя на пробных экзаменах и отслеживай свой прогресс.</p>
-      
-      <div class="hero-buttons">
-        <a href="#" class="cta-btn">Начать подготовку</a>
-        <a href="#features" class="secondary-btn">Узнать больше</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section id="features" class="features">
-    <div class="container">
-      <h2 class="section-title">Почему выбирают Oqu?</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">📝</div>
-          <h3>ТГО и профильные тесты</h3>
-          <p>База актуальных вопросов для всесторонней подготовки к вступительным экзаменам.</p>
+      <div class="sidebar-bottom">
+        <div class="sidebar-note">
+          <div class="note-icon" data-icon="sparkles"></div>
+          <strong>Маленькие шаги.<br />Большие возможности.</strong>
+          <p>Даже 15 минут практики —<br />это шаг к твоей цели.</p>
+          <span class="note-line"></span>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🇬🇧</div>
-          <h3>Английский язык</h3>
-          <p>Специальные модули для повышения уровня языка и сдачи экзаменов.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📈</div>
-          <h3>Отслеживание прогресса</h3>
-          <p>Подробная статистика и аналитика ваших результатов после каждого занятия.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">⏱️</div>
-          <h3>Удобный темп</h3>
-          <p>Занимайтесь когда угодно и где угодно, адаптируя обучение под свой график.</p>
+        <button class="help-link" data-action="help">
+          <span data-icon="help"></span>Как здесь заниматься<span
+            data-icon="arrow-up-right"
+          ></span>
+        </button>
+        <div class="sidebar-footer">
+          Сделано для твоего будущего <span>✳</span>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Pricing Section -->
-  <section id="pricing" class="pricing-section">
-    <div class="container">
-      <h2 class="section-title">Прозрачная цена</h2>
-      <div class="pricing-wrapper">
-        <div class="pricing-card fade-in">
-          <div class="badge">Популярный выбор</div>
-          <h3>Полный доступ</h3>
-          <div class="price-display">
-            <span class="currency">₸</span>
-            <span class="amount">990</span>
-            <span class="period">/ месяц</span>
+    </aside>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button
+            class="icon-button mobile-menu"
+            id="menu-button"
+            aria-label="Открыть меню"
+            aria-expanded="false"
+            aria-controls="sidebar"
+          >
+            <span data-icon="menu"></span></button
+          ><span class="breadcrumb">Подготовка к КТ</span
+          ><span class="breadcrumb-slash">/</span
+          ><strong id="breadcrumb-current">Тесты</strong>
+        </div>
+        <div class="topbar-right">
+          <span class="access-status"><span></span>Свободный доступ</span
+          ><span class="header-divider"></span
+          ><span
+            class="guest-avatar"
+            role="img"
+            aria-label="Гостевой режим"
+            data-icon="user"
+          ></span>
+        </div>
+      </header>
+      <main id="main" tabindex="-1">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow">ПРАКТИКА, КОТОРАЯ ПРИБЛИЖАЕТ К ЦЕЛИ</div>
+            <h1 id="page-title">Тесты<span class="heading-dot">.</span></h1>
+            <p id="page-subtitle">
+              Готовься в своём темпе. Становись увереннее с каждым тестом.
+            </p>
           </div>
-          <p class="price-desc">Всего 33 тенге в день за уверенное поступление</p>
-          
-          <ul class="pricing-list">
-            <li>✅ Безлимитные тесты ТГО</li>
-            <li>✅ Английский язык (все уровни)</li>
-            <li>✅ Профильные предметы</li>
-            <li>✅ Пробные экзамены как в вузе</li>
-            <li>✅ Работа над ошибками</li>
-          </ul>
-
-          <button class="cta-btn btn-large">Оформить подписку</button>
-          <p class="guarantee">🔒 Безопасная оплата • Отмена в любой момент</p>
+          <button class="button button-white how-button" data-action="help">
+            <span data-icon="help"></span>Как это работает
+          </button>
         </div>
-      </div>
+        <section class="hero" id="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <div class="hero-tag">
+              <span class="tiny-star">✳</span> ТВОЯ ЦЕЛЬ — БЛИЖЕ, ЧЕМ КАЖЕТСЯ
+            </div>
+            <h2 id="hero-title">
+              Следующий шаг —<br /><span>магистратура.</span>
+            </h2>
+            <p>
+              ТГО и английский в одном месте.<br />Практикуйся, разбирай ошибки
+              и двигайся вперёд.
+            </p>
+            <button class="button button-green" id="choose-test">
+              Выбрать тест<span data-icon="arrow-right"></span>
+            </button>
+            <div class="hero-footnote">
+              <span data-icon="check-circle"></span>Бесплатно и без регистрации
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <svg class="orbit-art" viewBox="0 0 480 340" fill="none">
+              <ellipse
+                cx="250"
+                cy="170"
+                rx="181"
+                ry="115"
+                transform="rotate(-27 250 170)"
+                stroke="#9cb9a2"
+                stroke-dasharray="5 7"
+              />
+              <circle cx="250" cy="170" r="121" stroke="#b4c9b4" />
+              <circle
+                cx="250"
+                cy="170"
+                r="86"
+                fill="#ccddc5"
+                fill-opacity=".5"
+              />
+              <path
+                d="M91 247c-12-20-30-23-42-13 1 16 17 26 42 13Z"
+                fill="#709e7d"
+              />
+              <path
+                d="M94 246c2-26 17-40 30-32 1 19-10 30-30 32Z"
+                fill="#9dbb89"
+              />
+              <path
+                d="M90 250c4 12 6 23 5 37"
+                stroke="#709e7d"
+                stroke-width="3"
+              />
+              <path
+                d="m383 60 3 12 12 3-12 4-3 12-4-12-12-4 12-3 4-12Z"
+                fill="#71977a"
+              />
+              <path
+                d="m146 44 2 8 8 2-8 3-2 8-3-8-8-3 8-2 3-8Z"
+                fill="#a0b98a"
+              />
+              <circle cx="396" cy="220" r="5" fill="#94b498" />
+              <circle cx="130" cy="137" r="4" fill="#789e7c" />
+            </svg>
+            <div class="art-card art-card-back">
+              <span class="art-mini-icon">Aa</span>
+              <div>
+                <span class="art-card-label">ENGLISH</span
+                ><strong>A little practice,<br />a lot of progress.</strong>
+              </div>
+              <div class="art-mini-line">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="art-card art-card-front">
+              <div class="art-card-top">
+                <span class="art-brain" data-icon="brain"></span
+                ><span class="art-card-label">ТГО</span
+                ><span class="art-card-dots">•••</span>
+              </div>
+              <strong>Всё получится.</strong>
+              <p>Начни с одного вопроса.</p>
+              <div class="art-answer">
+                <span>А</span><i></i><span data-icon="check"></span>
+              </div>
+              <div class="art-answer muted"><span>B</span><i></i></div>
+            </div>
+            <div class="art-success"><span data-icon="check"></span></div>
+            <div class="art-sticker">+1 шаг к цели <span>↗</span></div>
+          </div>
+        </section>
+        <section
+          class="subjects-section"
+          id="subjects-section"
+          aria-labelledby="subjects-title"
+        >
+          <div class="section-heading">
+            <h2 id="subjects-title">Выбери направление</h2>
+            <span>Два предмета. Одна большая цель.</span>
+          </div>
+          <div class="subject-grid">
+            <button class="subject-card tgo-card" data-subject="tgo">
+              <div class="subject-card-top">
+                <div class="subject-symbol tgo-symbol" data-icon="brain"></div>
+                <span class="subject-pill">КРИТИЧЕСКОЕ МЫШЛЕНИЕ</span
+                ><span
+                  class="subject-card-arrow"
+                  data-icon="arrow-up-right"
+                ></span>
+              </div>
+              <h3>ТГО</h3>
+              <p>Тест на готовность к обучению</p>
+              <div class="subject-card-bottom">
+                <span>1 тест<span class="meta-dot">·</span>15 вопросов</span
+                ><strong>К тестам<span data-icon="arrow-right"></span></strong>
+              </div></button
+            ><button class="subject-card english-card" data-subject="english">
+              <div class="subject-card-top">
+                <div class="subject-symbol english-symbol">
+                  Aa<span>↗</span>
+                </div>
+                <span class="subject-pill">ЯЗЫК И ВОЗМОЖНОСТИ</span
+                ><span
+                  class="subject-card-arrow"
+                  data-icon="arrow-up-right"
+                ></span>
+              </div>
+              <h3>Английский язык</h3>
+              <p>Grammar, vocabulary & reading</p>
+              <div class="subject-card-bottom">
+                <span>4 теста<span class="meta-dot">·</span>45 вопросов</span
+                ><strong>К тестам<span data-icon="arrow-right"></span></strong>
+              </div>
+            </button>
+          </div>
+        </section>
+        <section
+          class="catalog-section"
+          id="catalog"
+          aria-labelledby="catalog-title"
+        >
+          <div class="section-heading catalog-heading">
+            <div class="title-with-count">
+              <h2 id="catalog-title">Все тесты</h2>
+              <span class="count-pill" id="test-count">5</span>
+            </div>
+            <div class="catalog-caption">
+              <span data-icon="sliders"></span>Выбирай то, что хочешь улучшить
+            </div>
+          </div>
+          <div class="catalog-toolbar" id="catalog-toolbar">
+            <div class="filter-tabs" aria-label="Предмет">
+              <button
+                class="filter-tab active"
+                data-filter="all"
+                aria-pressed="true"
+              >
+                Все предметы</button
+              ><button
+                class="filter-tab"
+                data-filter="tgo"
+                aria-pressed="false"
+              >
+                ТГО</button
+              ><button
+                class="filter-tab"
+                data-filter="english"
+                aria-pressed="false"
+              >
+                Английский язык
+              </button>
+            </div>
+            <label class="search-field"
+              ><span data-icon="search"></span
+              ><input
+                id="test-search"
+                type="search"
+                placeholder="Найти тест…"
+                aria-label="Найти тест"
+                autocomplete="off"
+              /><kbd>/</kbd></label
+            >
+          </div>
+          <div class="test-grid" id="test-grid"></div>
+          <div class="empty-state" id="empty-state" hidden></div>
+          <div class="history-list" id="history-list" hidden></div>
+        </section>
+        <section class="practice-note" id="practice-note">
+          <div class="practice-note-icon" data-icon="bulb"></div>
+          <p>
+            <strong>Не стремись сразу ответить на всё.</strong> Разбор ошибок —
+            тоже часть подготовки. После каждого теста ты увидишь правильные
+            ответы с объяснениями.
+          </p>
+          <span class="practice-note-star">✳</span>
+        </section>
+        <footer class="page-footer">
+          <span
+            >© <span id="copyright-year">2026</span> Oqu. Учись. Пробуй.
+            Поступай.</span
+          ><span>Учебные задания · Не официальный ресурс НЦТ</span>
+        </footer>
+      </main>
     </div>
-  </section>
-
-  <!-- Окно входа/регистрации -->
-  <div id="authModal" class="modal-overlay hidden">
-    <div class="modal">
-      <span class="modal-close" onclick="closeModal()">&times;</span>
-
-      <div class="modal-tabs">
-        <button id="tabLogin" class="tab-btn active" onclick="switchTab('login')">Войти</button>
-        <button id="tabRegister" class="tab-btn" onclick="switchTab('register')">Регистрация</button>
-      </div>
-
-      <form id="loginForm" onsubmit="return loginUser(event)">
-        <input type="email" id="loginEmail" placeholder="Почта" required>
-        <input type="password" id="loginPassword" placeholder="Пароль" required>
-        <button type="submit" class="modal-submit">Войти</button>
-        <p id="loginError" class="error-text"></p>
-      </form>
-
-      <form id="registerForm" class="hidden" onsubmit="return registerUser(event)">
-        <input type="text" id="regNick" placeholder="Никнейм" required>
-        <input type="email" id="regEmail" placeholder="Почта" required>
-        <input type="password" id="regPassword" placeholder="Пароль" required>
-        <button type="submit" class="modal-submit">Зарегистрироваться</button>
-        <p id="registerError" class="error-text"></p>
-      </form>
-    </div>
-  </div>
-
-  <!-- Окно профиля -->
-  <div id="profileModal" class="modal-overlay hidden">
-    <div class="modal">
-      <span class="modal-close" onclick="closeProfileModal()">&times;</span>
-      <h2>Мой профиль</h2>
-      <p><strong>Никнейм:</strong> <span id="profileNick"></span></p>
-      <p><strong>Почта:</strong> <span id="profileEmail"></span></p>
-      <button class="modal-submit" onclick="logoutUser()">Выйти из аккаунта</button>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
-  <script>
-    // Функция для открытия/закрытия dropdown языков
-    function toggleLangDropdown() {
-      const dropdown = document.getElementById('langDropdown');
-      dropdown.classList.toggle('active');
-    }
-
-    // Функция для выбора языка
-    function selectLanguage(lang, name) {
-      const currentLang = document.getElementById('currentLang');
-      const dropdown = document.getElementById('langDropdown');
-      const options = document.querySelectorAll('.lang-option');
-
-      currentLang.textContent = name;
-
-      // Обновляем выбранный язык
-      options.forEach(opt => {
-        opt.classList.remove('selected');
-        if (opt.dataset.lang === lang) {
-          opt.classList.add('selected');
-        }
-      });
-
-      dropdown.classList.remove('active');
-    }
-
-    // Закрываем dropdown при клике вне его
-    document.addEventListener('click', function(e) {
-      const selector = document.querySelector('.language-selector');
-      if (!selector.contains(e.target)) {
-        document.getElementById('langDropdown').classList.remove('active');
-      }
-    });
-  </script>
-</body>
+    <dialog id="app-dialog" class="app-dialog" aria-labelledby="dialog-title">
+      <div id="dialog-content"></div>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <noscript
+      ><div class="noscript">
+        Чтобы проходить тесты, включите JavaScript в настройках браузера.
+      </div></noscript
+    >
+  </body>
 </html>
