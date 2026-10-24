@@ -6676,3 +6676,25 @@ input:focus-visible,
     font-size: 12px;
   }
 }
+
+/* Contact is available in the sidebar; the welcome action leads to both paths. */
+.sidebar-contact {
+  align-items: center;
+  line-height: 1.7;
+}
+.sidebar-contact-copy {
+  min-width: 0;
+}
+.sidebar-contact strong {
+  display: block;
+  color: var(--brand-deep);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+.sidebar-contact:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.welcome-footer {
+  justify-content: flex-start;
+}

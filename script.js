@@ -335,7 +335,7 @@
     $("#practice-note").hidden = home || view === "history";
     const title = home ? "Тренажер для подготовки к КТ" : view === "saved" ? "Сохранённые" : view === "history" ? "История тестов" : mock ? filter === "tgo" ? "Пробники ТГО" : filter === "english" ? "Пробник по английскому" : "Пробники" : filter === "tgo" ? "ТГО" : filter === "english" ? "Английский язык" : "Обучение";
     $("#page-title").innerHTML = `${title}<span class="heading-dot">.</span>`;
-    $("#page-subtitle").textContent = home ? "Выбери пробник для проверки знаний или обучение по темам." : view === "saved" ? "Тесты из обоих направлений, к которым хочется вернуться." : view === "history" ? "Результаты пробников и учебных тестов в одном месте." : mock ? "Проверь знания в полном пробнике или пройди отдельный предмет." : filter === "tgo" ? "Критическое и аналитическое мышление: практика по 15 вопросов." : "Занимайся по темам, разбирай ответы и закрепляй знания.";
+    $("#page-subtitle").textContent = home ? "СЕГОДНЯШНИЕ ТРУДНОСТИ — ФУНДАМЕНТ ЗАВТРАШНЕГО УСПЕХА" : view === "saved" ? "Тесты из обоих направлений, к которым хочется вернуться." : view === "history" ? "Результаты пробников и учебных тестов в одном месте." : mock ? "Проверь знания в полном пробнике или пройди отдельный предмет." : filter === "tgo" ? "Критическое и аналитическое мышление: практика по 15 вопросов." : "Занимайся по темам, разбирай ответы и закрепляй знания.";
     $("#breadcrumb-current").textContent = home ? "Главная" : special ? view === "saved" ? "Сохранённые" : "История" : directionTitle;
     document.querySelectorAll("[data-nav]").forEach((el) => {
       const group = el.classList.contains("direction-nav");
@@ -762,7 +762,13 @@
     state.search = event.target.value;
     renderCatalog();
   });
-  $("#choose-test").addEventListener("click", () => navigate("all", "combined", false, "mock"));
+  $("#choose-test").addEventListener("click", () => {
+    $("#subjects-section").scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      block: "start",
+    });
+    $("#subjects-title").focus({ preventScroll: true });
+  });
   $(".brand").addEventListener("click", (event) => {
     event.preventDefault();
     navigate("home");
