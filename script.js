@@ -61,86 +61,86 @@
     {
       "id": "tgo-critical-1",
       "subject": "tgo",
-      "topic": "critical",
+      "topic": "analytical",
       "variant": 1,
       "questionSet": "tgo-critical-1",
-      "title": "Критическое мышление: тест 1",
-      "description": "Анализ аргументов, оценка информации и обоснованные выводы.",
+      "title": "Аналитическое мышление: тест 1",
+      "description": "Работа с текстом, аргументами и обоснованными выводами.",
       "count": 15,
       "minutes": 20,
       "icon": "bulb",
       "type": "Практический тест",
-      "level": "Критическое мышление"
+      "level": "Аналитическое мышление"
     },
     {
       "id": "tgo-critical-2",
       "subject": "tgo",
-      "topic": "critical",
+      "topic": "analytical",
       "variant": 2,
       "questionSet": "tgo-critical-2",
-      "title": "Критическое мышление: тест 2",
-      "description": "Анализ аргументов, оценка информации и обоснованные выводы.",
+      "title": "Аналитическое мышление: тест 2",
+      "description": "Работа с текстом, аргументами и обоснованными выводами.",
       "count": 15,
       "minutes": 20,
       "icon": "bulb",
       "type": "Практический тест",
-      "level": "Критическое мышление"
+      "level": "Аналитическое мышление"
     },
     {
       "id": "tgo-critical-3",
       "subject": "tgo",
-      "topic": "critical",
+      "topic": "analytical",
       "variant": 3,
       "questionSet": "tgo-critical-3",
-      "title": "Критическое мышление: тест 3",
-      "description": "Анализ аргументов, оценка информации и обоснованные выводы.",
+      "title": "Аналитическое мышление: тест 3",
+      "description": "Работа с текстом, аргументами и обоснованными выводами.",
       "count": 15,
       "minutes": 20,
       "icon": "bulb",
       "type": "Практический тест",
-      "level": "Критическое мышление"
+      "level": "Аналитическое мышление"
     },
     {
       "id": "tgo-analytical-1",
       "subject": "tgo",
-      "topic": "analytical",
+      "topic": "critical",
       "variant": 1,
       "questionSet": "tgo-analytical-1",
-      "title": "Аналитическое мышление: тест 1",
-      "description": "Условия, закономерности, расчёты и логические связи.",
+      "title": "Критическое мышление: тест 1",
+      "description": "Расчёты, закономерности и решение задач по условию.",
       "count": 15,
       "minutes": 25,
       "icon": "logic",
       "type": "Практический тест",
-      "level": "Аналитическое мышление"
+      "level": "Критическое мышление"
     },
     {
       "id": "tgo-analytical-2",
       "subject": "tgo",
-      "topic": "analytical",
+      "topic": "critical",
       "variant": 2,
       "questionSet": "tgo-analytical-2",
-      "title": "Аналитическое мышление: тест 2",
-      "description": "Условия, закономерности, расчёты и логические связи.",
+      "title": "Критическое мышление: тест 2",
+      "description": "Расчёты, закономерности и решение задач по условию.",
       "count": 15,
       "minutes": 25,
       "icon": "logic",
       "type": "Практический тест",
-      "level": "Аналитическое мышление"
+      "level": "Критическое мышление"
     },
     {
       "id": "tgo-analytical-3",
       "subject": "tgo",
-      "topic": "analytical",
+      "topic": "critical",
       "variant": 3,
       "questionSet": "tgo-analytical-3",
-      "title": "Аналитическое мышление: тест 3",
-      "description": "Условия, закономерности, расчёты и логические связи.",
+      "title": "Критическое мышление: тест 3",
+      "description": "Расчёты, закономерности и решение задач по условию.",
       "count": 15,
       "minutes": 25,
       "icon": "logic",
       "type": "Практический тест",
-      "level": "Аналитическое мышление"
+      "level": "Критическое мышление"
     },
     {
       id: "english-mixed",
@@ -158,8 +158,8 @@
       id: "tgo-critical",
       archived: true,
       subject: "tgo",
-      topic: "critical",
-      title: "Критическое мышление",
+      topic: "analytical",
+      title: "Аналитическое мышление",
       description:
         "Анализируй аргументы, оценивай выводы и находи главное в тексте.",
       count: 15,
@@ -214,15 +214,19 @@
     const englishSection = { key: "english", label: "Английский язык", questionIds: englishIds };
     const tests = [];
     for (let variant = 1; variant <= 3; variant++) {
-      const tgoSections = ["critical", "analytical"].map((topic) => ({
-        key: topic,
-        label: topic === "critical" ? "Критическое мышление" : "Аналитическое мышление",
-        questionIds: BANK.filter((q) => q.testId === `tgo-${topic}-${variant}`).map((q) => q.id),
+      const tgoSections = [
+        { key: "critical", label: "Критическое мышление", testId: `tgo-analytical-${variant}` },
+        { key: "analytical", label: "Аналитическое мышление", testId: `tgo-critical-${variant}` },
+      ].map(({ key, label, testId }) => ({
+        key,
+        label,
+        questionIds: BANK.filter((q) => q.testId === testId).map((q) => q.id),
       }));
       const standaloneTgoSections = variant === 1
-        ? tgoSections.map((section) => section.key === "analytical"
-          ? { ...section, questionIds: BANK.filter((q) => q.testId === "mock-tgo-analytical-1").map((q) => q.id) }
-          : section)
+        ? [
+          { key: "critical", label: "Критическое мышление", questionIds: BANK.filter((q) => q.testId === "mock-tgo-analytical-1").map((q) => q.id) },
+          { key: "analytical", label: "Аналитическое мышление", questionIds: BANK.filter((q) => q.testId === "mock-tgo-analytical-text-1").map((q) => q.id) },
+        ]
         : tgoSections;
       tests.push({ id: `mock-combined-${variant}`, direction: "mock", subject: "combined", variant,
         title: `Пробник ${variant}: ТГО + английский`, description: "15 вопросов на критическое мышление, 15 на аналитическое и 50 по английскому.",
@@ -242,12 +246,18 @@
   const TESTS = [...LEARNING_TESTS.map((test) => ({ ...test, direction: "learning" })), ...createMockTests()];
   const ACTIVE_TESTS = TESTS.filter((test) => !test.archived);
   const subjectLabel = (test) => test.subject === "combined" ? "ТГО + английский" : test.subject === "tgo" ? "ТГО" : "Английский язык";
-  const sectionLabel = (question) => question.subject === "english" ? "Английский язык" : question.topic === "analytical" ? "Аналитическое мышление" : "Критическое мышление";
+  const thinkingKey = (question) => {
+    const testId = question?.testId || "";
+    if (testId === "mock-tgo-analytical-1" || testId.startsWith("tgo-analytical-")) return "critical";
+    if (testId === "mock-tgo-analytical-text-1" || testId.startsWith("tgo-critical-") || /^tgo-(?:0[1-9]|1[0-5])$/.test(question?.id || "")) return "analytical";
+    return question?.topic;
+  };
+  const sectionLabel = (question) => question.subject === "english" ? "Английский язык" : thinkingKey(question) === "analytical" ? "Аналитическое мышление" : "Критическое мышление";
   function mockBreakdown(test, result = null) {
     if (!test.sections) return "";
     const actual = result ? result.questions.map((q, i) => ({ question: BANK_BY_ID.get(q.id), answer: result.answers[i] })) : null;
     return `<div class="mock-breakdown">${test.sections.map((section) => {
-      const rows = actual ? actual.filter(({ question }) => question && (section.key === "english" ? question.subject === "english" : question.subject === "tgo" && question.topic === section.key)) : null;
+      const rows = actual ? actual.filter(({ question }) => question && (section.key === "english" ? question.subject === "english" : question.subject === "tgo" && thinkingKey(question) === section.key)) : null;
       const value = rows ? `${rows.filter(({ question, answer }) => answer === question.answer).length} / ${rows.length}` : section.questionIds.length;
       return `<span>${section.label}<strong>${value}</strong></span>`;
     }).join("")}</div>`;
@@ -475,7 +485,7 @@
     `<button class="icon-button dialog-close" data-action="close-dialog" aria-label="Закрыть">${icon("close")}</button>`;
   function showHelp() {
     openDialog(
-      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В «Пробниках» — полные тесты и отдельные предметы. В «Обучении» — практика по темам.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">200 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
+      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В «Пробниках» — полные тесты и отдельные предметы. В «Обучении» — практика по темам.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">215 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
     );
   }
   function showSetup(id) {
@@ -510,7 +520,7 @@
         return random ? shuffle(group) : group;
       });
     } else {
-      questions = BANK.filter((q) => !q.mockOnly && q.subject === t.subject && (!t.topic || q.topic === t.topic) && (!t.questionSet || q.testId === t.questionSet));
+      questions = BANK.filter((q) => !q.mockOnly && q.subject === t.subject && (t.questionSet ? q.testId === t.questionSet : !t.topic || thinkingKey(q) === t.topic));
       if (random) questions = shuffle(questions);
       questions = questions.slice(0, t.count);
     }
