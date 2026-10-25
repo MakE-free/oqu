@@ -764,5 +764,259 @@ window.OQU_QUESTIONS.push(
     "answer": 3,
     "explanation": "Новая группа позволяет проверить понятность переработанного текста без знакомства с прежним вариантом. Это осторожный вывод из повторного тестирования; нет оснований считать, что команда избегала проверки или заменяла точность голосованием.",
     "passage": "A volunteer team translated a guide to local public services. The first draft followed the original sentences very closely. When the team tested it with new residents, several readers understood individual words but could not tell which office they should contact first. The volunteers reorganised the guide around practical tasks, added a simple sequence of steps and checked that the names of offices were accurate. They then tested the revised version with a different group of readers. The team kept the legal meanings unchanged, but accepted that useful translation sometimes required changes to structure rather than a word-for-word match."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q01",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "В учебной группе 64 студента. Только подкасты слушает 21 студент, только аудиокниги — 14, а и подкасты, и аудиокниги — 11.",
+    "prompt": "Сколько студентов не слушают ни подкасты, ни аудиокниги?",
+    "options": [
+      "18",
+      "21",
+      "14",
+      "29"
+    ],
+    "answer": 0,
+    "explanation": "В объединение двух групп входят 21 + 14 + 11 = 46 студентов. Значит, ни один из двух форматов не слушают 64 − 46 = 18 студентов."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q02",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "Величина A: √(∛0,000729).\nВеличина B: значение x, если 2,4 ÷ (0,5 + x) = 3.",
+    "prompt": "Сравните величины A и B.",
+    "options": [
+      "Величина A больше",
+      "Величина B больше",
+      "Величины равны",
+      "Недостаточно информации для сравнения"
+    ],
+    "answer": 2,
+    "explanation": "Кубический корень из 0,000729 равен 0,09, поэтому A = √0,09 = 0,3. Из уравнения получаем 0,5 + x = 0,8, откуда x = 0,3. Величины равны."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q03",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "Последовательность задана формулой uₙ = 7ⁿ + 4.",
+    "prompt": "Какой цифрой оканчивается число u₂₃?",
+    "options": [
+      "1",
+      "7",
+      "3",
+      "9"
+    ],
+    "answer": 1,
+    "explanation": "Последние цифры степеней 7 повторяются с периодом 4: 7, 9, 3, 1. Остаток от деления 23 на 4 равен 3, поэтому 7²³ оканчивается цифрой 3, а 7²³ + 4 — цифрой 7."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q04",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "Действительные числа x и y удовлетворяют условиям 3y − 2 ≤ 16 и 2 ≤ x ≤ 7.",
+    "prompt": "Чему равно максимально возможное значение произведения xy?",
+    "options": [
+      "35",
+      "49",
+      "54",
+      "42"
+    ],
+    "answer": 3,
+    "explanation": "Из первого неравенства следует y ≤ 6. Поскольку x положительно и не превосходит 7, произведение максимально при x = 7 и y = 6: xy = 42."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q05",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "prompt": "Какой цифрой оканчивается значение выражения (3⁸ ÷ 3⁶)⁴?",
+    "options": [
+      "9",
+      "3",
+      "1",
+      "7"
+    ],
+    "answer": 2,
+    "explanation": "В скобках получаем 3². Тогда всё выражение равно (3²)⁴ = 3⁸ = 6561 и оканчивается цифрой 1."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q06",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "Величина A: значение x, если сумма чисел 7, 11, 16 и 20 равна сумме чисел 5, 9, x и x + 4.\nВеличина B: 1 ÷ (1,25 − 1).",
+    "prompt": "Сравните величины A и B.",
+    "options": [
+      "Величина A больше",
+      "Величина B больше",
+      "Величины равны",
+      "Недостаточно информации для сравнения"
+    ],
+    "answer": 0,
+    "explanation": "Первая сумма равна 54, поэтому 54 = 18 + 2x и x = 18. Величина B равна 1 ÷ 0,25 = 4. Следовательно, величина A больше."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q07",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "В двух проектных командах состоят 150 специалистов. Только в первой команде работают 72 человека, в обеих командах — x, только во второй — 48.",
+    "prompt": "Чему равно x + 5?",
+    "options": [
+      "30",
+      "25",
+      "45",
+      "35"
+    ],
+    "answer": 3,
+    "explanation": "Все три части диаграммы множеств дают 72 + x + 48 = 150. Отсюда x = 30, поэтому x + 5 = 35."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q08",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "p = 8 − 3t, а q = 2(2t + 1).",
+    "prompt": "Найдите значение t при условии p = q.",
+    "options": [
+      "6/7",
+      "−6/7",
+      "7/6",
+      "2/7"
+    ],
+    "answer": 0,
+    "explanation": "Приравниваем выражения: 8 − 3t = 4t + 2. Тогда 6 = 7t, откуда t = 6/7."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q09",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "Стороны прямоугольника равны x + 4 и x + 1, где x > 0. Площадь прямоугольника равна 70. Сторона квадрата равна 2x + 3.",
+    "prompt": "Найдите площадь квадрата.",
+    "options": [
+      "225",
+      "196",
+      "256",
+      "289"
+    ],
+    "answer": 0,
+    "explanation": "Из равенства (x + 4)(x + 1) = 70 получаем x² + 5x − 66 = 0. Положительный корень равен 6. Сторона квадрата равна 2 · 6 + 3 = 15, а его площадь — 225."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q10",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "Известно, что a > b и d < b.",
+    "prompt": "Какое утверждение обязательно неверно?",
+    "options": [
+      "a > d",
+      "d < a",
+      "b < a",
+      "a < d"
+    ],
+    "answer": 3,
+    "explanation": "Из условий следует порядок a > b > d. Поэтому a больше d, и противоположное утверждение a < d обязательно неверно."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q11",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "Последовательность задана формулой aₙ = 6n + 4.",
+    "prompt": "Найдите НОД(a₃, a₆).",
+    "options": [
+      "4",
+      "2",
+      "8",
+      "11"
+    ],
+    "answer": 1,
+    "explanation": "a₃ = 6 · 3 + 4 = 22, а a₆ = 6 · 6 + 4 = 40. Наибольший общий делитель чисел 22 и 40 равен 2."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q12",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "Величина A: произведение всех простых чисел меньше 12.\nВеличина B: (√15 + √15)².",
+    "prompt": "Сравните величины A и B.",
+    "options": [
+      "Величина B больше",
+      "Величины равны",
+      "Величина A больше",
+      "Недостаточно информации для сравнения"
+    ],
+    "answer": 2,
+    "explanation": "Величина A равна 2 · 3 · 5 · 7 · 11 = 231. Величина B равна (2√15)² = 60. Поэтому величина A больше."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q13",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "Данные линейного графика посещаемости музея:\nсентябрь — 420 посетителей;\nоктябрь — 510;\nноябрь — 465;\nдекабрь — 590.",
+    "prompt": "На сколько больше посетителей было в декабре, чем в сентябре?",
+    "options": [
+      "125",
+      "170",
+      "180",
+      "210"
+    ],
+    "answer": 1,
+    "explanation": "Сравниваем две нужные точки графика: 590 − 420 = 170 посетителей."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q14",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "m и n — положительные целые числа, причём 2¹⁰ · 3ᵐ = 12ⁿ.",
+    "prompt": "Чему равно m?",
+    "options": [
+      "10",
+      "5",
+      "20",
+      "4"
+    ],
+    "answer": 1,
+    "explanation": "12ⁿ = (2² · 3)ⁿ. Поэтому показатель степени двойки справа равен 2n, а тройки — n. Из 2n = 10 получаем n = 5, а затем m = n = 5."
+  },
+  {
+    "id": "mock-tgo-analytical-1-q15",
+    "subject": "tgo",
+    "topic": "analytical",
+    "testId": "mock-tgo-analytical-1",
+    "mockOnly": true,
+    "passage": "Код электронного замка состоит из четырёх цифр. Для него используют цифры 1, 3, 6 и 9, причём каждую — ровно один раз.",
+    "prompt": "Сколько различных кодов можно составить?",
+    "options": [
+      "16",
+      "12",
+      "24",
+      "36"
+    ],
+    "answer": 2,
+    "explanation": "Четыре разные цифры можно расположить 4 · 3 · 2 · 1 = 24 способами. Каждый порядок образует отдельный код."
   }
 );

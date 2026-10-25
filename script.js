@@ -219,6 +219,11 @@
         label: topic === "critical" ? "Критическое мышление" : "Аналитическое мышление",
         questionIds: BANK.filter((q) => q.testId === `tgo-${topic}-${variant}`).map((q) => q.id),
       }));
+      const standaloneTgoSections = variant === 1
+        ? tgoSections.map((section) => section.key === "analytical"
+          ? { ...section, questionIds: BANK.filter((q) => q.testId === "mock-tgo-analytical-1").map((q) => q.id) }
+          : section)
+        : tgoSections;
       tests.push({ id: `mock-combined-${variant}`, direction: "mock", subject: "combined", variant,
         title: `Пробник ${variant}: ТГО + английский`, description: "15 вопросов на критическое мышление, 15 на аналитическое и 50 по английскому.",
         count: 80, minutes: 105, icon: "target", type: "Полный пробник", level: "ТГО + английский",
@@ -226,7 +231,7 @@
       tests.push({ id: `mock-tgo-${variant}`, direction: "mock", subject: "tgo", variant,
         title: `ТГО: пробник ${variant}`, description: "Критическое и аналитическое мышление — по 15 вопросов в каждом блоке.",
         count: 30, minutes: 45, icon: "brain", type: "Пробник ТГО", level: "Два блока мышления",
-        sections: tgoSections, questionIds: tgoSections.flatMap((section) => section.questionIds) });
+        sections: standaloneTgoSections, questionIds: standaloneTgoSections.flatMap((section) => section.questionIds) });
     }
     tests.push({ id: "mock-english", direction: "mock", subject: "english",
       title: "Английский язык: пробник", description: "50 вопросов: грамматика, лексика и чтение в одном тесте.",
@@ -470,7 +475,7 @@
     `<button class="icon-button dialog-close" data-action="close-dialog" aria-label="Закрыть">${icon("close")}</button>`;
   function showHelp() {
     openDialog(
-      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В «Пробниках» — полные тесты и отдельные предметы. В «Обучении» — практика по темам.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">185 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
+      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В «Пробниках» — полные тесты и отдельные предметы. В «Обучении» — практика по темам.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">200 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
     );
   }
   function showSetup(id) {
