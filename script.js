@@ -228,7 +228,7 @@
           { key: "analytical", label: "Аналитическое мышление", questionIds: BANK.filter((q) => q.testId === "mock-tgo-analytical-text-1").map((q) => q.id) },
         ]
         : tgoSections;
-      tests.push({ id: `mock-combined-${variant}`, direction: "mock", subject: "combined", variant,
+      tests.push({ id: `mock-combined-${variant}`, archived: true, direction: "mock", subject: "combined", variant,
         title: `Пробник ${variant}: ТГО + английский`, description: "15 вопросов на критическое мышление, 15 на аналитическое и 50 по английскому.",
         count: 80, minutes: 105, icon: "target", type: "Полный пробник", level: "ТГО + английский",
         sections: [...tgoSections, englishSection], questionIds: [...tgoSections.flatMap((section) => section.questionIds), ...englishIds] });
@@ -350,7 +350,7 @@
     $("#practice-note").hidden = home || view === "history";
     const title = home ? "Тренажер для подготовки к КТ" : view === "saved" ? "Сохранённые" : view === "history" ? "История тестов" : mock ? filter === "tgo" ? "Пробники ТГО" : filter === "english" ? "Пробник по английскому" : "Пробники" : filter === "tgo" ? "ТГО" : filter === "english" ? "Английский язык" : "Обучение";
     $("#page-title").innerHTML = `${title}<span class="heading-dot">.</span>`;
-    $("#page-subtitle").textContent = home ? "СЕГОДНЯШНИЕ ТРУДНОСТИ — ФУНДАМЕНТ ЗАВТРАШНЕГО УСПЕХА" : view === "saved" ? "Тесты из обоих направлений, к которым хочется вернуться." : view === "history" ? "Результаты пробников и учебных тестов в одном месте." : mock ? "Проверь знания в полном пробнике или пройди отдельный предмет." : filter === "tgo" ? "Критическое и аналитическое мышление: практика по 15 вопросов." : "Занимайся по темам, разбирай ответы и закрепляй знания.";
+    $("#page-subtitle").textContent = home ? "СЕГОДНЯШНИЕ ТРУДНОСТИ — ФУНДАМЕНТ ЗАВТРАШНЕГО УСПЕХА" : view === "saved" ? "Тесты из обоих направлений, к которым хочется вернуться." : view === "history" ? "Результаты пробников и учебных тестов в одном месте." : mock ? "Выбери пробник по ТГО или английскому языку." : filter === "tgo" ? "Критическое и аналитическое мышление: практика по 15 вопросов." : "Занимайся по темам, разбирай ответы и закрепляй знания.";
     $("#breadcrumb-current").textContent = home ? "Главная" : special ? view === "saved" ? "Сохранённые" : "История" : directionTitle;
     document.querySelectorAll("[data-nav]").forEach((el) => {
       const group = el.classList.contains("direction-nav");
@@ -358,13 +358,13 @@
       el.classList.toggle("active", active);
       active && (!group || filter === "all") ? el.setAttribute("aria-current", "page") : el.removeAttribute("aria-current");
     });
-    $("#catalog-title").textContent = view === "saved" ? "Твои сохранённые тесты" : view === "history" ? "Пройденные тесты" : mock ? filter === "tgo" ? "Пробники ТГО" : filter === "english" ? "Пробник по английскому" : "Полные пробники" : filter === "tgo" ? "Подразделы ТГО" : filter === "english" ? "Тесты по английскому" : "Учебные тесты";
+    $("#catalog-title").textContent = view === "saved" ? "Твои сохранённые тесты" : view === "history" ? "Пройденные тесты" : mock ? filter === "tgo" ? "Пробники ТГО" : filter === "english" ? "Пробник по английскому" : "Пробники" : filter === "tgo" ? "Подразделы ТГО" : filter === "english" ? "Тесты по английскому" : "Учебные тесты";
     $("#catalog-toolbar").hidden = view === "history";
     $(".catalog-caption").hidden = special;
     $("#direction-intro").hidden = home || special;
     $("#direction-intro-label").textContent = directionTitle.toUpperCase();
     $("#direction-intro-icon").innerHTML = icon(mock ? "target" : "book");
-    $("#direction-intro-copy").textContent = mock ? filter === "tgo" ? "По 15 вопросов на критическое и аналитическое мышление — 30 в каждом пробнике." : filter === "english" ? "50 вопросов по грамматике, лексике и чтению. Результат и разбор после завершения." : "80 вопросов: 15 на критическое мышление, 15 на аналитическое и 50 по английскому." : "Текущая учебная практика: короткие тесты по ТГО и английскому с объяснениями.";
+    $("#direction-intro-copy").textContent = mock ? filter === "tgo" ? "По 15 вопросов на критическое и аналитическое мышление — 30 в каждом пробнике." : filter === "english" ? "50 вопросов по грамматике, лексике и чтению. Результат и разбор после завершения." : "Выбери пробник по ТГО или английскому языку." : "Текущая учебная практика: короткие тесты по ТГО и английскому с объяснениями.";
     renderCatalog();
     closeMenu();
     if (scroll && !home) $("#catalog").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -485,7 +485,7 @@
     `<button class="icon-button dialog-close" data-action="close-dialog" aria-label="Закрыть">${icon("close")}</button>`;
   function showHelp() {
     openDialog(
-      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В «Пробниках» — полные тесты и отдельные предметы. В «Обучении» — практика по темам.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">215 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
+      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В «Пробниках» — отдельные тесты по ТГО и английскому языку. В «Обучении» — практика по темам.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">215 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
     );
   }
   function showSetup(id) {
@@ -659,13 +659,13 @@
     const openDirection = event.target.closest("[data-open-direction]");
     if (openDirection) {
       const direction = openDirection.dataset.openDirection;
-      navigate("all", direction === "mock" ? "combined" : "all", false, direction);
+      navigate("all", direction === "mock" ? "tgo" : "all", false, direction);
       return;
     }
     const nav = event.target.closest("[data-nav]");
     if (nav) {
       const value = nav.dataset.nav;
-      navigate(["saved", "history"].includes(value) ? value : "all", ["tgo", "english", "combined"].includes(value) ? value : "all", false, nav.dataset.direction || state.direction);
+      navigate(["saved", "history"].includes(value) ? value : "all", ["tgo", "english"].includes(value) ? value : "all", false, nav.dataset.direction || state.direction);
       return;
     }
     const filter = event.target.closest("[data-filter]");
@@ -726,7 +726,7 @@
           state.search = "";
           $("#test-search").value = "";
           renderCatalog();
-        } else navigate("all", state.direction === "mock" ? "combined" : "all");
+        } else navigate("all", state.direction === "mock" ? "tgo" : "all");
         break;
       case "close-dialog":
         state.quiz ? showQuizConfirmation(true) : closeDialog();

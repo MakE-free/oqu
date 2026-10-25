@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="style.css?v=blue-welcome-2" />
     <script src="questions.js" defer></script>
     <script src="mock-questions.js?v=tgo-1-author-2" defer></script>
-    <script src="script.js?v=tgo-1-author-2" defer></script>
+    <script src="script.js?v=mock-subjects-1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -35,11 +35,10 @@
       <div class="nav-caption">НАПРАВЛЕНИЯ</div>
       <nav class="main-nav">
         <div class="nav-direction-group">
-          <button class="nav-item direction-nav" data-direction="mock" data-nav="combined">
+          <button class="nav-item direction-nav" data-direction="mock" data-nav="tgo">
             <span data-icon="target"></span>Пробники
           </button>
           <div class="subject-nav">
-            <button class="subject-nav-item" data-direction="mock" data-nav="combined"><span class="nav-dot blue"></span>Пробники</button>
             <button class="subject-nav-item" data-direction="mock" data-nav="tgo"><span class="nav-dot purple"></span>ТГО</button>
             <button class="subject-nav-item" data-direction="mock" data-nav="english"><span class="nav-dot blue"></span>Английский язык</button>
           </div>
@@ -129,8 +128,8 @@
             <button class="subject-card direction-card mock-direction-card" data-open-direction="mock">
               <div class="subject-card-top"><div class="subject-symbol" data-icon="target"></div><span class="subject-pill">ПРОВЕРКА ЗНАНИЙ</span><span class="subject-card-arrow" data-icon="arrow-up-right"></span></div>
               <h3>Пробники</h3>
-              <p>ТГО и английский в одном тесте. Проверь готовность и оцени результат.</p>
-              <div class="subject-card-bottom"><span>15 + 15 ТГО · 50 английских</span><strong>К пробникам<span data-icon="arrow-right"></span></strong></div>
+              <p>Выбери пробник по ТГО или английскому языку и оцени результат.</p>
+              <div class="subject-card-bottom"><span>ТГО · Английский язык</span><strong>К пробникам<span data-icon="arrow-right"></span></strong></div>
             </button>
             <button class="subject-card direction-card learning-direction-card" data-open-direction="learning">
               <div class="subject-card-top"><div class="subject-symbol" data-icon="book"></div><span class="subject-pill">ПРАКТИКА ПО ТЕМАМ</span><span class="subject-card-arrow" data-icon="arrow-up-right"></span></div>
@@ -166,7 +165,7 @@
                 aria-pressed="true"
               >
                 Все тесты</button
-              ><button class="filter-tab" data-filter="combined" aria-pressed="false" hidden>Пробники</button><button
+              ><button
                 class="filter-tab"
                 data-filter="tgo"
                 aria-pressed="false"
