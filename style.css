@@ -6569,6 +6569,14 @@ input:focus-visible,
 .welcome-content {
   max-width: 980px;
 }
+.hero.welcome-note-compact {
+  padding-block: 20px;
+}
+.welcome-note-compact .welcome-footer {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
 .hero.welcome-note h2 {
   margin: 0 0 12px;
   color: #173f59;
