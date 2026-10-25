@@ -36,6 +36,8 @@
     refresh: '<path d="M20 8a9 9 0 1 0 1 7M20 2v6h-6"/>',
     trophy:
       '<path d="M7 3h10v7a5 5 0 0 1-10 0V3Zm0 2H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4m-5 3v6m-5 0h10"/>',
+    volume:
+      '<path d="M4 10v4h4l5 4V6L8 10H4Zm12-1a4 4 0 0 1 0 6m2.5-8.5a8 8 0 0 1 0 11"/>',
   };
   const icon = (name, cls = "") =>
     `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.file}</svg>`;
@@ -210,8 +212,19 @@
   ];
   const BANK_BY_ID = new Map(BANK.map((question) => [question.id, question]));
   function createMockTests() {
-    const englishIds = BANK.filter((q) => q.mockOnly && q.subject === "english").map((q) => q.id);
-    const englishSection = { key: "english", label: "Английский язык", questionIds: englishIds };
+    const legacyEnglishIds = BANK.filter((q) => /^mock-en-\d{2}$/.test(q.id)).map((q) => q.id);
+    const legacyEnglishSection = { key: "english", label: "Английский язык", questionIds: legacyEnglishIds };
+    const listeningIds = BANK.filter((q) => q.testId === "mock-english-v2" && q.topic === "listening").map((q) => q.id);
+    const grammarIds = BANK.filter((q) => q.testId === "mock-english-v2" && q.topic === "grammar").map((q) => q.id);
+    const readingIds = [
+      ...BANK.filter((q) => q.testId === "mock-english-v2" && q.topic === "reading").map((q) => q.id),
+      ...BANK.filter((q) => /^mock-en-(?:3[6-9]|4\d|50)$/.test(q.id)).map((q) => q.id),
+    ];
+    const englishSections = [
+      { key: "listening", label: "Слушание", questionIds: listeningIds },
+      { key: "grammar", label: "Грамматика", questionIds: grammarIds },
+      { key: "reading", label: "Чтение", questionIds: readingIds },
+    ];
     const tests = [];
     for (let variant = 1; variant <= 3; variant++) {
       const tgoSections = [
@@ -231,16 +244,16 @@
       tests.push({ id: `mock-combined-${variant}`, archived: true, direction: "mock", subject: "combined", variant,
         title: `Пробник ${variant}: ТГО + английский`, description: "15 вопросов на критическое мышление, 15 на аналитическое и 50 по английскому.",
         count: 80, minutes: 105, icon: "target", type: "Полный пробник", level: "ТГО + английский",
-        sections: [...tgoSections, englishSection], questionIds: [...tgoSections.flatMap((section) => section.questionIds), ...englishIds] });
+        sections: [...tgoSections, legacyEnglishSection], questionIds: [...tgoSections.flatMap((section) => section.questionIds), ...legacyEnglishIds] });
       tests.push({ id: `mock-tgo-${variant}`, direction: "mock", subject: "tgo", variant,
         title: `ТГО: пробник ${variant}`, description: "Критическое и аналитическое мышление — по 15 вопросов в каждом блоке.",
         count: 30, minutes: 45, icon: "brain", type: "Пробник ТГО", level: "Два блока мышления",
         sections: standaloneTgoSections, questionIds: standaloneTgoSections.flatMap((section) => section.questionIds) });
     }
     tests.push({ id: "mock-english", direction: "mock", subject: "english",
-      title: "Английский язык: пробник", description: "50 вопросов: грамматика, лексика и чтение в одном тесте.",
-      count: 50, minutes: 60, icon: "book", type: "Пробник по английскому", level: "Grammar · vocabulary · reading",
-      sections: [englishSection], questionIds: englishIds });
+      title: "Английский язык: пробник", description: "50 вопросов: 16 на слушание, 18 на грамматику и 16 на чтение.",
+      count: 50, minutes: 60, icon: "book", type: "Пробник по английскому", level: "Listening · Grammar · Reading",
+      sections: englishSections, questionIds: englishSections.flatMap((section) => section.questionIds) });
     return tests;
   }
   const TESTS = [...LEARNING_TESTS.map((test) => ({ ...test, direction: "learning" })), ...createMockTests()];
@@ -252,12 +265,13 @@
     if (testId === "mock-tgo-analytical-text-1" || testId.startsWith("tgo-critical-") || /^tgo-(?:0[1-9]|1[0-5])$/.test(question?.id || "")) return "analytical";
     return question?.topic;
   };
-  const sectionLabel = (question) => question.subject === "english" ? "Английский язык" : thinkingKey(question) === "analytical" ? "Аналитическое мышление" : "Критическое мышление";
+  const englishSectionLabel = (topic) => ({ listening: "Слушание", grammar: "Грамматика", vocabulary: "Лексика", reading: "Чтение" })[topic] || "Английский язык";
+  const sectionLabel = (question) => question.subject === "english" ? englishSectionLabel(question.topic) : thinkingKey(question) === "analytical" ? "Аналитическое мышление" : "Критическое мышление";
   function mockBreakdown(test, result = null) {
     if (!test.sections) return "";
     const actual = result ? result.questions.map((q, i) => ({ question: BANK_BY_ID.get(q.id), answer: result.answers[i] })) : null;
     return `<div class="mock-breakdown">${test.sections.map((section) => {
-      const rows = actual ? actual.filter(({ question }) => question && (section.key === "english" ? question.subject === "english" : question.subject === "tgo" && thinkingKey(question) === section.key)) : null;
+      const rows = actual ? actual.filter(({ question }) => question && (section.key === "english" ? question.subject === "english" : question.subject === "english" ? question.topic === section.key : question.subject === "tgo" && thinkingKey(question) === section.key)) : null;
       const value = rows ? `${rows.filter(({ question, answer }) => answer === question.answer).length} / ${rows.length}` : section.questionIds.length;
       return `<span>${section.label}<strong>${value}</strong></span>`;
     }).join("")}</div>`;
@@ -364,7 +378,7 @@
     $("#direction-intro").hidden = home || special;
     $("#direction-intro-label").textContent = directionTitle.toUpperCase();
     $("#direction-intro-icon").innerHTML = icon(mock ? "target" : "book");
-    $("#direction-intro-copy").textContent = mock ? filter === "tgo" ? "По 15 вопросов на критическое и аналитическое мышление — 30 в каждом пробнике." : filter === "english" ? "50 вопросов по грамматике, лексике и чтению. Результат и разбор после завершения." : "Выбери пробник по ТГО или английскому языку." : "Текущая учебная практика: короткие тесты по ТГО и английскому с объяснениями.";
+    $("#direction-intro-copy").textContent = mock ? filter === "tgo" ? "По 15 вопросов на критическое и аналитическое мышление — 30 в каждом пробнике." : filter === "english" ? "50 вопросов: 16 на слушание, 18 на грамматику и 16 на чтение." : "Выбери пробник по ТГО или английскому языку." : "Текущая учебная практика: короткие тесты по ТГО и английскому с объяснениями.";
     renderCatalog();
     closeMenu();
     if (scroll && !home) $("#catalog").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -465,6 +479,7 @@
   function closeDialog() {
     clearInterval(state.timer);
     state.timer = null;
+    stopListening();
     state.quiz = null;
     state.review = null;
     dialog.close();
@@ -572,14 +587,62 @@
       ? `${secs} сек`
       : `${Math.floor(secs / 60)} мин ${secs % 60} сек`;
   }
+  const hasSpeechPlayback = () => typeof window.speechSynthesis?.speak === "function" && typeof window.SpeechSynthesisUtterance === "function";
+  function stopListening() {
+    if (typeof window.speechSynthesis?.cancel === "function") window.speechSynthesis.cancel();
+  }
+  function playListening() {
+    const question = state.quiz?.questions[state.quiz.index];
+    if (!question?.audioText) return;
+    if (!hasSpeechPlayback()) {
+      toast("В этом браузере аудио недоступно. Используй показанный текст записи.");
+      return;
+    }
+    const button = $('[data-action="play-listening"]');
+    const copy = button?.querySelector(".listening-play-copy");
+    const reset = () => {
+      if (!button?.isConnected) return;
+      button.classList.remove("is-playing");
+      button.setAttribute("aria-pressed", "false");
+      if (copy) copy.textContent = "Прослушать запись";
+    };
+    stopListening();
+    const utterance = new SpeechSynthesisUtterance(question.audioText);
+    const voices = window.speechSynthesis.getVoices?.() || [];
+    utterance.voice = voices.find((voice) => /^en-GB$/i.test(voice.lang)) || voices.find((voice) => /^en/i.test(voice.lang)) || null;
+    utterance.lang = utterance.voice?.lang || "en-GB";
+    utterance.rate = 0.88;
+    utterance.pitch = 1;
+    utterance.onstart = () => {
+      if (!button?.isConnected) return;
+      button.classList.add("is-playing");
+      button.setAttribute("aria-pressed", "true");
+      if (copy) copy.textContent = "Воспроизводится…";
+    };
+    utterance.onend = reset;
+    utterance.onerror = (event) => {
+      reset();
+      if (!["canceled", "interrupted"].includes(event.error)) toast("Не удалось воспроизвести запись. Попробуй ещё раз.");
+    };
+    window.speechSynthesis.speak(utterance);
+  }
+  function questionMaterial(question, review = false) {
+    if (question.audioText) {
+      if (review) return `<div class="question-passage listening-transcript" lang="en"><strong>Текст аудио</strong>\n${esc(question.audioText)}</div>`;
+      const supported = hasSpeechPlayback();
+      return `<div class="listening-player"><div class="listening-player-main"><span class="listening-player-icon">${icon("volume")}</span><div><strong>Listening</strong><span>${supported ? "Нажми, чтобы прослушать запись. Можно повторять." : "Аудио недоступно в этом браузере."}</span></div></div><button class="button button-white listening-play" data-action="play-listening" aria-pressed="false" ${supported ? "" : "disabled"}>${icon("volume")}<span class="listening-play-copy">Прослушать запись</span></button>${supported ? "" : `<div class="listening-fallback" lang="en">${esc(question.audioText)}</div>`}</div>`;
+    }
+    return question.passage ? `<div class="question-passage" lang="${question.subject === "english" ? "en" : "ru"}">${esc(question.passage)}</div>` : "";
+  }
   function renderQuiz(focusQuestion = true) {
     const quiz = state.quiz;
     if (!quiz) return;
+    stopListening();
     const q = quiz.questions[quiz.index],
       answered = quiz.answers.filter((a) => a !== null).length;
     const previousScroll = dialog.scrollTop;
     openDialog(
-      `<div class="quiz-layout"><header class="quiz-header"><div><span class="eyebrow">${quiz.test.direction === "mock" ? "ПРОБНИК · " : ""}${subjectLabel(quiz.test).toUpperCase()}</span><h2 id="dialog-title">${quiz.test.title}</h2></div><div class="quiz-header-right"><div class="quiz-clock">${icon("clock")}<span id="quiz-timer">${timerText()}</span>${!quiz.ends ? "<small>без лимита</small>" : ""}</div><button class="icon-button" data-action="exit-quiz" aria-label="Выйти из теста">${icon("close")}</button></div></header><div class="quiz-progress-track"><span style="width:${(answered / quiz.questions.length) * 100}%"></span></div><div class="quiz-body"><section class="question-area"><div class="question-toolbar"><span>ВОПРОС ${quiz.index + 1} ИЗ ${quiz.questions.length}${quiz.test.direction === "mock" ? `<span class="quiz-section-label">${sectionLabel(q)}</span>` : ""}</span><button class="flag-button ${quiz.flags.includes(quiz.index) ? "flagged" : ""}" data-action="flag" aria-pressed="${quiz.flags.includes(quiz.index)}">${icon("flag")}${quiz.flags.includes(quiz.index) ? "Отмечен" : "Отметить"}</button></div>${q.passage ? `<div class="question-passage" lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.passage)}</div>` : ""}<h3 class="question-prompt" id="question-prompt" tabindex="-1" lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.prompt)}</h3><div class="answer-options" role="group" aria-labelledby="question-prompt">${q.options.map((o, i) => `<button class="answer-option ${quiz.answers[quiz.index] === i ? "selected" : ""}" data-answer="${i}" aria-pressed="${quiz.answers[quiz.index] === i}"><span class="answer-letter">${"ABCD"[i]}</span><span lang="${q.subject === "english" ? "en" : "ru"}">${esc(o)}</span><span class="answer-radio">${quiz.answers[quiz.index] === i ? icon("check") : ""}</span></button>`).join("")}</div><div class="quiz-question-footer"><button class="button button-white" data-action="previous" ${quiz.index === 0 ? "disabled" : ""}>${icon("arrow-left")}Назад</button><span>${quiz.answers[quiz.index] === null ? "Выбери один ответ" : "Ответ выбран"}</span><button class="button button-green" data-action="${quiz.index === quiz.questions.length - 1 ? "finish" : "next"}">${quiz.index === quiz.questions.length - 1 ? "Завершить" : "Далее"}${icon(quiz.index === quiz.questions.length - 1 ? "check" : "arrow-right")}</button></div></section><aside class="quiz-navigation"><h3>Твой прогресс</h3><p>Отвечено <strong>${answered} из ${quiz.questions.length}</strong></p><div class="question-numbers">${quiz.questions.map((_, i) => `<button class="question-number ${i === quiz.index ? "current" : ""} ${quiz.answers[i] !== null ? "answered" : ""} ${quiz.flags.includes(i) ? "flagged" : ""}" data-question="${i}" aria-label="Вопрос ${i + 1}${quiz.answers[i] !== null ? ", ответ выбран" : ""}${quiz.flags.includes(i) ? ", отмечен" : ""}" ${i === quiz.index ? 'aria-current="step"' : ""}>${i + 1}</button>`).join("")}</div><div class="navigator-legend"><span><i class="legend-answered"></i>Есть ответ</span><span><i class="legend-flagged"></i>Отмечен</span></div><div class="quiz-tip">${icon("bulb")}<p>Сложный вопрос? Отметь его и вернись позже.</p></div><button class="button button-white button-full" data-action="finish">Завершить тест</button></aside></div><div id="quiz-confirmation" class="quiz-confirmation" hidden></div></div>`,
+      `<div class="quiz-layout"><header class="quiz-header"><div><span class="eyebrow">${quiz.test.direction === "mock" ? "ПРОБНИК · " : ""}${subjectLabel(quiz.test).toUpperCase()}</span><h2 id="dialog-title">${quiz.test.title}</h2></div><div class="quiz-header-right"><div class="quiz-clock">${icon("clock")}<span id="quiz-timer">${timerText()}</span>${!quiz.ends ? "<small>без лимита</small>" : ""}</div><button class="icon-button" data-action="exit-quiz" aria-label="Выйти из теста">${icon("close")}</button></div></header><div class="quiz-progress-track"><span style="width:${(answered / quiz.questions.length) * 100}%"></span></div><div class="quiz-body"><section class="question-area"><div class="question-toolbar"><span>ВОПРОС ${quiz.index + 1} ИЗ ${quiz.questions.length}${quiz.test.direction === "mock" ? `<span class="quiz-section-label">${sectionLabel(q)}</span>` : ""}</span><button class="flag-button ${quiz.flags.includes(quiz.index) ? "flagged" : ""}" data-action="flag" aria-pressed="${quiz.flags.includes(quiz.index)}">${icon("flag")}${quiz.flags.includes(quiz.index) ? "Отмечен" : "Отметить"}</button></div>${questionMaterial(q)}<h3 class="question-prompt" id="question-prompt" tabindex="-1" lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.prompt)}</h3><div class="answer-options" role="group" aria-labelledby="question-prompt">${q.options.map((o, i) => `<button class="answer-option ${quiz.answers[quiz.index] === i ? "selected" : ""}" data-answer="${i}" aria-pressed="${quiz.answers[quiz.index] === i}"><span class="answer-letter">${"ABCD"[i]}</span><span lang="${q.subject === "english" ? "en" : "ru"}">${esc(o)}</span><span class="answer-radio">${quiz.answers[quiz.index] === i ? icon("check") : ""}</span></button>`).join("")}</div><div class="quiz-question-footer"><button class="button button-white" data-action="previous" ${quiz.index === 0 ? "disabled" : ""}>${icon("arrow-left")}Назад</button><span>${quiz.answers[quiz.index] === null ? "Выбери один ответ" : "Ответ выбран"}</span><button class="button button-green" data-action="${quiz.index === quiz.questions.length - 1 ? "finish" : "next"}">${quiz.index === quiz.questions.length - 1 ? "Завершить" : "Далее"}${icon(quiz.index === quiz.questions.length - 1 ? "check" : "arrow-right")}</button></div></section><aside class="quiz-navigation"><h3>Твой прогресс</h3><p>Отвечено <strong>${answered} из ${quiz.questions.length}</strong></p><div class="question-numbers">${quiz.questions.map((_, i) => `<button class="question-number ${i === quiz.index ? "current" : ""} ${quiz.answers[i] !== null ? "answered" : ""} ${quiz.flags.includes(i) ? "flagged" : ""}" data-question="${i}" aria-label="Вопрос ${i + 1}${quiz.answers[i] !== null ? ", ответ выбран" : ""}${quiz.flags.includes(i) ? ", отмечен" : ""}" ${i === quiz.index ? 'aria-current="step"' : ""}>${i + 1}</button>`).join("")}</div><div class="navigator-legend"><span><i class="legend-answered"></i>Есть ответ</span><span><i class="legend-flagged"></i>Отмечен</span></div><div class="quiz-tip">${icon("bulb")}<p>Сложный вопрос? Отметь его и вернись позже.</p></div><button class="button button-white button-full" data-action="finish">Завершить тест</button></aside></div><div id="quiz-confirmation" class="quiz-confirmation" hidden></div></div>`,
       true,
     );
     if (focusQuestion) $("#question-prompt").focus({ preventScroll: true });
@@ -597,6 +660,7 @@
   function finishQuiz(expired = false) {
     const quiz = state.quiz;
     if (!quiz) return;
+    stopListening();
     clearInterval(state.timer);
     state.timer = null;
     const result = {
@@ -632,6 +696,7 @@
     );
   }
   function showReview(result, errorsOnly = false) {
+    stopListening();
     state.review = result;
     const t = TESTS.find((t) => t.id === result.testId);
     const questions = result.questions
@@ -647,7 +712,7 @@
           ? questions
               .map(({ question: q, index: i }) => {
                 const correct = result.answers[i] === q.answer;
-                return `<article class="review-question"><div class="review-question-top"><span>ВОПРОС ${i + 1}${t.direction === "mock" ? `<span class="quiz-section-label">${sectionLabel(q)}</span>` : ""}</span><span class="review-status ${correct ? "correct" : "incorrect"}">${icon(correct ? "check-circle" : "close")}${correct ? "Верно" : result.answers[i] === null ? "Без ответа" : "Ошибка"}</span></div>${q.passage ? `<div class="question-passage" lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.passage)}</div>` : ""}<h3 lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.prompt)}</h3><div class="review-options">${q.options.map((o, n) => `<div class="review-option ${n === q.answer ? "is-correct" : n === result.answers[i] ? "is-incorrect" : ""}"><span>${"ABCD"[n]}</span><span lang="${q.subject === "english" ? "en" : "ru"}">${esc(o)}</span>${n === q.answer ? `<small>Правильный ответ ${icon("check")}</small>` : n === result.answers[i] ? `<small>Твой ответ ${icon("close")}</small>` : ""}</div>`).join("")}</div><div class="answer-explanation">${icon("bulb")}<div><strong>Почему так?</strong><p>${esc(q.explanation)}</p></div></div></article>`;
+                return `<article class="review-question"><div class="review-question-top"><span>ВОПРОС ${i + 1}${t.direction === "mock" ? `<span class="quiz-section-label">${sectionLabel(q)}</span>` : ""}</span><span class="review-status ${correct ? "correct" : "incorrect"}">${icon(correct ? "check-circle" : "close")}${correct ? "Верно" : result.answers[i] === null ? "Без ответа" : "Ошибка"}</span></div>${questionMaterial(q, true)}<h3 lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.prompt)}</h3><div class="review-options">${q.options.map((o, n) => `<div class="review-option ${n === q.answer ? "is-correct" : n === result.answers[i] ? "is-incorrect" : ""}"><span>${"ABCD"[n]}</span><span lang="${q.subject === "english" ? "en" : "ru"}">${esc(o)}</span>${n === q.answer ? `<small>Правильный ответ ${icon("check")}</small>` : n === result.answers[i] ? `<small>Твой ответ ${icon("close")}</small>` : ""}</div>`).join("")}</div><div class="answer-explanation">${icon("bulb")}<div><strong>Почему так?</strong><p>${esc(q.explanation)}</p></div></div></article>`;
               })
               .join("")
           : `<div class="review-perfect">${icon("trophy")}<h3>Ни одной ошибки!</h3><p>Все ответы верные. Попробуй следующий тест.</p></div>`
@@ -751,6 +816,9 @@
           renderQuiz(false);
           $('[data-action="flag"]').focus({ preventScroll: true });
         }
+        break;
+      case "play-listening":
+        playListening();
         break;
       case "exit-quiz":
         showQuizConfirmation(true);
