@@ -73,15 +73,9 @@
       Object.hasOwn(params, name) ? String(params[name]) : match,
     );
   };
-  const languageName = (language = currentLanguage) => language === "kk" ? "Қазақша" : "Русский";
   function updateLanguageControl() {
-    const kazakh = currentLanguage === "kk";
-    $("#language-current-flag").textContent = kazakh ? "🇰🇿" : "🇷🇺";
-    $("#language-current-name").textContent = languageName();
-    $("#language-current-code").textContent = kazakh ? "KZ" : "RU";
-    $("#language-toggle").setAttribute("aria-label", tr("language-current", { language: languageName() }));
     document.querySelectorAll("[data-language]").forEach((option) => {
-      option.setAttribute("aria-checked", String(option.dataset.language === currentLanguage));
+      option.setAttribute("aria-pressed", String(option.dataset.language === currentLanguage));
     });
   }
   function applyStaticTranslations() {
@@ -101,18 +95,6 @@
       element.setAttribute("placeholder", tr(element.dataset.i18nPlaceholder));
     });
     updateLanguageControl();
-  }
-  function closeLanguageMenu({ focus = false } = {}) {
-    const menu = $("#language-menu");
-    menu.hidden = true;
-    $("#language-toggle").setAttribute("aria-expanded", "false");
-    if (focus) $("#language-toggle").focus({ preventScroll: true });
-  }
-  function openLanguageMenu() {
-    const menu = $("#language-menu");
-    menu.hidden = false;
-    $("#language-toggle").setAttribute("aria-expanded", "true");
-    menu.querySelector(`[data-language="${currentLanguage}"]`)?.focus({ preventScroll: true });
   }
   const BANK = window.OQU_QUESTIONS || [];
   const LEARNING_TESTS = [
@@ -471,10 +453,7 @@
   }
   function setLanguage(language, { announce = true } = {}) {
     if (!["ru", "kk"].includes(language)) return;
-    if (language === currentLanguage) {
-      closeLanguageMenu({ focus: true });
-      return;
-    }
+    if (language === currentLanguage) return;
     const search = state.search;
     currentLanguage = language;
     try {
@@ -489,7 +468,6 @@
       $("#test-search").value = search;
       renderCatalog();
     }
-    closeLanguageMenu({ focus: true });
     if (announce) toast(tr("language-changed"));
   }
   function updateSavedCount() {
@@ -881,11 +859,6 @@
       setLanguage(languageOption.dataset.language);
       return;
     }
-    if (event.target.closest("#language-toggle")) {
-      $("#language-menu").hidden ? openLanguageMenu() : closeLanguageMenu({ focus: true });
-      return;
-    }
-    if (!event.target.closest("#language-switcher") && !$("#language-menu").hidden) closeLanguageMenu();
     const openDirection = event.target.closest("[data-open-direction]");
     if (openDirection) {
       const direction = openDirection.dataset.openDirection;
@@ -1027,11 +1000,6 @@
     $("#menu-button").setAttribute("aria-expanded", String(open));
   });
   $("#mobile-shade").addEventListener("click", closeMenu);
-  $("#language-switcher").addEventListener("focusout", () => {
-    setTimeout(() => {
-      if (!$("#language-switcher").contains(document.activeElement)) closeLanguageMenu();
-    }, 0);
-  });
   dialog.addEventListener("cancel", (event) => {
     event.preventDefault();
     if (state.quiz) {
@@ -1060,33 +1028,20 @@
     }
   });
   document.addEventListener("keydown", (event) => {
-    const languageMenu = $("#language-menu");
-    const languageToggle = $("#language-toggle");
-    if (event.key === "Escape" && !languageMenu.hidden) {
+    const languageChoice = event.target.closest?.(".language-choice[data-language]");
+    if (languageChoice && ["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
       event.preventDefault();
-      closeLanguageMenu({ focus: true });
-      return;
-    }
-    if (
-      (event.target === languageToggle || languageMenu.contains(event.target)) &&
-      ["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)
-    ) {
-      event.preventDefault();
-      const wasHidden = languageMenu.hidden;
-      if (wasHidden) openLanguageMenu();
-      const options = [...languageMenu.querySelectorAll("[data-language]")];
-      if (wasHidden) {
-        const initial = event.key === "ArrowUp" || event.key === "End"
-          ? options.length - 1
-          : event.key === "Home"
-            ? 0
-            : Math.max(0, options.findIndex((option) => option.dataset.language === currentLanguage));
-        options[initial].focus({ preventScroll: true });
-        return;
-      }
-      const current = options.indexOf(document.activeElement);
-      const next = event.key === "Home" ? 0 : event.key === "End" ? options.length - 1 : current < 0 ? event.key === "ArrowUp" ? options.length - 1 : 0 : event.key === "ArrowDown" ? (current + 1) % options.length : (current - 1 + options.length) % options.length;
-      options[next].focus({ preventScroll: true });
+      const choices = [...document.querySelectorAll(".language-choice[data-language]")];
+      const current = Math.max(0, choices.indexOf(languageChoice));
+      const next = event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? choices.length - 1
+          : event.key === "ArrowRight"
+            ? (current + 1) % choices.length
+            : (current - 1 + choices.length) % choices.length;
+      choices[next].focus({ preventScroll: true });
+      setLanguage(choices[next].dataset.language);
       return;
     }
     if (
@@ -1125,7 +1080,6 @@
   });
   window.addEventListener("resize", () => {
     if (window.innerWidth > 860) closeMenu();
-    closeLanguageMenu();
   });
   $("#copyright-year").textContent = new Date().getFullYear();
   applyStaticTranslations();

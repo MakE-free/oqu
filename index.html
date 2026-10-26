@@ -10,13 +10,13 @@
     />
     <title>Тренажер для подготовки к КТ — Oqu</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=blue-welcome-1" />
-    <link rel="stylesheet" href="style.css?v=ru-kk-1" />
+    <link rel="stylesheet" href="style.css?v=ru-kk-2" />
     <script src="questions.js" defer></script>
     <script src="mock-questions.js?v=tgo-1-author-2" defer></script>
     <script src="tgo-mock-2.js?v=tgo-2-1" defer></script>
     <script src="english-mock-v2.js?v=english-v2" defer></script>
     <script src="i18n.js?v=ru-kk-1" defer></script>
-    <script src="script.js?v=ru-kk-1" defer></script>
+    <script src="script.js?v=ru-kk-2" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main" data-i18n="skip-content">Перейти к содержимому</a>
@@ -89,15 +89,9 @@
         </div>
         <div class="topbar-right">
           <div class="language-switcher" id="language-switcher">
-            <button class="language-toggle" id="language-toggle" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="language-menu" aria-label="Выбрать язык" data-i18n-aria-label="choose-language">
-              <span class="language-current-flag" id="language-current-flag" aria-hidden="true">🇷🇺</span>
-              <span class="language-current-name" id="language-current-name">Русский</span>
-              <span class="language-current-code" id="language-current-code" aria-hidden="true">RU</span>
-              <span class="language-caret" aria-hidden="true">⌄</span>
-            </button>
-            <div class="language-menu" id="language-menu" role="menu" aria-label="Язык сайта" data-i18n-aria-label="site-language" hidden>
-              <button class="language-option" type="button" role="menuitemradio" aria-checked="true" data-language="ru" lang="ru"><span class="language-flag" aria-hidden="true">🇷🇺</span><span>Русский</span><span class="language-check" aria-hidden="true">✓</span></button>
-              <button class="language-option" type="button" role="menuitemradio" aria-checked="false" data-language="kk" lang="kk"><span class="language-flag" aria-hidden="true">🇰🇿</span><span>Қазақша</span><span class="language-check" aria-hidden="true">✓</span></button>
+            <div class="language-control" role="group" aria-label="Язык сайта" data-i18n-aria-label="site-language">
+              <button class="language-choice" type="button" aria-pressed="true" aria-label="Русский" data-language="ru" lang="ru"><img class="language-flag" src="assets/flags/ru.svg" alt="" aria-hidden="true" /><span class="language-choice-name">Русский</span><span class="language-choice-code" aria-hidden="true">RU</span></button>
+              <button class="language-choice" type="button" aria-pressed="false" aria-label="Қазақша" data-language="kk" lang="kk"><img class="language-flag" src="assets/flags/kz.svg" alt="" aria-hidden="true" /><span class="language-choice-name">Қазақша</span><span class="language-choice-code" aria-hidden="true">KZ</span></button>
             </div>
           </div>
           <span class="access-status"><span></span><span class="access-status-label" data-i18n="free-access">Свободный доступ</span></span
