@@ -261,9 +261,19 @@
       sections: englishSections, questionIds: englishSections.flatMap((section) => section.questionIds) });
     return tests;
   }
-  const TESTS = [...LEARNING_TESTS.map((test) => ({ ...test, direction: "learning" })), ...createMockTests()];
+  const TESTS = [...LEARNING_TESTS.map((test) => ({ ...test, direction: "learning", archived: true })), ...createMockTests()];
   const ACTIVE_TESTS = TESTS.filter((test) => !test.archived);
   const subjectLabel = (test) => test.subject === "combined" ? "ТГО + английский" : test.subject === "tgo" ? "ТГО" : "Английский язык";
+  const learningFilterTitle = (filter) => ({
+    critical: "Критическое мышление",
+    analytical: "Аналитическое мышление",
+    english: "Английский язык",
+  })[filter] || "Обучение";
+  const learningFilterDescription = (filter) => ({
+    critical: "Задачи, расчёты и поиск закономерностей.",
+    analytical: "Анализ текстов, аргументов и обоснованных выводов.",
+    english: "Отдельное направление для подготовки по английскому языку.",
+  })[filter] || "Критическое и аналитическое мышление представлены как отдельные направления.";
   const thinkingKey = (question) => {
     const testId = question?.testId || "";
     if (testId === "mock-tgo-analytical-1" || testId === "mock-tgo-critical-2" || testId.startsWith("tgo-analytical-")) return "critical";
@@ -363,27 +373,29 @@
     $("#test-search").value = "";
     const home = view === "home", special = view === "saved" || view === "history";
     const mock = direction === "mock", directionTitle = mock ? "Пробники" : "Обучение";
+    const learningTitle = learningFilterTitle(filter);
+    const mockTitle = filter === "tgo" ? "Пробники ТГО" : filter === "english" ? "Пробник по английскому" : "Пробники";
     $("#hero").hidden = !home;
     $("#subjects-section").hidden = !home;
     $("#catalog").hidden = home;
-    $("#practice-note").hidden = home || view === "history";
-    const title = home ? "Тренажер для подготовки к КТ" : view === "saved" ? "Сохранённые" : view === "history" ? "История тестов" : mock ? filter === "tgo" ? "Пробники ТГО" : filter === "english" ? "Пробник по английскому" : "Пробники" : filter === "tgo" ? "ТГО" : filter === "english" ? "Английский язык" : "Обучение";
+    $("#practice-note").hidden = home || view === "history" || (!mock && view === "all");
+    const title = home ? "Тренажер для подготовки к КТ" : view === "saved" ? "Сохранённые" : view === "history" ? "История тестов" : mock ? mockTitle : learningTitle;
     $("#page-title").innerHTML = `${title}<span class="heading-dot">.</span>`;
-    $("#page-subtitle").textContent = home ? "СЕГОДНЯШНИЕ ТРУДНОСТИ — ФУНДАМЕНТ ЗАВТРАШНЕГО УСПЕХА" : view === "saved" ? "Тесты из обоих направлений, к которым хочется вернуться." : view === "history" ? "Результаты пробников и учебных тестов в одном месте." : mock ? "Выбери пробник по ТГО или английскому языку." : filter === "tgo" ? "Критическое и аналитическое мышление: практика по 15 вопросов." : "Занимайся по темам, разбирай ответы и закрепляй знания.";
-    $("#breadcrumb-current").textContent = home ? "Главная" : special ? view === "saved" ? "Сохранённые" : "История" : directionTitle;
+    $("#page-subtitle").textContent = home ? "СЕГОДНЯШНИЕ ТРУДНОСТИ — ФУНДАМЕНТ ЗАВТРАШНЕГО УСПЕХА" : view === "saved" ? "Тесты, к которым хочется вернуться." : view === "history" ? "Результаты пробников и прежних учебных тестов в одном месте." : mock ? "Выбери пробник по ТГО или английскому языку." : learningFilterDescription(filter);
+    $("#breadcrumb-current").textContent = home ? "Главная" : special ? view === "saved" ? "Сохранённые" : "История" : !mock && filter !== "all" ? learningTitle : directionTitle;
     document.querySelectorAll("[data-nav]").forEach((el) => {
       const group = el.classList.contains("direction-nav");
       const active = !home && (special ? el.dataset.nav === view && !el.dataset.direction : el.dataset.direction === direction && (group || el.dataset.nav === filter));
       el.classList.toggle("active", active);
       active && (!group || filter === "all") ? el.setAttribute("aria-current", "page") : el.removeAttribute("aria-current");
     });
-    $("#catalog-title").textContent = view === "saved" ? "Твои сохранённые тесты" : view === "history" ? "Пройденные тесты" : mock ? filter === "tgo" ? "Пробники ТГО" : filter === "english" ? "Пробник по английскому" : "Пробники" : filter === "tgo" ? "Подразделы ТГО" : filter === "english" ? "Тесты по английскому" : "Учебные тесты";
+    $("#catalog-title").textContent = view === "saved" ? "Твои сохранённые тесты" : view === "history" ? "Пройденные тесты" : mock ? mockTitle : filter === "all" ? "Направления обучения" : learningTitle;
     $("#catalog-toolbar").hidden = view === "history";
     $(".catalog-caption").hidden = special;
     $("#direction-intro").hidden = home || special;
     $("#direction-intro-label").textContent = directionTitle.toUpperCase();
     $("#direction-intro-icon").innerHTML = icon(mock ? "target" : "book");
-    $("#direction-intro-copy").textContent = mock ? filter === "tgo" ? "По 15 вопросов на критическое и аналитическое мышление — 30 в каждом пробнике." : filter === "english" ? "50 вопросов: 16 на слушание, 18 на грамматику и 16 на чтение." : "Выбери пробник по ТГО или английскому языку." : "Текущая учебная практика: короткие тесты по ТГО и английскому с объяснениями.";
+    $("#direction-intro-copy").textContent = mock ? filter === "tgo" ? "По 15 вопросов на критическое и аналитическое мышление — 30 в каждом пробнике." : filter === "english" ? "50 вопросов: 16 на слушание, 18 на грамматику и 16 на чтение." : "Выбери пробник по ТГО или английскому языку." : learningFilterDescription(filter);
     renderCatalog();
     closeMenu();
     if (scroll && !home) $("#catalog").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -396,27 +408,21 @@
       const active = el.dataset.filter === state.filter;
       el.classList.toggle("active", active);
       el.setAttribute("aria-pressed", String(active));
-      el.hidden = !special && (state.direction === "mock" ? el.dataset.filter === "all" : el.dataset.filter === "combined");
+      const key = el.dataset.filter;
+      el.hidden = special
+        ? ["critical", "analytical"].includes(key)
+        : state.direction === "mock"
+          ? ["all", "critical", "analytical"].includes(key)
+          : key === "tgo";
     });
-    const showTgoSections = state.view === "all" && state.direction === "learning" && state.filter === "tgo";
-    $("#tgo-sections").hidden = !showTgoSections;
-    $(".search-field").hidden = showTgoSections;
-    $("#test-grid").hidden = state.view === "history" || showTgoSections;
+    $(".search-field").hidden = state.view === "all" && state.direction === "learning";
+    $("#test-grid").hidden = state.view === "history";
     $("#history-list").hidden = state.view !== "history";
-    if (showTgoSections) {
-      $("#test-count").textContent = 2;
-      $("#empty-state").hidden = true;
-      $("#test-grid").innerHTML = "";
-      renderTgoTests();
-      return;
-    }
-    $("#tgo-critical-tests").innerHTML = "";
-    $("#tgo-analytical-tests").innerHTML = "";
     if (state.view === "home") { $("#test-grid").innerHTML = ""; return; }
     if (state.view === "history") { renderHistory(); return; }
     const tests = ACTIVE_TESTS.filter((test) =>
       (state.view === "saved" ? state.saved.includes(test.id) : test.direction === state.direction) &&
-      (state.filter === "all" || test.subject === state.filter) &&
+      (state.filter === "all" || test.subject === state.filter || (test.subject === "tgo" && test.topic === state.filter)) &&
       `${test.title} ${test.description} ${test.level} ${subjectLabel(test)} ${test.direction === "mock" ? "Пробники" : "Обучение"}`.toLowerCase().includes(state.search.toLowerCase().trim()));
     $("#test-count").textContent = tests.length;
     $("#test-grid").innerHTML = tests.map((test) => {
@@ -424,19 +430,13 @@
       return `<article class="test-card ${test.subject} ${test.direction === "mock" ? "mock" : ""}"><div class="test-card-top"><span class="test-type">${test.type}</span><button class="icon-button save-button ${saved ? "is-saved" : ""}" data-save="${test.id}" aria-label="${saved ? "Убрать из сохранённых" : "Сохранить тест"}: ${test.title}" aria-pressed="${saved}">${icon("bookmark")}</button></div><div class="test-subject-icon">${icon(test.icon)}</div><div class="test-subject-label">${subjectLabel(test).toUpperCase()}</div><h3>${test.title}</h3><p class="test-description">${test.description}</p><div class="test-meta"><span>${icon("file")}${test.count} вопросов</span><span>${icon("clock")}${test.minutes} мин</span></div><div class="test-card-footer"><span class="test-level ${last ? "completed-label" : ""}">${last ? icon("check-circle") + `${last.correct} из ${last.total} · пройден` : test.level}</span><button class="test-start" data-start="${test.id}">${last ? "Ещё раз" : "Начать"}${icon("arrow-right")}</button></div></article>`;
     }).join("");
     $("#empty-state").hidden = tests.length > 0;
-    if (!tests.length) $("#empty-state").innerHTML = `<span class="empty-icon">${icon(state.search ? "search" : "bookmark")}</span><h3>${state.search ? "Таких тестов пока нет" : "Сохрани то, что интересно"}</h3><p>${state.search ? "Попробуй другое название или выбери другой предмет." : "Добавляй пробники и учебные тесты в закладки на их карточках."}</p><button class="button button-green" data-action="reset-catalog">${state.search ? "Сбросить поиск" : "Посмотреть тесты"}${icon("arrow-right")}</button>`;
-  }
-  function renderTgoTests() {
-    ["critical", "analytical"].forEach((topic) => {
-      $(`#tgo-${topic}-tests`).innerHTML = ACTIVE_TESTS
-        .filter((test) => test.direction === "learning" && test.subject === "tgo" && test.topic === topic)
-        .map((test) => {
-          const saved = state.saved.includes(test.id);
-          const last = state.history.find((attempt) => attempt.testId === test.id);
-          return `<article class="tgo-test-row"><div class="tgo-test-row-top"><h4>Тест ${test.variant}</h4><button class="icon-button save-button ${saved ? "is-saved" : ""}" data-save="${test.id}" aria-label="${saved ? "Убрать из сохранённых" : "Сохранить тест"}: ${test.title}" aria-pressed="${saved}">${icon("bookmark")}</button></div><p class="tgo-test-description">${test.description}</p>${last ? `<span class="tgo-test-completed">${icon("check-circle")}${last.correct} из ${last.total} · пройден</span>` : ""}<div class="tgo-test-row-footer"><span class="tgo-test-meta">${test.count} вопросов · ${test.minutes} мин</span><button class="test-start" data-start="${test.id}" aria-label="${last ? "Пройти ещё раз" : "Начать"}: ${test.title}">${last ? "Ещё раз" : "Начать"}${icon("arrow-right")}</button></div></article>`;
-        })
-        .join("");
-    });
+    if (!tests.length && state.view === "all" && state.direction === "learning") {
+      $("#empty-state").innerHTML = state.filter === "all"
+        ? `<span class="empty-icon">${icon("book")}</span><h3>Направления обучения разделены</h3><p>Выбери «Критическое мышление», «Аналитическое мышление» или «Английский язык». Активных учебных тестов сейчас нет.</p>`
+        : `<span class="empty-icon">${icon(state.filter === "critical" ? "logic" : state.filter === "analytical" ? "bulb" : "book")}</span><h3>В этом направлении пока нет тестов</h3><p>Учебные материалы для раздела «${learningFilterTitle(state.filter)}» появятся здесь.</p>`;
+    } else if (!tests.length) {
+      $("#empty-state").innerHTML = `<span class="empty-icon">${icon(state.search ? "search" : "bookmark")}</span><h3>${state.search ? "Таких тестов пока нет" : "Сохрани то, что интересно"}</h3><p>${state.search ? "Попробуй другое название или выбери другой предмет." : "Добавляй пробники в закладки на их карточках."}</p><button class="button button-green" data-action="reset-catalog">${state.search ? "Сбросить поиск" : "Посмотреть пробники"}${icon("arrow-right")}</button>`;
+    }
   }
   function renderHistory() {
     $("#test-count").textContent = state.history.length;
@@ -505,7 +505,7 @@
     `<button class="icon-button dialog-close" data-action="close-dialog" aria-label="Закрыть">${icon("close")}</button>`;
   function showHelp() {
     openDialog(
-      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай тест и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В «Пробниках» — отдельные тесты по ТГО и английскому языку. В «Обучении» — практика по темам.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">230 авторских учебных вопросов. Задания предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к тестам${icon("arrow-right")}</button></div>`,
+      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай пробник и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В «Пробниках» доступны ТГО и английский язык. В «Обучении» критическое и аналитическое мышление разделены.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">В активных пробниках 140 учебных вопросов. Они предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к пробникам${icon("arrow-right")}</button></div>`,
     );
   }
   function showSetup(id) {
@@ -735,7 +735,7 @@
     const nav = event.target.closest("[data-nav]");
     if (nav) {
       const value = nav.dataset.nav;
-      navigate(["saved", "history"].includes(value) ? value : "all", ["tgo", "english"].includes(value) ? value : "all", false, nav.dataset.direction || state.direction);
+      navigate(["saved", "history"].includes(value) ? value : "all", ["tgo", "critical", "analytical", "english"].includes(value) ? value : "all", false, nav.dataset.direction || state.direction);
       return;
     }
     const filter = event.target.closest("[data-filter]");

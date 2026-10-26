@@ -10,12 +10,12 @@
     />
     <title>Тренажер для подготовки к КТ — Oqu</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=blue-welcome-1" />
-    <link rel="stylesheet" href="style.css?v=welcome-compact" />
+    <link rel="stylesheet" href="style.css?v=learning-split-1" />
     <script src="questions.js" defer></script>
     <script src="mock-questions.js?v=tgo-1-author-2" defer></script>
     <script src="tgo-mock-2.js?v=tgo-2-1" defer></script>
     <script src="english-mock-v2.js?v=english-v2" defer></script>
-    <script src="script.js?v=tgo-2-1" defer></script>
+    <script src="script.js?v=learning-split-1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -50,7 +50,8 @@
             <span data-icon="book"></span>Обучение
           </button>
           <div class="subject-nav">
-            <button class="subject-nav-item" data-direction="learning" data-nav="tgo"><span class="nav-dot purple"></span>ТГО</button>
+            <button class="subject-nav-item" data-direction="learning" data-nav="critical"><span class="nav-dot purple"></span>Критическое мышление</button>
+            <button class="subject-nav-item" data-direction="learning" data-nav="analytical"><span class="nav-dot blue"></span>Аналитическое мышление</button>
             <button class="subject-nav-item" data-direction="learning" data-nav="english"><span class="nav-dot blue"></span>Английский язык</button>
           </div>
         </div>
@@ -133,8 +134,8 @@
             <button class="subject-card direction-card learning-direction-card" data-open-direction="learning">
               <div class="subject-card-top"><div class="subject-symbol" data-icon="book"></div><span class="subject-pill">ПРАКТИКА ПО ТЕМАМ</span><span class="subject-card-arrow" data-icon="arrow-up-right"></span></div>
               <h3>Обучение</h3>
-              <p>Тематические тесты и разбор каждого ответа. Занимайся в своём темпе.</p>
-              <div class="subject-card-bottom"><span>ТГО · Английский язык</span><strong>К обучению<span data-icon="arrow-right"></span></strong></div>
+              <p>Критическое и аналитическое мышление представлены как отдельные направления.</p>
+              <div class="subject-card-bottom"><span>Критическое · Аналитическое · Английский</span><strong>К обучению<span data-icon="arrow-right"></span></strong></div>
             </button>
           </div>
         </section>
@@ -163,13 +164,25 @@
                 data-filter="all"
                 aria-pressed="true"
               >
-                Все тесты</button
+                Все направления</button
               ><button
                 class="filter-tab"
                 data-filter="tgo"
                 aria-pressed="false"
               >
                 ТГО</button
+              ><button
+                class="filter-tab"
+                data-filter="critical"
+                aria-pressed="false"
+              >
+                Критическое мышление</button
+              ><button
+                class="filter-tab"
+                data-filter="analytical"
+                aria-pressed="false"
+              >
+                Аналитическое мышление</button
               ><button
                 class="filter-tab"
                 data-filter="english"
@@ -188,28 +201,6 @@
                 autocomplete="off"
               /><kbd>/</kbd></label
             >
-          </div>
-          <div class="tgo-sections" id="tgo-sections" hidden>
-            <section class="tgo-subsection" aria-labelledby="tgo-critical-title">
-              <div class="tgo-subsection-top">
-                <span class="tgo-subsection-icon" data-icon="bulb"></span>
-                <span class="tgo-subsection-number">01</span>
-              </div>
-              <h3 id="tgo-critical-title">Критическое мышление</h3>
-              <p class="tgo-subsection-description">Расчёты, закономерности и решение задач.</p>
-              <p class="tgo-subsection-stats">3 теста · 45 вопросов</p>
-              <div class="tgo-subsection-tests" id="tgo-critical-tests"></div>
-            </section>
-            <section class="tgo-subsection tgo-subsection-analytical" aria-labelledby="tgo-analytical-title">
-              <div class="tgo-subsection-top">
-                <span class="tgo-subsection-icon" data-icon="logic"></span>
-                <span class="tgo-subsection-number">02</span>
-              </div>
-              <h3 id="tgo-analytical-title">Аналитическое мышление</h3>
-              <p class="tgo-subsection-description">Анализ текстов, аргументов и выводов.</p>
-              <p class="tgo-subsection-stats">3 теста · 45 вопросов</p>
-              <div class="tgo-subsection-tests" id="tgo-analytical-tests"></div>
-            </section>
           </div>
           <div class="test-grid" id="test-grid"></div>
           <div class="empty-state" id="empty-state" hidden></div>
