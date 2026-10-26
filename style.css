@@ -6794,3 +6794,129 @@ input:focus-visible,
     width: 100%;
   }
 }
+
+/* Compact Russian/Kazakh language menu in the top bar. */
+.topbar {
+  position: relative;
+  z-index: 30;
+  overflow: visible;
+}
+.language-switcher {
+  position: relative;
+  flex-shrink: 0;
+}
+.access-status > .access-status-label {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.language-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid #dce9f2;
+  border-radius: 9px;
+  background: #fff;
+  color: #17334a;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  transition: border-color 0.16s, background 0.16s, color 0.16s;
+}
+.language-toggle:hover,
+.language-toggle[aria-expanded="true"] {
+  border-color: #88bddb;
+  background: #eaf5fc;
+  color: #006fa6;
+}
+.language-current-flag,
+.language-flag {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 17px;
+  line-height: 1;
+}
+.language-current-code {
+  display: none;
+}
+.language-caret {
+  width: 10px;
+  color: #526879;
+  font-size: 13px;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+.language-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  min-width: 172px;
+  padding: 6px;
+  border: 1px solid #dce9f2;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgba(23, 51, 74, 0.16);
+}
+.language-menu[hidden] {
+  display: none;
+}
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 7px;
+  color: #36566b;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 650;
+}
+.language-option:hover,
+.language-option[aria-checked="true"] {
+  background: #eaf5fc;
+  color: #006fa6;
+}
+.language-check {
+  margin-left: auto;
+  opacity: 0;
+}
+.language-option[aria-checked="true"] .language-check {
+  opacity: 1;
+}
+html[lang="kk"] body {
+  font-family: Arial, "Helvetica Neue", "DejaVu Sans", sans-serif;
+}
+@media (max-width: 670px) {
+  .language-current-name {
+    display: none;
+  }
+  .language-current-code {
+    display: inline;
+  }
+  .language-toggle {
+    min-height: 34px;
+    padding: 0 8px;
+  }
+}
+@media (max-width: 520px) {
+  .access-status,
+  .header-divider {
+    display: none;
+  }
+}
+@media (max-width: 360px) {
+  .language-current-code,
+  .language-caret {
+    display: none;
+  }
+  .language-toggle {
+    justify-content: center;
+    width: 34px;
+    padding: 0;
+  }
+}

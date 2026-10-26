@@ -58,6 +58,62 @@
           "'": "&#39;",
         })[c],
     );
+  const I18N = window.OQU_I18N || { ru: {} };
+  let currentLanguage = (() => {
+    try {
+      const saved = localStorage.getItem("oqu.language");
+      return saved === "kk" ? "kk" : "ru";
+    } catch {
+      return "ru";
+    }
+  })();
+  const tr = (key, params = {}) => {
+    const template = I18N[currentLanguage]?.[key] ?? I18N.ru?.[key] ?? key;
+    return String(template).replace(/\{([a-zA-Z0-9_]+)\}/g, (match, name) =>
+      Object.hasOwn(params, name) ? String(params[name]) : match,
+    );
+  };
+  const languageName = (language = currentLanguage) => language === "kk" ? "Қазақша" : "Русский";
+  function updateLanguageControl() {
+    const kazakh = currentLanguage === "kk";
+    $("#language-current-flag").textContent = kazakh ? "🇰🇿" : "🇷🇺";
+    $("#language-current-name").textContent = languageName();
+    $("#language-current-code").textContent = kazakh ? "KZ" : "RU";
+    $("#language-toggle").setAttribute("aria-label", tr("language-current", { language: languageName() }));
+    document.querySelectorAll("[data-language]").forEach((option) => {
+      option.setAttribute("aria-checked", String(option.dataset.language === currentLanguage));
+    });
+  }
+  function applyStaticTranslations() {
+    document.documentElement.lang = currentLanguage;
+    document.title = tr("document-title");
+    document.querySelector('meta[name="description"]')?.setAttribute("content", tr("meta-description"));
+    document.querySelectorAll("[data-i18n]").forEach((element) => {
+      element.textContent = tr(element.dataset.i18n);
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach((element) => {
+      element.innerHTML = tr(element.dataset.i18nHtml);
+    });
+    document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+      element.setAttribute("aria-label", tr(element.dataset.i18nAriaLabel));
+    });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+      element.setAttribute("placeholder", tr(element.dataset.i18nPlaceholder));
+    });
+    updateLanguageControl();
+  }
+  function closeLanguageMenu({ focus = false } = {}) {
+    const menu = $("#language-menu");
+    menu.hidden = true;
+    $("#language-toggle").setAttribute("aria-expanded", "false");
+    if (focus) $("#language-toggle").focus({ preventScroll: true });
+  }
+  function openLanguageMenu() {
+    const menu = $("#language-menu");
+    menu.hidden = false;
+    $("#language-toggle").setAttribute("aria-expanded", "true");
+    menu.querySelector(`[data-language="${currentLanguage}"]`)?.focus({ preventScroll: true });
+  }
   const BANK = window.OQU_QUESTIONS || [];
   const LEARNING_TESTS = [
     {
@@ -263,32 +319,89 @@
   }
   const TESTS = [...LEARNING_TESTS.map((test) => ({ ...test, direction: "learning", archived: true })), ...createMockTests()];
   const ACTIVE_TESTS = TESTS.filter((test) => !test.archived);
-  const subjectLabel = (test) => test.subject === "combined" ? "ТГО + английский" : test.subject === "tgo" ? "ТГО" : "Английский язык";
+  function localizedTestField(test, field) {
+    if (currentLanguage === "ru") return test[field];
+    const analytical = test.id.match(/^tgo-critical-(\d)$/);
+    const critical = test.id.match(/^tgo-analytical-(\d)$/);
+    const combined = test.id.match(/^mock-combined-(\d)$/);
+    const tgoMock = test.id.match(/^mock-tgo-(\d)$/);
+    if (field === "title") {
+      if (analytical) return tr("analytical-test-title", { n: analytical[1] });
+      if (critical) return tr("critical-test-title", { n: critical[1] });
+      if (combined) return tr("mock-combined-title", { n: combined[1] });
+      if (tgoMock) return tr("tgo-mock-title", { n: tgoMock[1] });
+      if (test.id === "mock-english") return tr("english-mock-title");
+      if (test.id === "english-mixed") return tr("english-complex-title");
+      if (test.id === "tgo-critical") return tr("archived-analytical-title");
+    }
+    if (field === "description") {
+      if (analytical) return tr("analytical-test-description");
+      if (critical) return tr("critical-test-description");
+      if (combined) return tr("combined-description");
+      if (tgoMock) return tr("tgo-mock-description");
+      if (test.id === "mock-english") return tr("english-mock-description");
+      if (test.id === "english-mixed") return tr("english-complex-description");
+      if (test.id === "tgo-critical") return tr("archived-analytical-description");
+      if (test.id === "english-grammar") return tr("english-grammar-description");
+      if (test.id === "english-vocabulary") return tr("english-vocabulary-description");
+      if (test.id === "english-reading") return tr("english-reading-description");
+    }
+    if (field === "type") {
+      if (combined) return tr("full-mock");
+      if (tgoMock) return tr("tgo-mock-type");
+      if (test.id === "mock-english") return tr("english-mock-type");
+      if (test.type === "Практический тест") return tr("practical-test");
+      if (test.type === "Тематический тест") return tr("thematic-test");
+      if (test.type === "Комплексный тест") return tr("comprehensive-test");
+    }
+    if (field === "level") {
+      if (combined) return tr("subject-combined");
+      if (tgoMock) return tr("two-thinking-blocks");
+      if (test.id === "mock-english") return tr("english-mock-level");
+      const levelKeys = {
+        "Аналитическое мышление": "analytical-thinking",
+        "Критическое мышление": "critical-thinking",
+        "Все темы": "all-topics",
+        "Анализ текста": "text-analysis",
+        "Грамматика": "grammar",
+        "Лексика": "vocabulary",
+        "Чтение": "reading",
+      };
+      if (levelKeys[test.level]) return tr(levelKeys[test.level]);
+    }
+    return test[field];
+  }
+  const testTitle = (test) => localizedTestField(test, "title");
+  const testDescription = (test) => localizedTestField(test, "description");
+  const testType = (test) => localizedTestField(test, "type");
+  const testLevel = (test) => localizedTestField(test, "level");
+  const subjectLabel = (test) => test.subject === "combined" ? tr("subject-combined") : test.subject === "tgo" ? tr("tgo") : tr("english-language");
   const learningFilterTitle = (filter) => ({
-    critical: "Критическое мышление",
-    analytical: "Аналитическое мышление",
-    english: "Английский язык",
-  })[filter] || "Обучение";
+    critical: tr("critical-thinking"),
+    analytical: tr("analytical-thinking"),
+    english: tr("english-language"),
+  })[filter] || tr("learning");
   const learningFilterDescription = (filter) => ({
-    critical: "Задачи, расчёты и поиск закономерностей.",
-    analytical: "Анализ текстов, аргументов и обоснованных выводов.",
-    english: "Отдельное направление для подготовки по английскому языку.",
-  })[filter] || "Критическое и аналитическое мышление представлены как отдельные направления.";
+    critical: tr("critical-description"),
+    analytical: tr("analytical-description"),
+    english: tr("english-description"),
+  })[filter] || tr("learning-description");
   const thinkingKey = (question) => {
     const testId = question?.testId || "";
     if (testId === "mock-tgo-analytical-1" || testId === "mock-tgo-critical-2" || testId.startsWith("tgo-analytical-")) return "critical";
     if (testId === "mock-tgo-analytical-text-1" || testId.startsWith("tgo-critical-") || /^tgo-(?:0[1-9]|1[0-5])$/.test(question?.id || "")) return "analytical";
     return question?.topic;
   };
-  const englishSectionLabel = (topic) => ({ listening: "Слушание", grammar: "Грамматика", vocabulary: "Лексика", reading: "Чтение" })[topic] || "Английский язык";
-  const sectionLabel = (question) => question.subject === "english" ? englishSectionLabel(question.topic) : thinkingKey(question) === "analytical" ? "Аналитическое мышление" : "Критическое мышление";
+  const englishSectionLabel = (topic) => ({ listening: tr("listening"), grammar: tr("grammar"), vocabulary: tr("vocabulary"), reading: tr("reading") })[topic] || tr("english-language");
+  const sectionLabel = (question) => question.subject === "english" ? englishSectionLabel(question.topic) : thinkingKey(question) === "analytical" ? tr("analytical-thinking") : tr("critical-thinking");
   function mockBreakdown(test, result = null) {
     if (!test.sections) return "";
     const actual = result ? result.questions.map((q, i) => ({ question: BANK_BY_ID.get(q.id), answer: result.answers[i] })) : null;
     return `<div class="mock-breakdown">${test.sections.map((section) => {
       const rows = actual ? actual.filter(({ question }) => question && (section.key === "english" ? question.subject === "english" : question.subject === "english" ? question.topic === section.key : question.subject === "tgo" && thinkingKey(question) === section.key)) : null;
       const value = rows ? `${rows.filter(({ question, answer }) => answer === question.answer).length} / ${rows.length}` : section.questionIds.length;
-      return `<span>${section.label}<strong>${value}</strong></span>`;
+      const label = section.key === "critical" ? tr("critical-thinking") : section.key === "analytical" ? tr("analytical-thinking") : section.key === "english" ? tr("english-language") : englishSectionLabel(section.key);
+      return `<span>${label}<strong>${value}</strong></span>`;
     }).join("")}</div>`;
   }
   const storage = {
@@ -306,7 +419,7 @@
         return true;
       } catch {
         toast(
-          "Браузер не разрешил сохранить данные. Результат доступен до закрытия страницы.",
+          tr("browser-save-error"),
         );
         return false;
       }
@@ -356,6 +469,29 @@
       3800,
     );
   }
+  function setLanguage(language, { announce = true } = {}) {
+    if (!["ru", "kk"].includes(language)) return;
+    if (language === currentLanguage) {
+      closeLanguageMenu({ focus: true });
+      return;
+    }
+    const search = state.search;
+    currentLanguage = language;
+    try {
+      localStorage.setItem("oqu.language", currentLanguage);
+    } catch {
+      // The interface can still switch for the current page view.
+    }
+    applyStaticTranslations();
+    navigate(state.view, state.filter, false, state.direction);
+    if (search) {
+      state.search = search;
+      $("#test-search").value = search;
+      renderCatalog();
+    }
+    closeLanguageMenu({ focus: true });
+    if (announce) toast(tr("language-changed"));
+  }
   function updateSavedCount() {
     $("#saved-count").textContent = state.saved.length;
     $("#saved-count").hidden = !state.saved.length;
@@ -372,30 +508,30 @@
     state.search = "";
     $("#test-search").value = "";
     const home = view === "home", special = view === "saved" || view === "history";
-    const mock = direction === "mock", directionTitle = mock ? "Пробники" : "Обучение";
+    const mock = direction === "mock", directionTitle = mock ? tr("mock-exams") : tr("learning");
     const learningTitle = learningFilterTitle(filter);
-    const mockTitle = filter === "tgo" ? "Пробники ТГО" : filter === "english" ? "Пробник по английскому" : "Пробники";
+    const mockTitle = filter === "tgo" ? tr("mock-tgo-title") : filter === "english" ? tr("mock-english-title") : tr("mock-exams");
     $("#hero").hidden = !home;
     $("#subjects-section").hidden = !home;
     $("#catalog").hidden = home;
     $("#practice-note").hidden = home || view === "history" || (!mock && view === "all");
-    const title = home ? "Тренажер для подготовки к КТ" : view === "saved" ? "Сохранённые" : view === "history" ? "История тестов" : mock ? mockTitle : learningTitle;
+    const title = home ? tr("workspace-title") : view === "saved" ? tr("saved") : view === "history" ? tr("test-history") : mock ? mockTitle : learningTitle;
     $("#page-title").innerHTML = `${title}<span class="heading-dot">.</span>`;
-    $("#page-subtitle").textContent = home ? "СЕГОДНЯШНИЕ ТРУДНОСТИ — ФУНДАМЕНТ ЗАВТРАШНЕГО УСПЕХА" : view === "saved" ? "Тесты, к которым хочется вернуться." : view === "history" ? "Результаты пробников и прежних учебных тестов в одном месте." : mock ? "Выбери пробник по ТГО или английскому языку." : learningFilterDescription(filter);
-    $("#breadcrumb-current").textContent = home ? "Главная" : special ? view === "saved" ? "Сохранённые" : "История" : !mock && filter !== "all" ? learningTitle : directionTitle;
+    $("#page-subtitle").textContent = home ? tr("home-slogan") : view === "saved" ? tr("saved-subtitle") : view === "history" ? tr("history-subtitle") : mock ? tr("mock-subtitle") : learningFilterDescription(filter);
+    $("#breadcrumb-current").textContent = home ? tr("home") : special ? view === "saved" ? tr("saved") : tr("test-history") : !mock && filter !== "all" ? learningTitle : directionTitle;
     document.querySelectorAll("[data-nav]").forEach((el) => {
       const group = el.classList.contains("direction-nav");
       const active = !home && (special ? el.dataset.nav === view && !el.dataset.direction : el.dataset.direction === direction && (group || el.dataset.nav === filter));
       el.classList.toggle("active", active);
       active && (!group || filter === "all") ? el.setAttribute("aria-current", "page") : el.removeAttribute("aria-current");
     });
-    $("#catalog-title").textContent = view === "saved" ? "Твои сохранённые тесты" : view === "history" ? "Пройденные тесты" : mock ? mockTitle : filter === "all" ? "Направления обучения" : learningTitle;
+    $("#catalog-title").textContent = view === "saved" ? tr("saved-tests") : view === "history" ? tr("completed-tests") : mock ? mockTitle : filter === "all" ? tr("learning-directions") : learningTitle;
     $("#catalog-toolbar").hidden = view === "history";
     $(".catalog-caption").hidden = special;
     $("#direction-intro").hidden = home || special;
     $("#direction-intro-label").textContent = directionTitle.toUpperCase();
     $("#direction-intro-icon").innerHTML = icon(mock ? "target" : "book");
-    $("#direction-intro-copy").textContent = mock ? filter === "tgo" ? "По 15 вопросов на критическое и аналитическое мышление — 30 в каждом пробнике." : filter === "english" ? "50 вопросов: 16 на слушание, 18 на грамматику и 16 на чтение." : "Выбери пробник по ТГО или английскому языку." : learningFilterDescription(filter);
+    $("#direction-intro-copy").textContent = mock ? filter === "tgo" ? tr("mock-tgo-intro") : filter === "english" ? tr("mock-english-intro") : tr("mock-default-intro") : learningFilterDescription(filter);
     renderCatalog();
     closeMenu();
     if (scroll && !home) $("#catalog").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -423,19 +559,20 @@
     const tests = ACTIVE_TESTS.filter((test) =>
       (state.view === "saved" ? state.saved.includes(test.id) : test.direction === state.direction) &&
       (state.filter === "all" || test.subject === state.filter || (test.subject === "tgo" && test.topic === state.filter)) &&
-      `${test.title} ${test.description} ${test.level} ${subjectLabel(test)} ${test.direction === "mock" ? "Пробники" : "Обучение"}`.toLowerCase().includes(state.search.toLowerCase().trim()));
+      `${test.title} ${testTitle(test)} ${test.description} ${testDescription(test)} ${test.level} ${testLevel(test)} ${subjectLabel(test)} ${test.direction === "mock" ? tr("mock-exams") : tr("learning")}`.toLowerCase().includes(state.search.toLowerCase().trim()));
     $("#test-count").textContent = tests.length;
     $("#test-grid").innerHTML = tests.map((test) => {
       const saved = state.saved.includes(test.id), last = state.history.find((attempt) => attempt.testId === test.id);
-      return `<article class="test-card ${test.subject} ${test.direction === "mock" ? "mock" : ""}"><div class="test-card-top"><span class="test-type">${test.type}</span><button class="icon-button save-button ${saved ? "is-saved" : ""}" data-save="${test.id}" aria-label="${saved ? "Убрать из сохранённых" : "Сохранить тест"}: ${test.title}" aria-pressed="${saved}">${icon("bookmark")}</button></div><div class="test-subject-icon">${icon(test.icon)}</div><div class="test-subject-label">${subjectLabel(test).toUpperCase()}</div><h3>${test.title}</h3><p class="test-description">${test.description}</p><div class="test-meta"><span>${icon("file")}${test.count} вопросов</span><span>${icon("clock")}${test.minutes} мин</span></div><div class="test-card-footer"><span class="test-level ${last ? "completed-label" : ""}">${last ? icon("check-circle") + `${last.correct} из ${last.total} · пройден` : test.level}</span><button class="test-start" data-start="${test.id}">${last ? "Ещё раз" : "Начать"}${icon("arrow-right")}</button></div></article>`;
+      const title = testTitle(test);
+      return `<article class="test-card ${test.subject} ${test.direction === "mock" ? "mock" : ""}"><div class="test-card-top"><span class="test-type">${testType(test)}</span><button class="icon-button save-button ${saved ? "is-saved" : ""}" data-save="${test.id}" aria-label="${saved ? tr("remove-saved") : tr("save-test")}: ${title}" aria-pressed="${saved}">${icon("bookmark")}</button></div><div class="test-subject-icon">${icon(test.icon)}</div><div class="test-subject-label">${subjectLabel(test).toUpperCase()}</div><h3>${title}</h3><p class="test-description">${testDescription(test)}</p><div class="test-meta"><span>${icon("file")}${test.count} ${tr("questions")}</span><span>${icon("clock")}${test.minutes} ${tr("minutes-short")}</span></div><div class="test-card-footer"><span class="test-level ${last ? "completed-label" : ""}">${last ? icon("check-circle") + `${last.correct} / ${last.total} · ${tr("completed")}` : testLevel(test)}</span><button class="test-start" data-start="${test.id}">${last ? tr("again") : tr("start")}${icon("arrow-right")}</button></div></article>`;
     }).join("");
     $("#empty-state").hidden = tests.length > 0;
     if (!tests.length && state.view === "all" && state.direction === "learning") {
       $("#empty-state").innerHTML = state.filter === "all"
-        ? `<span class="empty-icon">${icon("book")}</span><h3>Направления обучения разделены</h3><p>Выбери «Критическое мышление», «Аналитическое мышление» или «Английский язык». Активных учебных тестов сейчас нет.</p>`
-        : `<span class="empty-icon">${icon(state.filter === "critical" ? "logic" : state.filter === "analytical" ? "bulb" : "book")}</span><h3>В этом направлении пока нет тестов</h3><p>Учебные материалы для раздела «${learningFilterTitle(state.filter)}» появятся здесь.</p>`;
+        ? `<span class="empty-icon">${icon("book")}</span><h3>${tr("directions-separated")}</h3><p>${tr("directions-separated-copy")}</p>`
+        : `<span class="empty-icon">${icon(state.filter === "critical" ? "logic" : state.filter === "analytical" ? "bulb" : "book")}</span><h3>${tr("no-tests-direction")}</h3><p>${tr("materials-coming", { section: learningFilterTitle(state.filter) })}</p>`;
     } else if (!tests.length) {
-      $("#empty-state").innerHTML = `<span class="empty-icon">${icon(state.search ? "search" : "bookmark")}</span><h3>${state.search ? "Таких тестов пока нет" : "Сохрани то, что интересно"}</h3><p>${state.search ? "Попробуй другое название или выбери другой предмет." : "Добавляй пробники в закладки на их карточках."}</p><button class="button button-green" data-action="reset-catalog">${state.search ? "Сбросить поиск" : "Посмотреть пробники"}${icon("arrow-right")}</button>`;
+      $("#empty-state").innerHTML = `<span class="empty-icon">${icon(state.search ? "search" : "bookmark")}</span><h3>${state.search ? tr("no-tests-search") : tr("save-interesting")}</h3><p>${state.search ? tr("try-other-search") : tr("bookmark-mocks")}</p><button class="button button-green" data-action="reset-catalog">${state.search ? tr("reset-search") : tr("view-mocks")}${icon("arrow-right")}</button>`;
     }
   }
   function renderHistory() {
@@ -444,20 +581,20 @@
     if (!state.history.length) {
       $("#history-list").innerHTML = "";
       $("#empty-state").innerHTML =
-        `<span class="empty-icon">${icon("history")}</span><h3>Твоя история только начинается</h3><p>Пройди первый тест — здесь появятся результат и разбор ответов.</p><button class="button button-green" data-action="reset-catalog">Выбрать тест${icon("arrow-right")}</button>`;
+        `<span class="empty-icon">${icon("history")}</span><h3>${tr("history-start")}</h3><p>${tr("history-start-copy")}</p><button class="button button-green" data-action="reset-catalog">${tr("choose-test")}${icon("arrow-right")}</button>`;
       return;
     }
     const total = state.history.reduce((sum, h) => sum + h.total, 0),
       correct = state.history.reduce((sum, h) => sum + h.correct, 0);
     $("#history-list").innerHTML =
-      `<div class="history-stats"><div><span>Пройдено тестов</span><strong>${state.history.length}</strong></div><div><span>Решено вопросов</span><strong>${total}</strong></div><div><span>Правильных ответов</span><strong>${Math.round((correct / total) * 100)}<small>%</small></strong></div></div>${state.history
+      `<div class="history-stats"><div><span>${tr("tests-completed")}</span><strong>${state.history.length}</strong></div><div><span>${tr("questions-solved")}</span><strong>${total}</strong></div><div><span>${tr("correct-answers")}</span><strong>${Math.round((correct / total) * 100)}<small>%</small></strong></div></div>${state.history
         .map((h) => {
           const t = TESTS.find((t) => t.id === h.testId);
-          return `<article class="history-row"><span class="history-subject-icon ${t.direction === "mock" ? "mock" : t.subject}">${icon(t.icon)}</span><div class="history-row-title"><h3>${t.title}</h3><span>${new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(new Date(h.date))} · ${formatDuration(h.elapsed)}</span></div><div class="history-result"><strong>${h.correct}<span> / ${h.total}</span></strong><span>${Math.round((h.correct / h.total) * 100)}% верно</span></div><button class="button button-white" data-review="${esc(h.id)}">Разбор${icon("arrow-right")}</button></article>`;
+          return `<article class="history-row"><span class="history-subject-icon ${t.direction === "mock" ? "mock" : t.subject}">${icon(t.icon)}</span><div class="history-row-title"><h3>${testTitle(t)}</h3><span>${new Intl.DateTimeFormat(currentLanguage === "kk" ? "kk-KZ" : "ru-RU", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }).format(new Date(h.date))} · ${formatDuration(h.elapsed)}</span></div><div class="history-result"><strong>${h.correct}<span> / ${h.total}</span></strong><span>${Math.round((h.correct / h.total) * 100)}${tr("percent-correct")}</span></div><button class="button button-white" data-review="${esc(h.id)}">${tr("review")}${icon("arrow-right")}</button></article>`;
         })
         .join(
           "",
-        )}<p class="storage-note">${icon("user")}История хранится только в этом браузере. Сохраняются последние 50 попыток.</p>`;
+        )}<p class="storage-note">${icon("user")}${tr("history-storage")}</p>`;
   }
   function toggleSave(id) {
     const i = state.saved.indexOf(id);
@@ -465,7 +602,7 @@
     else state.saved.splice(i, 1);
     storage.write("saved", state.saved);
     renderCatalog();
-    toast(i < 0 ? "Тест добавлен в сохранённые" : "Тест убран из сохранённых");
+    toast(i < 0 ? tr("saved-added") : tr("saved-removed"));
   }
   let dialogOpener = null;
   function openDialog(content, wide = false) {
@@ -502,17 +639,17 @@
     if (target) target.focus({ preventScroll: true });
   }
   const closeButton = () =>
-    `<button class="icon-button dialog-close" data-action="close-dialog" aria-label="Закрыть">${icon("close")}</button>`;
+    `<button class="icon-button dialog-close" data-action="close-dialog" aria-label="${tr("close")}">${icon("close")}</button>`;
   function showHelp() {
     openDialog(
-      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">ТВОЁ МЕСТО ДЛЯ ПРАКТИКИ</div><h2 id="dialog-title">Начни. Остальное получится.</h2><p class="modal-intro">Всё просто: выбирай пробник и занимайся в удобном темпе.</p><ol class="help-steps"><li><span>01</span><div><strong>Выбери направление</strong><p>В «Пробниках» доступны ТГО и английский язык. В «Обучении» критическое и аналитическое мышление разделены.</p></div></li><li><span>02</span><div><strong>Проверь себя</strong><p>Отвечай на вопросы, возвращайся к сложным и отмечай их флажком. Таймер можно отключить перед началом.</p></div></li><li><span>03</span><div><strong>Разберись в ошибках</strong><p>После завершения получи результат и объяснение к каждому вопросу. История сохранится в этом браузере.</p></div></li></ol><div class="modal-info">В активных пробниках 140 учебных вопросов. Они предназначены для практики и не являются официальной базой КТ.</div><button class="button button-green button-full" data-action="close-dialog">Всё понятно, к пробникам${icon("arrow-right")}</button></div>`,
+      `<div class="standard-modal">${closeButton()}<span class="modal-icon">${icon("sparkles")}</span><div class="eyebrow">${tr("help-eyebrow")}</div><h2 id="dialog-title">${tr("help-title")}</h2><p class="modal-intro">${tr("help-intro")}</p><ol class="help-steps"><li><span>01</span><div><strong>${tr("help-step-direction")}</strong><p>${tr("help-step-direction-copy")}</p></div></li><li><span>02</span><div><strong>${tr("help-step-check")}</strong><p>${tr("help-step-check-copy")}</p></div></li><li><span>03</span><div><strong>${tr("help-step-review")}</strong><p>${tr("help-step-review-copy")}</p></div></li></ol><div class="modal-info">${tr("help-info")}</div><button class="button button-green button-full" data-action="close-dialog">${tr("help-done")}${icon("arrow-right")}</button></div>`,
     );
   }
   function showSetup(id) {
     const t = ACTIVE_TESTS.find((t) => t.id === id);
     if (!t) return;
     openDialog(
-      `<div class="standard-modal setup-modal">${closeButton()}<span class="modal-icon ${t.direction === "mock" ? "mock" : t.subject}">${icon(t.icon)}</span><div class="eyebrow">${subjectLabel(t).toUpperCase()} · ${t.type.toUpperCase()}</div><h2 id="dialog-title">${t.title}</h2><p class="modal-intro">${t.description}</p>${mockBreakdown(t)}<div class="setup-stats"><div>${icon("file")}<strong>${t.count}</strong><span>вопросов</span></div><div>${icon("clock")}<strong>${t.minutes} мин</strong><span>на прохождение</span></div><div>${icon("bulb")}<strong>С разбором</strong><span>каждого ответа</span></div></div><label class="setting-row"><div><strong>Тест с таймером</strong><span>Поможет привыкнуть к ограничению по времени</span></div><input id="timer-setting" type="checkbox" role="switch" checked /><span class="switch-track"></span></label><label class="setting-row"><div><strong>Перемешать вопросы</strong><span>Новый порядок при каждой попытке</span></div><input id="shuffle-setting" type="checkbox" role="switch" checked /><span class="switch-track"></span></label><p class="setup-hint">${icon("check-circle")}Можно пропускать вопросы и возвращаться к ним. Правильные ответы появятся после завершения.</p><div class="modal-info">Это учебная практика. Количество вопросов и время могут отличаться от официального экзамена КТ.</div><button class="button button-green button-full" data-begin="${t.id}">Начать тест${icon("arrow-right")}</button></div>`,
+      `<div class="standard-modal setup-modal">${closeButton()}<span class="modal-icon ${t.direction === "mock" ? "mock" : t.subject}">${icon(t.icon)}</span><div class="eyebrow">${subjectLabel(t).toUpperCase()} · ${testType(t).toUpperCase()}</div><h2 id="dialog-title">${testTitle(t)}</h2><p class="modal-intro">${testDescription(t)}</p>${mockBreakdown(t)}<div class="setup-stats"><div>${icon("file")}<strong>${t.count}</strong><span>${tr("questions")}</span></div><div>${icon("clock")}<strong>${t.minutes} ${tr("minutes-short")}</strong><span>${tr("to-complete")}</span></div><div>${icon("bulb")}<strong>${tr("with-review")}</strong><span>${tr("each-answer")}</span></div></div><label class="setting-row"><div><strong>${tr("timed-test")}</strong><span>${tr("timed-test-copy")}</span></div><input id="timer-setting" type="checkbox" role="switch" checked /><span class="switch-track"></span></label><label class="setting-row"><div><strong>${tr("shuffle-questions")}</strong><span>${tr("shuffle-copy")}</span></div><input id="shuffle-setting" type="checkbox" role="switch" checked /><span class="switch-track"></span></label><p class="setup-hint">${icon("check-circle")}${tr("setup-hint")}</p><div class="modal-info">${tr("setup-info")}</div><button class="button button-green button-full" data-begin="${t.id}">${tr("start-test")}${icon("arrow-right")}</button></div>`,
     );
   }
   function shuffle(arr) {
@@ -532,7 +669,7 @@
     if (t.questionIds) {
       const ids = t.sections.flatMap((section) => section.questionIds);
       if (ids.length !== t.count || new Set(ids).size !== t.count || ids.some((id) => !BANK_BY_ID.has(id))) {
-        toast("Не удалось загрузить все вопросы. Обнови страницу и попробуй ещё раз.");
+        toast(tr("load-all-error"));
         return;
       }
       questions = t.sections.flatMap((section) => {
@@ -545,7 +682,7 @@
       questions = questions.slice(0, t.count);
     }
     if (questions.length !== t.count) {
-      toast("Не удалось загрузить вопросы. Обнови страницу и попробуй ещё раз.");
+      toast(tr("load-error"));
       return;
     }
     state.quiz = {
@@ -589,8 +726,8 @@
   function formatDuration(ms) {
     const secs = Math.max(0, Math.floor((ms || 0) / 1000));
     return secs < 60
-      ? `${secs} сек`
-      : `${Math.floor(secs / 60)} мин ${secs % 60} сек`;
+      ? tr("duration-seconds", { seconds: secs })
+      : tr("duration-minutes", { minutes: Math.floor(secs / 60), seconds: secs % 60 });
   }
   const hasSpeechPlayback = () => typeof window.speechSynthesis?.speak === "function" && typeof window.SpeechSynthesisUtterance === "function";
   function stopListening() {
@@ -600,7 +737,7 @@
     const question = state.quiz?.questions[state.quiz.index];
     if (!question?.audioText) return;
     if (!hasSpeechPlayback()) {
-      toast("В этом браузере аудио недоступно. Используй показанный текст записи.");
+      toast(tr("audio-unavailable-toast"));
       return;
     }
     const button = $('[data-action="play-listening"]');
@@ -609,7 +746,7 @@
       if (!button?.isConnected) return;
       button.classList.remove("is-playing");
       button.setAttribute("aria-pressed", "false");
-      if (copy) copy.textContent = "Прослушать запись";
+      if (copy) copy.textContent = tr("listen-recording");
     };
     stopListening();
     const utterance = new SpeechSynthesisUtterance(question.audioText);
@@ -622,20 +759,20 @@
       if (!button?.isConnected) return;
       button.classList.add("is-playing");
       button.setAttribute("aria-pressed", "true");
-      if (copy) copy.textContent = "Воспроизводится…";
+      if (copy) copy.textContent = tr("playing");
     };
     utterance.onend = reset;
     utterance.onerror = (event) => {
       reset();
-      if (!["canceled", "interrupted"].includes(event.error)) toast("Не удалось воспроизвести запись. Попробуй ещё раз.");
+      if (!["canceled", "interrupted"].includes(event.error)) toast(tr("audio-play-error"));
     };
     window.speechSynthesis.speak(utterance);
   }
   function questionMaterial(question, review = false) {
     if (question.audioText) {
-      if (review) return `<div class="question-passage listening-transcript" lang="en"><strong>Текст аудио</strong>\n${esc(question.audioText)}</div>`;
+      if (review) return `<div class="question-passage listening-transcript" lang="en"><strong lang="${currentLanguage}">${tr("audio-text")}</strong>\n${esc(question.audioText)}</div>`;
       const supported = hasSpeechPlayback();
-      return `<div class="listening-player"><div class="listening-player-main"><span class="listening-player-icon">${icon("volume")}</span><div><strong>Listening</strong><span>${supported ? "Нажми, чтобы прослушать запись. Можно повторять." : "Аудио недоступно в этом браузере."}</span></div></div><button class="button button-white listening-play" data-action="play-listening" aria-pressed="false" ${supported ? "" : "disabled"}>${icon("volume")}<span class="listening-play-copy">Прослушать запись</span></button>${supported ? "" : `<div class="listening-fallback" lang="en">${esc(question.audioText)}</div>`}</div>`;
+      return `<div class="listening-player"><div class="listening-player-main"><span class="listening-player-icon">${icon("volume")}</span><div><strong>Listening</strong><span>${supported ? tr("listen-instruction") : tr("audio-unavailable")}</span></div></div><button class="button button-white listening-play" data-action="play-listening" aria-pressed="false" ${supported ? "" : "disabled"}>${icon("volume")}<span class="listening-play-copy">${tr("listen-recording")}</span></button>${supported ? "" : `<div class="listening-fallback" lang="en">${esc(question.audioText)}</div>`}</div>`;
     }
     return question.passage ? `<div class="question-passage" lang="${question.subject === "english" ? "en" : "ru"}">${esc(question.passage)}</div>` : "";
   }
@@ -646,8 +783,19 @@
     const q = quiz.questions[quiz.index],
       answered = quiz.answers.filter((a) => a !== null).length;
     const previousScroll = dialog.scrollTop;
+    const contentLanguage = q.subject === "english" ? "en" : "ru";
+    const flagged = quiz.flags.includes(quiz.index);
+    const answerOptions = q.options.map((option, index) =>
+      `<button class="answer-option ${quiz.answers[quiz.index] === index ? "selected" : ""}" data-answer="${index}" aria-pressed="${quiz.answers[quiz.index] === index}"><span class="answer-letter">${String.fromCharCode(65 + index)}</span><span lang="${contentLanguage}">${esc(option)}</span><span class="answer-radio">${quiz.answers[quiz.index] === index ? icon("check") : ""}</span></button>`,
+    ).join("");
+    const questionNumbers = quiz.questions.map((_, index) => {
+      const selected = quiz.answers[index] !== null;
+      const marked = quiz.flags.includes(index);
+      const aria = `${tr("question-number", { n: index + 1 })}${selected ? tr("answer-selected-suffix") : ""}${marked ? tr("marked-suffix") : ""}`;
+      return `<button class="question-number ${index === quiz.index ? "current" : ""} ${selected ? "answered" : ""} ${marked ? "flagged" : ""}" data-question="${index}" aria-label="${aria}" ${index === quiz.index ? 'aria-current="step"' : ""}>${index + 1}</button>`;
+    }).join("");
     openDialog(
-      `<div class="quiz-layout"><header class="quiz-header"><div><span class="eyebrow">${quiz.test.direction === "mock" ? "ПРОБНИК · " : ""}${subjectLabel(quiz.test).toUpperCase()}</span><h2 id="dialog-title">${quiz.test.title}</h2></div><div class="quiz-header-right"><div class="quiz-clock">${icon("clock")}<span id="quiz-timer">${timerText()}</span>${!quiz.ends ? "<small>без лимита</small>" : ""}</div><button class="icon-button" data-action="exit-quiz" aria-label="Выйти из теста">${icon("close")}</button></div></header><div class="quiz-progress-track"><span style="width:${(answered / quiz.questions.length) * 100}%"></span></div><div class="quiz-body"><section class="question-area"><div class="question-toolbar"><span>ВОПРОС ${quiz.index + 1} ИЗ ${quiz.questions.length}${quiz.test.direction === "mock" ? `<span class="quiz-section-label">${sectionLabel(q)}</span>` : ""}</span><button class="flag-button ${quiz.flags.includes(quiz.index) ? "flagged" : ""}" data-action="flag" aria-pressed="${quiz.flags.includes(quiz.index)}">${icon("flag")}${quiz.flags.includes(quiz.index) ? "Отмечен" : "Отметить"}</button></div>${questionMaterial(q)}<h3 class="question-prompt" id="question-prompt" tabindex="-1" lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.prompt)}</h3><div class="answer-options" role="group" aria-labelledby="question-prompt">${q.options.map((o, i) => `<button class="answer-option ${quiz.answers[quiz.index] === i ? "selected" : ""}" data-answer="${i}" aria-pressed="${quiz.answers[quiz.index] === i}"><span class="answer-letter">${String.fromCharCode(65 + i)}</span><span lang="${q.subject === "english" ? "en" : "ru"}">${esc(o)}</span><span class="answer-radio">${quiz.answers[quiz.index] === i ? icon("check") : ""}</span></button>`).join("")}</div><div class="quiz-question-footer"><button class="button button-white" data-action="previous" ${quiz.index === 0 ? "disabled" : ""}>${icon("arrow-left")}Назад</button><span>${quiz.answers[quiz.index] === null ? "Выбери один ответ" : "Ответ выбран"}</span><button class="button button-green" data-action="${quiz.index === quiz.questions.length - 1 ? "finish" : "next"}">${quiz.index === quiz.questions.length - 1 ? "Завершить" : "Далее"}${icon(quiz.index === quiz.questions.length - 1 ? "check" : "arrow-right")}</button></div></section><aside class="quiz-navigation"><h3>Твой прогресс</h3><p>Отвечено <strong>${answered} из ${quiz.questions.length}</strong></p><div class="question-numbers">${quiz.questions.map((_, i) => `<button class="question-number ${i === quiz.index ? "current" : ""} ${quiz.answers[i] !== null ? "answered" : ""} ${quiz.flags.includes(i) ? "flagged" : ""}" data-question="${i}" aria-label="Вопрос ${i + 1}${quiz.answers[i] !== null ? ", ответ выбран" : ""}${quiz.flags.includes(i) ? ", отмечен" : ""}" ${i === quiz.index ? 'aria-current="step"' : ""}>${i + 1}</button>`).join("")}</div><div class="navigator-legend"><span><i class="legend-answered"></i>Есть ответ</span><span><i class="legend-flagged"></i>Отмечен</span></div><div class="quiz-tip">${icon("bulb")}<p>Сложный вопрос? Отметь его и вернись позже.</p></div><button class="button button-white button-full" data-action="finish">Завершить тест</button></aside></div><div id="quiz-confirmation" class="quiz-confirmation" hidden></div></div>`,
+      `<div class="quiz-layout"><header class="quiz-header"><div><span class="eyebrow">${quiz.test.direction === "mock" ? `${tr("mock-label")} · ` : ""}${subjectLabel(quiz.test).toUpperCase()}</span><h2 id="dialog-title">${testTitle(quiz.test)}</h2></div><div class="quiz-header-right"><div class="quiz-clock">${icon("clock")}<span id="quiz-timer">${timerText()}</span>${!quiz.ends ? `<small>${tr("no-limit")}</small>` : ""}</div><button class="icon-button" data-action="exit-quiz" aria-label="${tr("exit-test")}">${icon("close")}</button></div></header><div class="quiz-progress-track"><span style="width:${(answered / quiz.questions.length) * 100}%"></span></div><div class="quiz-body"><section class="question-area"><div class="question-toolbar"><span>${tr("question-progress", { current: quiz.index + 1, total: quiz.questions.length })}${quiz.test.direction === "mock" ? `<span class="quiz-section-label">${sectionLabel(q)}</span>` : ""}</span><button class="flag-button ${flagged ? "flagged" : ""}" data-action="flag" aria-pressed="${flagged}">${icon("flag")}${flagged ? tr("marked") : tr("mark")}</button></div>${questionMaterial(q)}<h3 class="question-prompt" id="question-prompt" tabindex="-1" lang="${contentLanguage}">${esc(q.prompt)}</h3><div class="answer-options" role="group" aria-labelledby="question-prompt">${answerOptions}</div><div class="quiz-question-footer"><button class="button button-white" data-action="previous" ${quiz.index === 0 ? "disabled" : ""}>${icon("arrow-left")}${tr("back")}</button><span>${quiz.answers[quiz.index] === null ? tr("choose-one-answer") : tr("answer-selected")}</span><button class="button button-green" data-action="${quiz.index === quiz.questions.length - 1 ? "finish" : "next"}">${quiz.index === quiz.questions.length - 1 ? tr("finish") : tr("next")}${icon(quiz.index === quiz.questions.length - 1 ? "check" : "arrow-right")}</button></div></section><aside class="quiz-navigation"><h3>${tr("your-progress")}</h3><p>${tr("answered-count", { answered: `<strong>${answered}</strong>`, total: quiz.questions.length })}</p><div class="question-numbers">${questionNumbers}</div><div class="navigator-legend"><span><i class="legend-answered"></i>${tr("has-answer")}</span><span><i class="legend-flagged"></i>${tr("marked-legend")}</span></div><div class="quiz-tip">${icon("bulb")}<p>${tr("hard-question-tip")}</p></div><button class="button button-white button-full" data-action="finish">${tr("finish-test")}</button></aside></div><div id="quiz-confirmation" class="quiz-confirmation" hidden></div></div>`,
       true,
     );
     if (focusQuestion) $("#question-prompt").focus({ preventScroll: true });
@@ -659,7 +807,7 @@
     const missing = quiz.answers.filter((a) => a === null).length;
     $("#quiz-confirmation").hidden = false;
     $("#quiz-confirmation").innerHTML =
-      `<div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title"><span class="modal-icon">${icon(exit ? "history" : "check-circle")}</span><h3 id="confirm-title">${exit ? "Выйти из теста?" : "Завершить попытку?"}</h3><p>${exit ? "Текущая попытка не сохранится. Можно продолжить тест или завершить его и получить результат." : missing ? `Без ответа: ${missing} из ${quiz.questions.length}. При завершении они будут засчитаны как неверные.` : "Все ответы выбраны. Давай посмотрим на результат!"}</p><div class="confirmation-actions"><button class="button button-white" data-action="cancel-confirm">Продолжить</button><button class="button button-green" data-action="confirm-finish">Завершить и сохранить</button></div>${exit ? '<button class="discard-button" data-action="discard-quiz">Выйти без сохранения</button>' : ""}</div>`;
+      `<div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title"><span class="modal-icon">${icon(exit ? "history" : "check-circle")}</span><h3 id="confirm-title">${exit ? tr("exit-question") : tr("finish-question")}</h3><p>${exit ? tr("exit-copy") : missing ? tr("missing-copy", { missing, total: quiz.questions.length }) : tr("all-answered-copy")}</p><div class="confirmation-actions"><button class="button button-white" data-action="cancel-confirm">${tr("continue")}</button><button class="button button-green" data-action="confirm-finish">${tr("finish-save")}</button></div>${exit ? `<button class="discard-button" data-action="discard-quiz">${tr("exit-without-save")}</button>` : ""}</div>`;
     $(".confirm-card button").focus();
   }
   function finishQuiz(expired = false) {
@@ -697,7 +845,7 @@
     const t = TESTS.find((t) => t.id === result.testId),
       percent = Math.round((result.correct / result.total) * 100);
     openDialog(
-      `<div class="result-modal standard-modal">${closeButton()}<div class="result-emblem">${icon("trophy")}</div><div class="eyebrow">ЕЩЁ ОДИН ШАГ ВПЕРЁД</div><h2 id="dialog-title">${percent >= 80 ? "Отличная работа!" : percent >= 50 ? "Хорошее начало!" : "Практика — путь к результату"}</h2><p class="modal-intro">${t.title}${result.expired ? '<br /><span class="time-expired">Время вышло. Ответы сохранены автоматически.</span>' : ""}</p><div class="result-score"><strong>${result.correct}<span> / ${result.total}</span></strong><span>правильных ответов</span></div>${mockBreakdown(t, result)}<div class="result-bar"><span style="width:${percent}%"></span></div><div class="result-details"><div><strong>${percent}%</strong><span>точность</span></div><div><strong>${formatDuration(result.elapsed)}</strong><span>время практики</span></div></div><div class="modal-info">${percent >= 80 ? "Так держать! Посмотри разбор, чтобы закрепить результат." : "Каждая ошибка подсказывает, что стоит повторить. В разборе есть объяснение к каждому вопросу."}</div><button class="button button-green button-full" data-action="open-review">Разобрать ответы${icon("arrow-right")}</button><button class="button button-plain button-full" data-retry="${t.id}">${icon("refresh")}Попробовать ещё раз</button><p class="result-saved">${icon("check-circle")}Результат добавлен в историю</p></div>`,
+      `<div class="result-modal standard-modal">${closeButton()}<div class="result-emblem">${icon("trophy")}</div><div class="eyebrow">${tr("result-eyebrow")}</div><h2 id="dialog-title">${percent >= 80 ? tr("excellent") : percent >= 50 ? tr("good-start") : tr("practice-result")}</h2><p class="modal-intro">${testTitle(t)}${result.expired ? `<br /><span class="time-expired">${tr("time-expired")}</span>` : ""}</p><div class="result-score"><strong>${result.correct}<span> / ${result.total}</span></strong><span>${tr("correct-answer-count")}</span></div>${mockBreakdown(t, result)}<div class="result-bar"><span style="width:${percent}%"></span></div><div class="result-details"><div><strong>${percent}%</strong><span>${tr("accuracy")}</span></div><div><strong>${formatDuration(result.elapsed)}</strong><span>${tr("practice-time")}</span></div></div><div class="modal-info">${percent >= 80 ? tr("high-score-info") : tr("low-score-info")}</div><button class="button button-green button-full" data-action="open-review">${tr("review-answers")}${icon("arrow-right")}</button><button class="button button-plain button-full" data-retry="${t.id}">${icon("refresh")}${tr("try-again")}</button><p class="result-saved">${icon("check-circle")}${tr("result-saved")}</p></div>`,
     );
   }
   function showReview(result, errorsOnly = false) {
@@ -711,21 +859,33 @@
           item.question &&
           (!errorsOnly || result.answers[item.index] !== item.question.answer),
       );
+    const reviewQuestions = questions.length
+      ? questions.map(({ question: q, index }) => {
+          const correct = result.answers[index] === q.answer;
+          const contentLanguage = q.subject === "english" ? "en" : "ru";
+          const explanationLanguage = q.explanationLang || "ru";
+          const options = q.options.map((option, optionIndex) =>
+            `<div class="review-option ${optionIndex === q.answer ? "is-correct" : optionIndex === result.answers[index] ? "is-incorrect" : ""}"><span>${String.fromCharCode(65 + optionIndex)}</span><span lang="${contentLanguage}">${esc(option)}</span>${optionIndex === q.answer ? `<small>${tr("correct-answer")} ${icon("check")}</small>` : optionIndex === result.answers[index] ? `<small>${tr("your-answer")} ${icon("close")}</small>` : ""}</div>`,
+          ).join("");
+          return `<article class="review-question"><div class="review-question-top"><span>${tr("review-question", { n: index + 1 })}${t.direction === "mock" ? `<span class="quiz-section-label">${sectionLabel(q)}</span>` : ""}</span><span class="review-status ${correct ? "correct" : "incorrect"}">${icon(correct ? "check-circle" : "close")}${correct ? tr("correct") : result.answers[index] === null ? tr("without-answer") : tr("error")}</span></div>${questionMaterial(q, true)}<h3 lang="${contentLanguage}">${esc(q.prompt)}</h3><div class="review-options">${options}</div><div class="answer-explanation">${icon("bulb")}<div><strong>${tr("why")}</strong><p lang="${explanationLanguage}">${esc(q.explanation)}</p></div></div></article>`;
+        }).join("")
+      : `<div class="review-perfect">${icon("trophy")}<h3>${tr("perfect-title")}</h3><p>${tr("perfect-copy")}</p></div>`;
     openDialog(
-      `<div class="review-layout"><header class="quiz-header"><div><span class="eyebrow">РАЗБОР · ${result.correct} ИЗ ${result.total} ВЕРНО</span><h2 id="dialog-title">${t.title}</h2></div><button class="icon-button" data-action="close-dialog" aria-label="Закрыть разбор">${icon("close")}</button></header><div class="review-toolbar"><p>Разберись сегодня — ответь увереннее завтра.</p><label><input type="checkbox" id="errors-only" ${errorsOnly ? "checked" : ""} />Только ошибки</label></div><div class="review-questions">${
-        questions.length
-          ? questions
-              .map(({ question: q, index: i }) => {
-                const correct = result.answers[i] === q.answer;
-                return `<article class="review-question"><div class="review-question-top"><span>ВОПРОС ${i + 1}${t.direction === "mock" ? `<span class="quiz-section-label">${sectionLabel(q)}</span>` : ""}</span><span class="review-status ${correct ? "correct" : "incorrect"}">${icon(correct ? "check-circle" : "close")}${correct ? "Верно" : result.answers[i] === null ? "Без ответа" : "Ошибка"}</span></div>${questionMaterial(q, true)}<h3 lang="${q.subject === "english" ? "en" : "ru"}">${esc(q.prompt)}</h3><div class="review-options">${q.options.map((o, n) => `<div class="review-option ${n === q.answer ? "is-correct" : n === result.answers[i] ? "is-incorrect" : ""}"><span>${String.fromCharCode(65 + n)}</span><span lang="${q.subject === "english" ? "en" : "ru"}">${esc(o)}</span>${n === q.answer ? `<small>Правильный ответ ${icon("check")}</small>` : n === result.answers[i] ? `<small>Твой ответ ${icon("close")}</small>` : ""}</div>`).join("")}</div><div class="answer-explanation">${icon("bulb")}<div><strong>Почему так?</strong><p>${esc(q.explanation)}</p></div></div></article>`;
-              })
-              .join("")
-          : `<div class="review-perfect">${icon("trophy")}<h3>Ни одной ошибки!</h3><p>Все ответы верные. Попробуй следующий тест.</p></div>`
-      }</div><footer class="review-footer"><button class="button button-white" data-action="close-dialog">К тестам</button>${t.archived ? "" : `<button class="button button-green" data-retry="${t.id}">${icon("refresh")}Повторить тест</button>`}</footer></div>`,
+      `<div class="review-layout"><header class="quiz-header"><div><span class="eyebrow">${tr("review-heading", { correct: result.correct, total: result.total })}</span><h2 id="dialog-title">${testTitle(t)}</h2></div><button class="icon-button" data-action="close-dialog" aria-label="${tr("close-review")}">${icon("close")}</button></header><div class="review-toolbar"><p>${tr("review-copy")}</p><label><input type="checkbox" id="errors-only" ${errorsOnly ? "checked" : ""} />${tr("errors-only")}</label></div><div class="review-questions">${reviewQuestions}</div><footer class="review-footer"><button class="button button-white" data-action="close-dialog">${tr("to-tests")}</button>${t.archived ? "" : `<button class="button button-green" data-retry="${t.id}">${icon("refresh")}${tr("repeat-test")}</button>`}</footer></div>`,
       true,
     );
   }
   document.addEventListener("click", (event) => {
+    const languageOption = event.target.closest("[data-language]");
+    if (languageOption) {
+      setLanguage(languageOption.dataset.language);
+      return;
+    }
+    if (event.target.closest("#language-toggle")) {
+      $("#language-menu").hidden ? openLanguageMenu() : closeLanguageMenu({ focus: true });
+      return;
+    }
+    if (!event.target.closest("#language-switcher") && !$("#language-menu").hidden) closeLanguageMenu();
     const openDirection = event.target.closest("[data-open-direction]");
     if (openDirection) {
       const direction = openDirection.dataset.openDirection;
@@ -867,6 +1027,11 @@
     $("#menu-button").setAttribute("aria-expanded", String(open));
   });
   $("#mobile-shade").addEventListener("click", closeMenu);
+  $("#language-switcher").addEventListener("focusout", () => {
+    setTimeout(() => {
+      if (!$("#language-switcher").contains(document.activeElement)) closeLanguageMenu();
+    }, 0);
+  });
   dialog.addEventListener("cancel", (event) => {
     event.preventDefault();
     if (state.quiz) {
@@ -895,6 +1060,35 @@
     }
   });
   document.addEventListener("keydown", (event) => {
+    const languageMenu = $("#language-menu");
+    const languageToggle = $("#language-toggle");
+    if (event.key === "Escape" && !languageMenu.hidden) {
+      event.preventDefault();
+      closeLanguageMenu({ focus: true });
+      return;
+    }
+    if (
+      (event.target === languageToggle || languageMenu.contains(event.target)) &&
+      ["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)
+    ) {
+      event.preventDefault();
+      const wasHidden = languageMenu.hidden;
+      if (wasHidden) openLanguageMenu();
+      const options = [...languageMenu.querySelectorAll("[data-language]")];
+      if (wasHidden) {
+        const initial = event.key === "ArrowUp" || event.key === "End"
+          ? options.length - 1
+          : event.key === "Home"
+            ? 0
+            : Math.max(0, options.findIndex((option) => option.dataset.language === currentLanguage));
+        options[initial].focus({ preventScroll: true });
+        return;
+      }
+      const current = options.indexOf(document.activeElement);
+      const next = event.key === "Home" ? 0 : event.key === "End" ? options.length - 1 : current < 0 ? event.key === "ArrowUp" ? options.length - 1 : 0 : event.key === "ArrowDown" ? (current + 1) % options.length : (current - 1 + options.length) % options.length;
+      options[next].focus({ preventScroll: true });
+      return;
+    }
     if (
       state.quiz &&
       $("#quiz-confirmation") &&
@@ -931,8 +1125,10 @@
   });
   window.addEventListener("resize", () => {
     if (window.innerWidth > 860) closeMenu();
+    closeLanguageMenu();
   });
   $("#copyright-year").textContent = new Date().getFullYear();
+  applyStaticTranslations();
   hydrateIcons();
   navigate("home");
 })();
