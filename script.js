@@ -531,7 +531,7 @@
     $("#catalog").hidden = home;
     $("#practice-note").hidden = home || view === "history" || (!mock && view === "all");
     const title = home ? tr("workspace-title") : view === "saved" ? tr("saved") : view === "history" ? tr("test-history") : mock ? mockTitle : learningTitle;
-    $("#page-title").innerHTML = `${title}<span class="heading-dot">.</span>`;
+    $("#page-title").textContent = title;
     $("#page-subtitle").textContent = home ? tr("home-slogan") : view === "saved" ? tr("saved-subtitle") : view === "history" ? tr("history-subtitle") : mock ? tr("mock-subtitle") : learningFilterDescription(filter);
     $("#breadcrumb-current").textContent = home ? tr("home") : special ? view === "saved" ? tr("saved") : tr("test-history") : !mock && filter !== "all" ? learningTitle : directionTitle;
     document.querySelectorAll("[data-nav]").forEach((el) => {
