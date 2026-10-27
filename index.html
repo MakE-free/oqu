@@ -10,13 +10,13 @@
     />
     <title>Тренажер для подготовки к КТ — Oqu</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=blue-welcome-1" />
-    <link rel="stylesheet" href="style.css?v=ru-kk-2" />
+    <link rel="stylesheet" href="style.css?v=critical-topics-1" />
     <script src="questions.js" defer></script>
     <script src="mock-questions.js?v=tgo-1-author-2" defer></script>
     <script src="tgo-mock-2.js?v=tgo-2-1" defer></script>
     <script src="english-mock-v2.js?v=english-v2" defer></script>
-    <script src="i18n.js?v=ru-kk-1" defer></script>
-    <script src="script.js?v=ru-kk-2" defer></script>
+    <script src="i18n.js?v=critical-topics-1" defer></script>
+    <script src="script.js?v=critical-topics-1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main" data-i18n="skip-content">Перейти к содержимому</a>
@@ -214,6 +214,16 @@
             >
           </div>
           <div class="test-grid" id="test-grid"></div>
+          <section class="topic-program" id="topic-program" aria-labelledby="topic-program-title" hidden>
+            <header class="topic-program-heading">
+              <div>
+                <span class="eyebrow" data-i18n="topic-program-label">ПРОГРАММА ПО ТЕМАМ</span>
+                <h3 id="topic-program-title" data-i18n="critical-topics-title">10 объединённых тем без повторов</h3>
+              </div>
+              <p data-i18n="critical-topics-copy">Близкие темы собраны в один блок, чтобы готовиться было проще.</p>
+            </header>
+            <div class="topic-grid" id="topic-grid"></div>
+          </section>
           <div class="empty-state" id="empty-state" hidden></div>
           <div class="history-list" id="history-list" hidden></div>
         </section>

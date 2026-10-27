@@ -96,6 +96,23 @@
     });
     updateLanguageControl();
   }
+  const CRITICAL_TOPIC_GROUPS = [
+    { id: "numbers", icon: "math", titleKey: "critical-topic-numbers", itemsKey: "critical-topic-numbers-items" },
+    { id: "divisibility", icon: "grid", titleKey: "critical-topic-divisibility", itemsKey: "critical-topic-divisibility-items" },
+    { id: "fractions", icon: "sliders", titleKey: "critical-topic-fractions", itemsKey: "critical-topic-fractions-items" },
+    { id: "powers", icon: "sparkles", titleKey: "critical-topic-powers", itemsKey: "critical-topic-powers-items" },
+    { id: "equations", icon: "logic", titleKey: "critical-topic-equations", itemsKey: "critical-topic-equations-items" },
+    { id: "inequalities", icon: "chart", titleKey: "critical-topic-inequalities", itemsKey: "critical-topic-inequalities-items" },
+    { id: "geometry", icon: "target", titleKey: "critical-topic-geometry", itemsKey: "critical-topic-geometry-items" },
+    { id: "word-problems", icon: "clock", titleKey: "critical-topic-word-problems", itemsKey: "critical-topic-word-problems-items" },
+    { id: "sequences", icon: "brain", titleKey: "critical-topic-sequences", itemsKey: "critical-topic-sequences-items" },
+    { id: "data", icon: "chart", titleKey: "critical-topic-data", itemsKey: "critical-topic-data-items" },
+  ];
+  function renderCriticalTopics() {
+    $("#topic-grid").innerHTML = CRITICAL_TOPIC_GROUPS.map((topic, index) =>
+      `<article class="topic-card" data-topic="${topic.id}"><div class="topic-card-mark"><span class="topic-card-icon">${icon(topic.icon)}</span><span class="topic-card-number">${String(index + 1).padStart(2, "0")}</span></div><div class="topic-card-content"><h4>${tr(topic.titleKey)}</h4><p>${tr(topic.itemsKey)}</p></div></article>`,
+    ).join("");
+  }
   const BANK = window.OQU_QUESTIONS || [];
   const LEARNING_TESTS = [
     {
@@ -518,6 +535,7 @@
   function renderCatalog() {
     updateSavedCount();
     const special = state.view === "saved" || state.view === "history";
+    $("#topic-program").hidden = true;
     document.querySelectorAll("[data-filter]").forEach((el) => {
       const active = el.dataset.filter === state.filter;
       el.classList.toggle("active", active);
@@ -534,6 +552,16 @@
     $("#history-list").hidden = state.view !== "history";
     if (state.view === "home") { $("#test-grid").innerHTML = ""; return; }
     if (state.view === "history") { renderHistory(); return; }
+    const showCriticalTopics = state.view === "all" && state.direction === "learning" && state.filter === "critical";
+    if (showCriticalTopics) {
+      $("#test-grid").hidden = true;
+      $("#test-grid").innerHTML = "";
+      $("#test-count").textContent = CRITICAL_TOPIC_GROUPS.length;
+      $("#empty-state").hidden = true;
+      $("#topic-program").hidden = false;
+      renderCriticalTopics();
+      return;
+    }
     const tests = ACTIVE_TESTS.filter((test) =>
       (state.view === "saved" ? state.saved.includes(test.id) : test.direction === state.direction) &&
       (state.filter === "all" || test.subject === state.filter || (test.subject === "tgo" && test.topic === state.filter)) &&
