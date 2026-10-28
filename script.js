@@ -128,9 +128,32 @@
     { id: "combinatorics", icon: "brain", titleKey: "critical-topic-combinatorics", itemsKey: "critical-topic-combinatorics-items" },
     { id: "data", icon: "chart", titleKey: "critical-topic-data", itemsKey: "critical-topic-data-items" },
   ];
-  function renderCriticalTopics() {
-    $("#topic-grid").innerHTML = CRITICAL_TOPIC_GROUPS.map((topic, index) =>
-      `<article class="topic-card" data-topic="${topic.id}"><div class="topic-card-mark"><span class="topic-card-icon">${icon(topic.icon)}</span><span class="topic-card-number">${String(index + 1).padStart(2, "0")}</span></div><div class="topic-card-content"><h4>${tr(topic.titleKey)}</h4><p>${tr(topic.itemsKey)}</p></div></article>`,
+  const ANALYTICAL_TOPIC_GROUPS = [
+    { id: "main-idea", icon: "target", titleKey: "analytical-topic-main-idea", itemsKey: "analytical-topic-main-idea-items" },
+    { id: "style-type", icon: "file", titleKey: "analytical-topic-style-type", itemsKey: "analytical-topic-style-type-items" },
+    { id: "information", icon: "search", titleKey: "analytical-topic-information", itemsKey: "analytical-topic-information-items" },
+    { id: "title", icon: "book", titleKey: "analytical-topic-title", itemsKey: "analytical-topic-title-items" },
+    { id: "sentence-completion", icon: "logic", titleKey: "analytical-topic-sentence-completion", itemsKey: "analytical-topic-sentence-completion-items" },
+    { id: "statements", icon: "check-circle", titleKey: "analytical-topic-statements", itemsKey: "analytical-topic-statements-items" },
+    { id: "synonyms", icon: "refresh", titleKey: "analytical-topic-synonyms", itemsKey: "analytical-topic-synonyms-items" },
+  ];
+  const LEARNING_TOPIC_PROGRAMS = {
+    critical: {
+      topics: CRITICAL_TOPIC_GROUPS,
+      titleKey: "critical-topics-title",
+      copyKey: "critical-topics-copy",
+    },
+    analytical: {
+      topics: ANALYTICAL_TOPIC_GROUPS,
+      titleKey: "analytical-topics-title",
+      copyKey: "analytical-topics-copy",
+    },
+  };
+  function renderTopicProgram(program) {
+    $("#topic-program-title").textContent = tr(program.titleKey);
+    $("#topic-program-copy").textContent = tr(program.copyKey);
+    $("#topic-grid").innerHTML = program.topics.map((topic, index) =>
+      `<article class="topic-card" data-topic="${topic.id}"><div class="topic-card-mark"><span class="topic-card-icon">${icon(topic.icon)}</span><span class="topic-card-number">${String(index + 1).padStart(2, "0")}</span></div><div class="topic-card-content"><h4>${esc(tr(topic.titleKey))}</h4><p>${esc(tr(topic.itemsKey))}</p></div></article>`,
     ).join("");
   }
   const BANK = window.OQU_QUESTIONS || [];
@@ -572,14 +595,16 @@
     $("#history-list").hidden = state.view !== "history";
     if (state.view === "home") { $("#test-grid").innerHTML = ""; return; }
     if (state.view === "history") { renderHistory(); return; }
-    const showCriticalTopics = state.view === "all" && state.direction === "learning" && state.filter === "critical";
-    if (showCriticalTopics) {
+    const topicProgram = state.view === "all" && state.direction === "learning"
+      ? LEARNING_TOPIC_PROGRAMS[state.filter]
+      : null;
+    if (topicProgram) {
       $("#test-grid").hidden = true;
       $("#test-grid").innerHTML = "";
-      $("#test-count").textContent = CRITICAL_TOPIC_GROUPS.length;
+      $("#test-count").textContent = topicProgram.topics.length;
       $("#empty-state").hidden = true;
       $("#topic-program").hidden = false;
-      renderCriticalTopics();
+      renderTopicProgram(topicProgram);
       return;
     }
     const tests = ACTIVE_TESTS.filter((test) =>
