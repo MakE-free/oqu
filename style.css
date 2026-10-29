@@ -7587,6 +7587,304 @@ input:focus-visible,
     grid-template-columns: 48px minmax(0, 1fr);
   }
 }
+
+/* Reference-style lesson tables and a tighter reading rhythm. */
+.lesson-shell {
+  padding-block: 46px 56px;
+}
+.lesson-hero h1 {
+  font-size: clamp(34px, 3vw, 40px);
+  line-height: 1.18;
+}
+.lesson-introduction {
+  padding-block: 27px 32px;
+}
+.lesson-introduction h2 {
+  margin-bottom: 18px;
+  font-size: 28px;
+}
+.lesson-introduction p {
+  font-size: 17px;
+  line-height: 1.72;
+}
+.lesson-introduction p + p {
+  margin-top: 14px;
+}
+.lesson-meta {
+  margin-top: 21px;
+}
+.lesson-block {
+  padding-block: 40px;
+}
+.lesson-block-heading {
+  margin-bottom: 22px;
+}
+.lesson-block-heading h3 {
+  font-size: 26px;
+}
+.lesson-block-heading p {
+  margin-top: 6px;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.set-hierarchy {
+  margin-left: 57px;
+  padding: 17px 20px;
+  border-color: #d5e0eb;
+  background: transparent;
+}
+.set-hierarchy strong {
+  font-size: 25px;
+}
+.set-hierarchy span {
+  font-size: 16px;
+}
+.lesson-table-frame {
+  margin-left: 57px;
+  overflow: hidden;
+  border: 1px solid #d5e0eb;
+  border-radius: 12px;
+  background: #fff;
+}
+.lesson-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  color: #27334a;
+}
+.lesson-table th,
+.lesson-table td {
+  padding: 16px 18px;
+  border-right: 1px solid #d9e3ed;
+  border-bottom: 1px solid #d9e3ed;
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.lesson-table tr > :last-child {
+  border-right: 0;
+}
+.lesson-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.lesson-table thead th {
+  color: #19243a;
+  background: #eef3f8;
+  font-weight: 800;
+}
+.lesson-table tbody th {
+  color: #202d43;
+  font-weight: 750;
+}
+.lesson-table tbody tr:nth-child(even) {
+  background: #f7f9fc;
+}
+.lesson-table p {
+  margin: 0;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+.lesson-table code {
+  color: var(--brand-deep);
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 800;
+}
+.lesson-table-symbol,
+.lesson-table-formula {
+  color: var(--brand-deep);
+  font-weight: 800;
+}
+.lesson-table-example {
+  display: block;
+  margin-top: 7px;
+  color: var(--brand-deep);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.lesson-table-example b {
+  color: #27334a;
+}
+.lesson-table-sets thead th:nth-child(1),
+.lesson-table-concepts thead th:nth-child(1) {
+  width: 15%;
+}
+.lesson-table-sets thead th:nth-child(2),
+.lesson-table-concepts thead th:nth-child(2) {
+  width: 25%;
+}
+.lesson-table-steps thead th:nth-child(1) {
+  width: 11%;
+}
+.lesson-table-steps thead th:nth-child(2) {
+  width: 27%;
+}
+.lesson-table-examples thead th:nth-child(1) {
+  width: 23%;
+}
+.lesson-table-examples thead th:nth-child(2) {
+  width: 22%;
+}
+.lesson-table-parity-definition thead th:nth-child(1) {
+  width: 20%;
+}
+.lesson-table-parity-definition thead th:nth-child(2) {
+  width: 24%;
+}
+.lesson-table-parity thead th:first-child {
+  width: 30%;
+}
+.lesson-table-addition thead th:nth-child(1) {
+  width: 28%;
+}
+.lesson-table-addition thead th:nth-child(2) {
+  width: 23%;
+}
+.lesson-subheading {
+  margin: 28px 0 14px 57px;
+  color: #344258;
+  font-size: 21px;
+  line-height: 1.4;
+}
+.lesson-notation {
+  margin: 10px 0 0 57px;
+  font-size: 14px;
+}
+.addition-intro {
+  display: block;
+  margin: 0 0 18px 57px;
+  padding: 0;
+  border: 0;
+}
+.addition-intro code {
+  display: inline;
+  margin-right: 10px;
+  font-size: 18px;
+}
+.addition-intro p {
+  display: inline;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.math-strip {
+  margin-top: 22px;
+  padding-block: 14px;
+  font-size: 20px;
+}
+.lesson-callout {
+  margin-top: 22px;
+  padding-block: 15px;
+}
+.lesson-callout strong {
+  font-size: 17px;
+}
+.lesson-callout p {
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.lesson-check > ol,
+.lesson-answers ol {
+  gap: 12px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.lesson-finish {
+  padding-top: 32px;
+}
+@media (max-width: 640px) {
+  .lesson-shell {
+    padding-block: 25px 32px;
+  }
+  .lesson-hero h1 {
+    font-size: 29px;
+  }
+  .lesson-introduction h2 {
+    font-size: 23px;
+  }
+  .lesson-introduction p,
+  .lesson-block-heading p,
+  .lesson-check > ol,
+  .lesson-answers ol {
+    font-size: 15.5px;
+  }
+  .lesson-block {
+    padding-block: 34px;
+  }
+  .lesson-block-heading h3 {
+    font-size: 22px;
+  }
+  .set-hierarchy,
+  .lesson-table-frame,
+  .lesson-subheading,
+  .lesson-notation,
+  .addition-intro,
+  .lesson-callout,
+  .math-strip,
+  .lesson-check > ol,
+  .lesson-answers {
+    margin-left: 0;
+  }
+  .set-hierarchy strong {
+    font-size: 21px;
+  }
+  .lesson-table-frame {
+    border-radius: 10px;
+  }
+  .lesson-table,
+  .lesson-table tbody,
+  .lesson-table tr,
+  .lesson-table th,
+  .lesson-table td {
+    display: block;
+    width: 100%;
+  }
+  .lesson-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .lesson-table tbody tr {
+    padding: 13px 15px;
+    border-bottom: 1px solid #d9e3ed;
+  }
+  .lesson-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+  .lesson-table th,
+  .lesson-table td {
+    padding: 3px 0;
+    border: 0;
+    font-size: 15.5px;
+    line-height: 1.6;
+  }
+  .lesson-table tbody th {
+    font-size: 16px;
+  }
+  .lesson-table-symbol,
+  .lesson-table-formula {
+    margin-bottom: 4px;
+  }
+  .lesson-table code {
+    font-size: 16px;
+  }
+  .lesson-subheading {
+    margin-top: 24px;
+    font-size: 19px;
+  }
+  .addition-intro p {
+    display: block;
+    margin-top: 7px;
+    font-size: 15.5px;
+  }
+}
 @media (max-width: 760px) {
   .topic-program-heading {
     align-items: flex-start;
@@ -8212,5 +8510,88 @@ html[lang="kk"] body {
   .addition-grid h4,
   .addition-grid p {
     overflow-wrap: anywhere;
+  }
+}
+
+/* Final compact typography after the large-reading defaults above. */
+.lesson-shell {
+  padding-block: 46px 56px;
+}
+.lesson-hero h1 {
+  font-size: clamp(34px, 3vw, 40px);
+  line-height: 1.18;
+}
+.lesson-introduction {
+  padding-block: 27px 32px;
+}
+.lesson-introduction h2 {
+  margin-bottom: 18px;
+  font-size: 28px;
+}
+.lesson-introduction p {
+  font-size: 17px;
+  line-height: 1.72;
+}
+.lesson-introduction p + p {
+  margin-top: 14px;
+}
+.lesson-meta {
+  margin-top: 21px;
+}
+.lesson-block {
+  padding-block: 40px;
+}
+.lesson-block-heading {
+  margin-bottom: 22px;
+}
+.lesson-block-heading h3 {
+  font-size: 26px;
+}
+.lesson-block-heading p {
+  margin-top: 6px;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.lesson-callout {
+  margin-top: 22px;
+  padding-block: 15px;
+}
+.lesson-callout strong {
+  font-size: 17px;
+}
+.lesson-callout p {
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.lesson-check > ol,
+.lesson-answers ol {
+  gap: 12px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.lesson-finish {
+  padding-top: 32px;
+}
+@media (max-width: 640px) {
+  .lesson-shell {
+    padding-block: 25px 32px;
+  }
+  .lesson-hero h1 {
+    font-size: 29px;
+  }
+  .lesson-introduction h2 {
+    font-size: 23px;
+  }
+  .lesson-introduction p,
+  .lesson-block-heading p,
+  .lesson-check > ol,
+  .lesson-answers ol {
+    font-size: 15.5px;
+  }
+  .lesson-block {
+    padding-block: 34px;
+  }
+  .lesson-block-heading h3 {
+    font-size: 22px;
   }
 }

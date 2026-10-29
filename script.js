@@ -169,6 +169,19 @@
       ["02", "lesson-compare-step-line-title", "lesson-compare-step-line-copy"],
       ["03", "lesson-compare-step-format-title", "lesson-compare-step-format-copy"],
     ];
+    const comparisonExamples = [
+      ["−4 > −11", "lesson-negative-title", "lesson-negative-copy"],
+      ["0,80 > 0,76", "lesson-decimal-title", "lesson-decimal-copy"],
+    ];
+    const concepts = [
+      ["0", "lesson-zero-title", "lesson-zero-copy", ""],
+      ["±", "lesson-opposite-title", "lesson-opposite-copy", "−8 + 8 = 0"],
+      ["|x|", "lesson-modulus-title", "lesson-modulus-copy", "|−8| = 8"],
+    ];
+    const parityDefinitions = [
+      ["2k", "lesson-even-title", "lesson-even-copy"],
+      ["2k + 1", "lesson-odd-title", "lesson-odd-copy"],
+    ];
     const parityRules = [
       ["2k + 2m", "lesson-parity-even-even"],
       ["(2k+1) + (2m+1)", "lesson-parity-odd-odd"],
@@ -192,30 +205,30 @@
       <article class="lesson-block">
         <div class="lesson-block-heading"><span>01</span><div><h3>${esc(tr("lesson-map-title"))}</h3><p>${esc(tr("lesson-map-copy"))}</p></div></div>
         <div class="set-hierarchy" aria-label="${esc(tr("lesson-hierarchy-label"))}"><strong>ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ</strong><span>ℝ = ℚ ∪ (ℝ∖ℚ)</span></div>
-        <div class="number-set-grid">${sets.map(([symbol, titleKey, copyKey, exampleKey]) => `<section class="number-set-card"><span class="number-set-symbol">${symbol}</span><div><h4>${esc(tr(titleKey))}</h4><p>${esc(tr(copyKey))}</p><span class="lesson-inline-example"><b>${esc(tr("lesson-example-label"))}:</b> <code>${esc(tr(exampleKey))}</code></span></div></section>`).join("")}</div>
+        <div class="lesson-table-frame"><table class="lesson-table lesson-table-sets"><thead><tr><th scope="col">${esc(tr("lesson-table-symbol"))}</th><th scope="col">${esc(tr("lesson-table-set"))}</th><th scope="col">${esc(tr("lesson-table-definition-example"))}</th></tr></thead><tbody>${sets.map(([symbol, titleKey, copyKey, exampleKey]) => `<tr><td class="lesson-table-symbol"><code>${symbol}</code></td><th scope="row">${esc(tr(titleKey))}</th><td><p>${esc(tr(copyKey))}</p><span class="lesson-table-example"><b>${esc(tr("lesson-example-label"))}:</b> ${esc(tr(exampleKey))}</span></td></tr>`).join("")}</tbody></table></div>
         <aside class="lesson-callout">${icon("bulb")}<div><strong>${esc(tr("lesson-narrow-title"))}</strong><p>${esc(tr("lesson-narrow-copy"))}</p></div></aside>
       </article>
       <article class="lesson-block">
         <div class="lesson-block-heading"><span>02</span><div><h3>${esc(tr("lesson-signs-title"))}</h3><p>${esc(tr("lesson-signs-copy"))}</p></div></div>
-        <div class="concept-grid"><section><span class="concept-icon">0</span><div><h4>${esc(tr("lesson-zero-title"))}</h4><p>${esc(tr("lesson-zero-copy"))}</p></div></section><section><span class="concept-icon">±</span><div><h4>${esc(tr("lesson-opposite-title"))}</h4><p>${esc(tr("lesson-opposite-copy"))}</p><code>−8 + 8 = 0</code></div></section><section><span class="concept-icon">|x|</span><div><h4>${esc(tr("lesson-modulus-title"))}</h4><p>${esc(tr("lesson-modulus-copy"))}</p><code>|−8| = 8</code></div></section></div>
+        <div class="lesson-table-frame"><table class="lesson-table lesson-table-concepts"><thead><tr><th scope="col">${esc(tr("lesson-table-symbol"))}</th><th scope="col">${esc(tr("lesson-table-concept"))}</th><th scope="col">${esc(tr("lesson-table-rule-example"))}</th></tr></thead><tbody>${concepts.map(([symbol, titleKey, copyKey, example]) => `<tr><td class="lesson-table-symbol"><code>${symbol}</code></td><th scope="row">${esc(tr(titleKey))}</th><td><p>${esc(tr(copyKey))}</p>${example ? `<span class="lesson-table-example">${example}</span>` : ""}</td></tr>`).join("")}</tbody></table></div>
       </article>
       <article class="lesson-block">
         <div class="lesson-block-heading"><span>03</span><div><h3>${esc(tr("lesson-compare-title"))}</h3><p>${esc(tr("lesson-compare-copy"))}</p></div></div>
-        <div class="lesson-step-grid">${comparisonSteps.map(([number, titleKey, copyKey]) => `<section class="lesson-step"><span>${number}</span><h4>${esc(tr(titleKey))}</h4><p>${esc(tr(copyKey))}</p></section>`).join("")}</div>
-        <div class="comparison-examples"><section><strong>${esc(tr("lesson-negative-title"))}</strong><code>−4 &gt; −11</code><p>${esc(tr("lesson-negative-copy"))}</p></section><section><strong>${esc(tr("lesson-decimal-title"))}</strong><code>0,80 &gt; 0,76</code><p>${esc(tr("lesson-decimal-copy"))}</p></section></div>
+        <div class="lesson-table-frame"><table class="lesson-table lesson-table-steps"><thead><tr><th scope="col">${esc(tr("lesson-table-step"))}</th><th scope="col">${esc(tr("lesson-table-action"))}</th><th scope="col">${esc(tr("lesson-table-how"))}</th></tr></thead><tbody>${comparisonSteps.map(([number, titleKey, copyKey]) => `<tr><td class="lesson-table-symbol">${number}</td><th scope="row">${esc(tr(titleKey))}</th><td>${esc(tr(copyKey))}</td></tr>`).join("")}</tbody></table></div>
+        <h4 class="lesson-subheading">${esc(tr("lesson-worked-examples"))}</h4><div class="lesson-table-frame"><table class="lesson-table lesson-table-examples"><thead><tr><th scope="col">${esc(tr("lesson-table-topic"))}</th><th scope="col">${esc(tr("lesson-table-comparison"))}</th><th scope="col">${esc(tr("lesson-table-explanation"))}</th></tr></thead><tbody>${comparisonExamples.map(([formula, titleKey, copyKey]) => `<tr><th scope="row">${esc(tr(titleKey))}</th><td class="lesson-table-formula"><code>${formula}</code></td><td>${esc(tr(copyKey))}</td></tr>`).join("")}</tbody></table></div>
         <div class="math-strip"><span>−7</span><b>&lt;</b><span>−2</span><b>&lt;</b><span>0</span><b>&lt;</b><span>5</span></div>
       </article>
       <article class="lesson-block">
         <div class="lesson-block-heading"><span>04</span><div><h3>${esc(tr("lesson-parity-title"))}</h3><p>${esc(tr("lesson-parity-copy"))}</p></div></div>
-        <div class="parity-definition"><section><span>2k</span><div><strong>${esc(tr("lesson-even-title"))}</strong><p>${esc(tr("lesson-even-copy"))}</p></div></section><section><span>2k+1</span><div><strong>${esc(tr("lesson-odd-title"))}</strong><p>${esc(tr("lesson-odd-copy"))}</p></div></section></div>
+        <div class="lesson-table-frame"><table class="lesson-table lesson-table-parity-definition"><thead><tr><th scope="col">${esc(tr("lesson-table-form"))}</th><th scope="col">${esc(tr("lesson-table-number-type"))}</th><th scope="col">${esc(tr("lesson-table-definition"))}</th></tr></thead><tbody>${parityDefinitions.map(([formula, titleKey, copyKey]) => `<tr><td class="lesson-table-formula"><code>${formula}</code></td><th scope="row">${esc(tr(titleKey))}</th><td>${esc(tr(copyKey))}</td></tr>`).join("")}</tbody></table></div>
         <p class="lesson-notation">k, m, n ∈ ℤ</p>
-        <div class="parity-grid">${parityRules.map(([formula, copyKey]) => `<section><code>${formula}</code><p>${esc(tr(copyKey))}</p></section>`).join("")}</div>
+        <h4 class="lesson-subheading">${esc(tr("lesson-parity-rules-title"))}</h4><div class="lesson-table-frame"><table class="lesson-table lesson-table-parity"><thead><tr><th scope="col">${esc(tr("lesson-table-formula"))}</th><th scope="col">${esc(tr("lesson-table-conclusion"))}</th></tr></thead><tbody>${parityRules.map(([formula, copyKey]) => `<tr><td class="lesson-table-formula"><code>${formula}</code></td><td>${esc(tr(copyKey))}</td></tr>`).join("")}</tbody></table></div>
         <aside class="lesson-callout">${icon("check-circle")}<div><strong>${esc(tr("lesson-parity-example-title"))}</strong><p>${esc(tr("lesson-parity-example-copy"))}</p></div></aside>
       </article>
       <article class="lesson-block">
         <div class="lesson-block-heading"><span>05</span><div><h3>${esc(tr("lesson-add-title"))}</h3><p>${esc(tr("lesson-add-copy"))}</p></div></div>
         <div class="addition-intro"><code>a + b = c</code><p>${esc(tr("lesson-add-terms"))}</p></div>
-        <div class="addition-grid">${additionRules.map(([formula, titleKey, copyKey]) => `<section><code>${formula}</code><h4>${esc(tr(titleKey))}</h4><p>${esc(tr(copyKey))}</p></section>`).join("")}</div>
+        <div class="lesson-table-frame"><table class="lesson-table lesson-table-addition"><thead><tr><th scope="col">${esc(tr("lesson-table-formula"))}</th><th scope="col">${esc(tr("lesson-table-property"))}</th><th scope="col">${esc(tr("lesson-table-meaning"))}</th></tr></thead><tbody>${additionRules.map(([formula, titleKey, copyKey]) => `<tr><td class="lesson-table-formula"><code>${formula}</code></td><th scope="row">${esc(tr(titleKey))}</th><td>${esc(tr(copyKey))}</td></tr>`).join("")}</tbody></table></div>
         <aside class="lesson-callout">${icon("sparkles")}<div><strong>${esc(tr("lesson-add-example-title"))}</strong><p>${esc(tr("lesson-add-example-copy"))}</p></div></aside>
       </article>
       <article class="lesson-block lesson-check">
