@@ -10,13 +10,13 @@
     />
     <title>Тренажер для подготовки к КТ — Oqu</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=blue-welcome-1" />
-    <link rel="stylesheet" href="style.css?v=clean-brand-1" />
+    <link rel="stylesheet" href="style.css?v=number-sets-lesson-1" />
     <script src="questions.js" defer></script>
     <script src="mock-questions.js?v=tgo-1-author-2" defer></script>
     <script src="tgo-mock-2.js?v=tgo-2-1" defer></script>
     <script src="english-mock-v2.js?v=english-v2" defer></script>
-    <script src="i18n.js?v=learning-topics-1" defer></script>
-    <script src="script.js?v=learning-topics-1" defer></script>
+    <script src="i18n.js?v=number-sets-lesson-1" defer></script>
+    <script src="script.js?v=number-sets-lesson-1" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main" data-i18n="skip-content">Перейти к содержимому</a>
@@ -117,8 +117,26 @@
             <span data-icon="help"></span><span data-i18n="how-it-works">Как это работает</span>
           </button>
         </div>
-        <section class="hero welcome-note welcome-note-compact" id="hero" aria-label="Выбор направления" data-i18n-aria-label="direction-choice">
+        <section class="hero welcome-note" id="hero" aria-label="Выбор направления" data-i18n-aria-label="direction-choice">
           <div class="welcome-content">
+            <span class="welcome-eyebrow" data-i18n="welcome-eyebrow">КАК ПОЛУЧИТЬ БОЛЬШЕ ОТ ПОДГОТОВКИ</span>
+            <h2 data-i18n="welcome-title">Начнём с правильного подхода</h2>
+            <p class="welcome-message" data-i18n="welcome-message">Здесь цель не собрать набор заученных ответов. Мы будем раскладывать задания на понятные шаги, замечать закономерности и превращать ошибки в ориентиры для следующей тренировки.</p>
+            <div class="welcome-guide">
+              <article>
+                <span class="welcome-guide-icon" data-icon="brain"></span>
+                <div><strong data-i18n="welcome-understand-title">Пойми ход решения</strong><p data-i18n="welcome-understand-copy">Сначала разбери правило, затем воспроизведи пример без подсказки.</p></div>
+              </article>
+              <article>
+                <span class="welcome-guide-icon" data-icon="chart"></span>
+                <div><strong data-i18n="welcome-sequence-title">Сохраняй последовательность</strong><p data-i18n="welcome-sequence-copy">Иди по темам по порядку: новые навыки опираются на уже пройденные.</p></div>
+              </article>
+              <article>
+                <span class="welcome-guide-icon" data-icon="refresh"></span>
+                <div><strong data-i18n="welcome-errors-title">Возвращайся к ошибкам</strong><p data-i18n="welcome-errors-copy">Повторный разбор через несколько дней помогает закрепить способ решения.</p></div>
+              </article>
+            </div>
+            <p class="welcome-rhythm" data-i18n="welcome-rhythm">Выбери спокойный ритм: 25–40 минут сосредоточенной работы достаточно для одного качественного шага.</p>
             <div class="welcome-footer">
               <button class="button button-green" id="choose-test" aria-controls="subjects-section"><span data-i18n="choose-direction">Выбери направление</span><span data-icon="arrow-right"></span></button>
             </div>
@@ -224,6 +242,7 @@
             </header>
             <div class="topic-grid" id="topic-grid"></div>
           </section>
+          <section class="lesson-view" id="lesson-view" aria-labelledby="lesson-view-title" hidden></section>
           <div class="empty-state" id="empty-state" hidden></div>
           <div class="history-list" id="history-list" hidden></div>
         </section>

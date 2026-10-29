@@ -97,7 +97,7 @@
     updateLanguageControl();
   }
   const CRITICAL_TOPIC_GROUPS = [
-    { id: "numbers", icon: "grid", titleKey: "critical-topic-numbers", itemsKey: "critical-topic-numbers-items" },
+    { id: "numbers", icon: "grid", titleKey: "critical-topic-numbers", itemsKey: "critical-topic-numbers-items", lesson: "numbers" },
     { id: "add-subtract", icon: "math", titleKey: "critical-topic-add-subtract", itemsKey: "critical-topic-add-subtract-items" },
     { id: "multiply-divide", icon: "math", titleKey: "critical-topic-multiply-divide", itemsKey: "critical-topic-multiply-divide-items" },
     { id: "operation-order", icon: "logic", titleKey: "critical-topic-operation-order", itemsKey: "critical-topic-operation-order-items" },
@@ -153,8 +153,77 @@
     $("#topic-program-title").textContent = tr(program.titleKey);
     $("#topic-program-copy").textContent = tr(program.copyKey);
     $("#topic-grid").innerHTML = program.topics.map((topic, index) =>
-      `<article class="topic-card" data-topic="${topic.id}"><div class="topic-card-mark"><span class="topic-card-icon">${icon(topic.icon)}</span><span class="topic-card-number">${String(index + 1).padStart(2, "0")}</span></div><div class="topic-card-content"><h4>${esc(tr(topic.titleKey))}</h4><p>${esc(tr(topic.itemsKey))}</p></div></article>`,
+      `<article class="topic-card ${topic.lesson ? "has-lesson" : ""}" data-topic="${topic.id}"><div class="topic-card-mark"><span class="topic-card-icon">${icon(topic.icon)}</span><span class="topic-card-number">${String(index + 1).padStart(2, "0")}</span></div><div class="topic-card-content"><h4>${esc(tr(topic.titleKey))}</h4><p>${esc(tr(topic.itemsKey))}</p>${topic.lesson ? `<button class="topic-lesson-button" type="button" data-open-lesson="${topic.lesson}"><span>${esc(tr("open-lesson"))}</span>${icon("arrow-right")}</button>` : ""}</div></article>`,
     ).join("");
+  }
+  function renderNumbersLesson() {
+    const sets = [
+      ["ℕ", "lesson-set-natural-title", "lesson-set-natural-copy", "lesson-set-natural-example"],
+      ["ℤ", "lesson-set-integer-title", "lesson-set-integer-copy", "lesson-set-integer-example"],
+      ["ℚ", "lesson-set-rational-title", "lesson-set-rational-copy", "lesson-set-rational-example"],
+      ["ℝ∖ℚ", "lesson-set-irrational-title", "lesson-set-irrational-copy", "lesson-set-irrational-example"],
+      ["ℝ", "lesson-set-real-title", "lesson-set-real-copy", "lesson-set-real-example"],
+    ];
+    const comparisonSteps = [
+      ["01", "lesson-compare-step-sign-title", "lesson-compare-step-sign-copy"],
+      ["02", "lesson-compare-step-line-title", "lesson-compare-step-line-copy"],
+      ["03", "lesson-compare-step-format-title", "lesson-compare-step-format-copy"],
+    ];
+    const parityRules = [
+      ["2k + 2m", "lesson-parity-even-even"],
+      ["(2k+1) + (2m+1)", "lesson-parity-odd-odd"],
+      ["2k + (2m+1)", "lesson-parity-even-odd"],
+      ["2k · n", "lesson-parity-product"],
+    ];
+    const additionRules = [
+      ["a + b = b + a", "lesson-add-commutative-title", "lesson-add-commutative-copy"],
+      ["(a + b) + c = a + (b + c)", "lesson-add-associative-title", "lesson-add-associative-copy"],
+      ["a + 0 = a", "lesson-add-zero-title", "lesson-add-zero-copy"],
+      ["a + (−a) = 0", "lesson-add-opposite-title", "lesson-add-opposite-copy"],
+    ];
+    const questions = Array.from({ length: 7 }, (_, index) => tr(`lesson-check-q${index + 1}`));
+    const answers = Array.from({ length: 7 }, (_, index) => tr(`lesson-check-a${index + 1}`));
+    return `<div class="lesson-shell">
+      <button class="lesson-back" type="button" data-action="back-to-topics">${icon("arrow-left")}<span>${esc(tr("lesson-back-topics"))}</span></button>
+      <header class="lesson-hero">
+        <div class="lesson-hero-main"><span class="lesson-badge">${esc(tr("lesson-label"))} 01</span><h2 id="lesson-view-title" tabindex="-1">${esc(tr("critical-topic-numbers"))}</h2><p>${esc(tr("lesson-number-intro"))}</p></div>
+        <div class="lesson-meta"><span>${icon("clock")} ${esc(tr("lesson-duration"))}</span><span>${icon("book")} ${esc(tr("lesson-parts"))}</span></div>
+      </header>
+      <article class="lesson-block">
+        <div class="lesson-block-heading"><span>01</span><div><h3>${esc(tr("lesson-map-title"))}</h3><p>${esc(tr("lesson-map-copy"))}</p></div></div>
+        <div class="set-hierarchy" aria-label="${esc(tr("lesson-hierarchy-label"))}"><span>ℕ</span><b>⊂</b><span>ℤ</span><b>⊂</b><span>ℚ</span><b>⊂</b><span>ℝ</span></div>
+        <div class="number-set-grid">${sets.map(([symbol, titleKey, copyKey, exampleKey]) => `<section class="number-set-card"><span class="number-set-symbol">${symbol}</span><div><h4>${esc(tr(titleKey))}</h4><p>${esc(tr(copyKey))}</p><code>${esc(tr(exampleKey))}</code></div></section>`).join("")}</div>
+        <aside class="lesson-callout">${icon("bulb")}<div><strong>${esc(tr("lesson-narrow-title"))}</strong><p>${esc(tr("lesson-narrow-copy"))}</p></div></aside>
+      </article>
+      <article class="lesson-block">
+        <div class="lesson-block-heading"><span>02</span><div><h3>${esc(tr("lesson-compare-title"))}</h3><p>${esc(tr("lesson-compare-copy"))}</p></div></div>
+        <div class="lesson-step-grid">${comparisonSteps.map(([number, titleKey, copyKey]) => `<section class="lesson-step"><span>${number}</span><h4>${esc(tr(titleKey))}</h4><p>${esc(tr(copyKey))}</p></section>`).join("")}</div>
+        <div class="comparison-examples"><section><strong>${esc(tr("lesson-negative-title"))}</strong><code>−4 &gt; −11</code><p>${esc(tr("lesson-negative-copy"))}</p></section><section><strong>${esc(tr("lesson-decimal-title"))}</strong><code>0,80 &gt; 0,76</code><p>${esc(tr("lesson-decimal-copy"))}</p></section></div>
+        <div class="math-strip"><span>−7</span><b>&lt;</b><span>−2</span><b>&lt;</b><span>0</span><b>&lt;</b><span>5</span></div>
+      </article>
+      <article class="lesson-block">
+        <div class="lesson-block-heading"><span>03</span><div><h3>${esc(tr("lesson-parity-title"))}</h3><p>${esc(tr("lesson-parity-copy"))}</p></div></div>
+        <div class="parity-definition"><section><span>2k</span><div><strong>${esc(tr("lesson-even-title"))}</strong><p>${esc(tr("lesson-even-copy"))}</p></div></section><section><span>2k+1</span><div><strong>${esc(tr("lesson-odd-title"))}</strong><p>${esc(tr("lesson-odd-copy"))}</p></div></section></div>
+        <div class="parity-grid">${parityRules.map(([formula, copyKey]) => `<section><code>${formula}</code><p>${esc(tr(copyKey))}</p></section>`).join("")}</div>
+        <aside class="lesson-callout">${icon("check-circle")}<div><strong>${esc(tr("lesson-parity-example-title"))}</strong><p>${esc(tr("lesson-parity-example-copy"))}</p></div></aside>
+      </article>
+      <article class="lesson-block">
+        <div class="lesson-block-heading"><span>04</span><div><h3>${esc(tr("lesson-signs-title"))}</h3><p>${esc(tr("lesson-signs-copy"))}</p></div></div>
+        <div class="concept-grid"><section><span class="concept-icon">0</span><div><h4>${esc(tr("lesson-zero-title"))}</h4><p>${esc(tr("lesson-zero-copy"))}</p></div></section><section><span class="concept-icon">±</span><div><h4>${esc(tr("lesson-opposite-title"))}</h4><p>${esc(tr("lesson-opposite-copy"))}</p><code>−8 + 8 = 0</code></div></section><section><span class="concept-icon">|x|</span><div><h4>${esc(tr("lesson-modulus-title"))}</h4><p>${esc(tr("lesson-modulus-copy"))}</p><code>|−8| = 8</code></div></section></div>
+      </article>
+      <article class="lesson-block">
+        <div class="lesson-block-heading"><span>05</span><div><h3>${esc(tr("lesson-add-title"))}</h3><p>${esc(tr("lesson-add-copy"))}</p></div></div>
+        <div class="addition-intro"><code>a + b = c</code><p>${esc(tr("lesson-add-terms"))}</p></div>
+        <div class="addition-grid">${additionRules.map(([formula, titleKey, copyKey]) => `<section><code>${formula}</code><h4>${esc(tr(titleKey))}</h4><p>${esc(tr(copyKey))}</p></section>`).join("")}</div>
+        <aside class="lesson-callout">${icon("sparkles")}<div><strong>${esc(tr("lesson-add-example-title"))}</strong><p>${esc(tr("lesson-add-example-copy"))}</p></div></aside>
+      </article>
+      <article class="lesson-block lesson-check">
+        <div class="lesson-block-heading"><span>✓</span><div><h3>${esc(tr("lesson-check-title"))}</h3><p>${esc(tr("lesson-check-copy"))}</p></div></div>
+        <ol>${questions.map((question) => `<li>${esc(question)}</li>`).join("")}</ol>
+        <details class="lesson-answers"><summary>${esc(tr("lesson-show-answers"))}<span>${icon("arrow-right")}</span></summary><ol>${answers.map((answer) => `<li>${esc(answer)}</li>`).join("")}</ol></details>
+      </article>
+      <footer class="lesson-finish"><div>${icon("check-circle")}<div><strong>${esc(tr("lesson-finish-title"))}</strong><p>${esc(tr("lesson-finish-copy"))}</p></div></div><button class="button button-green" type="button" data-action="back-to-topics">${esc(tr("lesson-back-topics"))}${icon("arrow-right")}</button></footer>
+    </div>`;
   }
   const BANK = window.OQU_QUESTIONS || [];
   const LEARNING_TESTS = [
@@ -473,6 +542,7 @@
     view: "home",
     direction: "learning",
     filter: "all",
+    lesson: null,
     search: "",
     saved: Array.isArray(savedData)
       ? savedData.filter((id) => ACTIVE_TESTS.some((t) => t.id === id))
@@ -515,6 +585,7 @@
     if (!["ru", "kk"].includes(language)) return;
     if (language === currentLanguage) return;
     const search = state.search;
+    const activeLesson = state.lesson;
     currentLanguage = language;
     try {
       localStorage.setItem("oqu.language", currentLanguage);
@@ -523,6 +594,7 @@
     }
     applyStaticTranslations();
     navigate(state.view, state.filter, false, state.direction);
+    if (activeLesson) openLesson(activeLesson, false);
     if (search) {
       state.search = search;
       $("#test-search").value = search;
@@ -540,6 +612,7 @@
     $("#menu-button").setAttribute("aria-expanded", "false");
   }
   function navigate(view, filter = "all", scroll = false, direction = state.direction) {
+    state.lesson = null;
     state.view = view;
     state.direction = direction;
     state.filter = filter;
@@ -552,6 +625,8 @@
     $("#hero").hidden = !home;
     $("#subjects-section").hidden = !home;
     $("#catalog").hidden = home;
+    $("#lesson-view").hidden = true;
+    $(".catalog-heading").hidden = false;
     $("#practice-note").hidden = home || view === "history" || (!mock && view === "all");
     const title = home ? tr("workspace-title") : view === "saved" ? tr("saved") : view === "history" ? tr("test-history") : mock ? mockTitle : learningTitle;
     $("#page-title").textContent = title;
@@ -579,6 +654,7 @@
     updateSavedCount();
     const special = state.view === "saved" || state.view === "history";
     $("#topic-program").hidden = true;
+    $("#lesson-view").hidden = true;
     document.querySelectorAll("[data-filter]").forEach((el) => {
       const active = el.dataset.filter === state.filter;
       el.classList.toggle("active", active);
@@ -625,6 +701,38 @@
     } else if (!tests.length) {
       $("#empty-state").innerHTML = `<span class="empty-icon">${icon(state.search ? "search" : "bookmark")}</span><h3>${state.search ? tr("no-tests-search") : tr("save-interesting")}</h3><p>${state.search ? tr("try-other-search") : tr("bookmark-mocks")}</p><button class="button button-green" data-action="reset-catalog">${state.search ? tr("reset-search") : tr("view-mocks")}${icon("arrow-right")}</button>`;
     }
+  }
+  function openLesson(lesson, scroll = true) {
+    if (lesson !== "numbers") return;
+    state.lesson = lesson;
+    state.view = "all";
+    state.direction = "learning";
+    state.filter = "critical";
+    $("#hero").hidden = true;
+    $("#subjects-section").hidden = true;
+    $("#catalog").hidden = false;
+    $("#topic-program").hidden = true;
+    $("#test-grid").hidden = true;
+    $("#empty-state").hidden = true;
+    $("#history-list").hidden = true;
+    $("#catalog-toolbar").hidden = true;
+    $("#direction-intro").hidden = true;
+    $(".catalog-heading").hidden = true;
+    $("#practice-note").hidden = true;
+    $("#page-title").textContent = tr("critical-topic-numbers");
+    $("#page-subtitle").textContent = tr("lesson-number-subtitle");
+    $("#breadcrumb-current").textContent = tr("lesson-label") + " 01";
+    $("#lesson-view").innerHTML = renderNumbersLesson();
+    $("#lesson-view").hidden = false;
+    document.querySelectorAll("[data-nav]").forEach((element) => {
+      const active = element.dataset.direction === "learning" && (element.classList.contains("direction-nav") || element.dataset.nav === "critical");
+      element.classList.toggle("active", active);
+      active && !element.classList.contains("direction-nav") ? element.setAttribute("aria-current", "page") : element.removeAttribute("aria-current");
+    });
+    closeMenu();
+    if (scroll) $("#catalog").scrollIntoView({ behavior: "smooth", block: "start" });
+    else window.scrollTo({ top: 0, behavior: "instant" });
+    requestAnimationFrame(() => $("#lesson-view-title")?.focus({ preventScroll: true }));
   }
   function renderHistory() {
     $("#test-count").textContent = state.history.length;
@@ -950,6 +1058,11 @@
       else { state.filter = filter.dataset.filter; renderCatalog(); }
       return;
     }
+    const lesson = event.target.closest("[data-open-lesson]");
+    if (lesson) {
+      openLesson(lesson.dataset.openLesson);
+      return;
+    }
     const saved = event.target.closest("[data-save]");
     if (saved) {
       toggleSave(saved.dataset.save);
@@ -996,6 +1109,9 @@
     switch (action) {
       case "help":
         showHelp();
+        break;
+      case "back-to-topics":
+        navigate("all", "critical", false, "learning");
         break;
       case "reset-catalog":
         if (state.search) {
