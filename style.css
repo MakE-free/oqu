@@ -7726,3 +7726,491 @@ html[lang="kk"] body {
     gap: 2px;
   }
 }
+
+/* Large reading layout for the lesson, matching a textbook-style conspect. */
+.lesson-view {
+  width: 100%;
+  max-width: 1240px;
+}
+.lesson-shell {
+  padding: 52px clamp(40px, 6vw, 88px) 64px;
+  border: 1px solid #d7e2ec;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: none;
+}
+.lesson-back {
+  margin-bottom: 34px;
+  font-size: 15px;
+}
+.lesson-back .icon {
+  width: 18px;
+  height: 18px;
+}
+.lesson-hero {
+  padding-bottom: 12px;
+  border-bottom: 0;
+}
+.lesson-badge {
+  margin-bottom: 12px;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+}
+.lesson-hero h1 {
+  max-width: 1050px;
+  color: #19243a;
+  font-size: clamp(36px, 3.2vw, 44px);
+  line-height: 1.2;
+  letter-spacing: -0.9px;
+}
+.lesson-introduction {
+  max-width: 1060px;
+  padding: 30px 0 36px;
+  border-bottom: 1px solid #dce6ef;
+}
+.lesson-introduction h2 {
+  margin-bottom: 22px;
+  color: #19243a;
+  font-size: 30px;
+  line-height: 1.35;
+  letter-spacing: -0.35px;
+}
+.lesson-introduction p {
+  color: #27334a;
+  font-size: 19px;
+  line-height: 1.85;
+}
+.lesson-introduction p + p {
+  margin-top: 18px;
+}
+.lesson-meta {
+  gap: 14px 28px;
+  margin-top: 26px;
+}
+.lesson-meta span {
+  font-size: 14px;
+}
+.lesson-meta .icon {
+  width: 18px;
+  height: 18px;
+}
+.lesson-block {
+  padding: 48px 0;
+}
+.lesson-block-heading {
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 15px;
+  margin-bottom: 28px;
+}
+.lesson-block-heading > span {
+  padding-top: 7px;
+  font-size: 15px;
+}
+.lesson-block-heading h3 {
+  color: #19243a;
+  font-size: 29px;
+  line-height: 1.35;
+  letter-spacing: -0.4px;
+}
+.lesson-block-heading p {
+  max-width: 1000px;
+  margin-top: 8px;
+  color: #4a5d70;
+  font-size: 17px;
+  line-height: 1.75;
+}
+.set-hierarchy,
+.number-set-grid,
+.lesson-callout,
+.concept-grid,
+.lesson-step-grid,
+.comparison-examples,
+.math-strip,
+.parity-definition,
+.lesson-notation,
+.parity-grid,
+.addition-intro,
+.addition-grid,
+.lesson-check > ol,
+.lesson-answers {
+  margin-left: 57px;
+}
+.set-hierarchy {
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 22px 24px;
+}
+.set-hierarchy strong {
+  font-size: 28px;
+  letter-spacing: 2.5px;
+}
+.set-hierarchy span {
+  font-size: 17px;
+}
+.number-set-card {
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 18px;
+  padding: 23px 0;
+}
+.number-set-symbol {
+  font-size: 26px;
+}
+.number-set-card h4,
+.lesson-step h4,
+.concept-grid h4,
+.addition-grid h4 {
+  font-size: 19px;
+  line-height: 1.5;
+}
+.number-set-card p,
+.lesson-step p,
+.comparison-examples p,
+.parity-definition p,
+.parity-grid p,
+.concept-grid p,
+.addition-grid p,
+.addition-intro p {
+  margin-top: 7px;
+  color: #334157;
+  font-size: 17px;
+  line-height: 1.75;
+}
+.lesson-inline-example {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.number-set-card code,
+.comparison-examples code,
+.parity-grid code,
+.concept-grid code,
+.addition-grid code,
+.addition-intro code {
+  font-size: 17px;
+}
+.lesson-callout {
+  gap: 14px;
+  margin-top: 28px;
+  padding: 18px 22px;
+}
+.lesson-callout > .icon {
+  flex-basis: 21px;
+  width: 21px;
+  height: 21px;
+}
+.lesson-callout strong {
+  font-size: 18px;
+}
+.lesson-callout p {
+  margin-top: 6px;
+  font-size: 16px;
+  line-height: 1.75;
+}
+.concept-grid section {
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 18px;
+  padding: 22px 0;
+}
+.concept-icon {
+  font-size: 23px;
+}
+.concept-grid code {
+  margin-top: 9px;
+  font-size: 19px;
+}
+.lesson-step {
+  grid-template-columns: 58px 230px minmax(0, 1fr);
+  gap: 18px;
+  padding: 22px 0;
+}
+.lesson-step > span {
+  font-size: 14px;
+}
+.comparison-examples {
+  gap: 42px;
+  margin-top: 28px;
+}
+.comparison-examples section {
+  padding-left: 18px;
+}
+.comparison-examples strong {
+  font-size: 18px;
+}
+.comparison-examples code {
+  margin-top: 10px;
+  font-size: 24px;
+}
+.math-strip {
+  margin-top: 28px;
+  padding: 18px 0;
+  font-size: 22px;
+}
+.parity-definition section {
+  grid-template-columns: 130px 210px minmax(0, 1fr);
+  gap: 18px;
+  padding: 22px 0;
+}
+.parity-definition section > span {
+  font-size: 21px;
+}
+.parity-definition strong {
+  font-size: 19px;
+}
+.lesson-notation {
+  margin-top: 15px;
+  font-size: 15px;
+}
+.parity-grid {
+  margin-top: 20px;
+}
+.parity-grid section {
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 22px;
+  padding: 18px 0;
+}
+.addition-intro {
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 24px;
+  padding: 20px 0;
+}
+.addition-intro code {
+  font-size: 22px;
+}
+.addition-grid section {
+  grid-template-columns: 280px 210px minmax(0, 1fr);
+  gap: 20px;
+  padding: 22px 0;
+}
+.addition-grid code {
+  font-size: 18px;
+}
+.lesson-check > ol,
+.lesson-answers ol {
+  gap: 15px;
+  padding-left: 27px;
+  color: #27364c;
+  font-size: 17px;
+  line-height: 1.8;
+}
+.lesson-answers {
+  margin-top: 28px;
+}
+.lesson-answers summary {
+  padding: 18px 0;
+  font-size: 16px;
+}
+.lesson-answers summary .icon {
+  width: 18px;
+  height: 18px;
+}
+.lesson-answers ol {
+  padding: 10px 0 24px 27px;
+}
+.lesson-finish {
+  padding-top: 38px;
+}
+.lesson-finish > div > .icon {
+  flex-basis: 24px;
+  width: 24px;
+  height: 24px;
+}
+.lesson-finish strong {
+  font-size: 19px;
+}
+.lesson-finish p {
+  margin-top: 6px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.lesson-finish .button {
+  min-height: 48px;
+  padding-inline: 20px;
+  font-size: 14px;
+}
+@media (max-width: 760px) {
+  .lesson-shell {
+    padding: 32px 28px 40px;
+  }
+  .lesson-hero h1 {
+    font-size: 34px;
+  }
+  .lesson-introduction h2 {
+    font-size: 26px;
+  }
+  .lesson-introduction p {
+    font-size: 17px;
+  }
+  .lesson-block-heading h3 {
+    font-size: 25px;
+  }
+  .lesson-step {
+    grid-template-columns: 48px 190px minmax(0, 1fr);
+  }
+  .parity-definition section {
+    grid-template-columns: 100px 170px minmax(0, 1fr);
+  }
+  .addition-grid section {
+    grid-template-columns: 220px 170px minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .lesson-shell {
+    padding: 25px 20px 32px;
+    border-radius: 12px;
+  }
+  .lesson-back {
+    margin-bottom: 26px;
+    font-size: 14px;
+  }
+  .lesson-hero h1 {
+    font-size: 30px;
+  }
+  .lesson-introduction {
+    padding: 26px 0 30px;
+  }
+  .lesson-introduction h2 {
+    margin-bottom: 16px;
+    font-size: 24px;
+  }
+  .lesson-introduction p {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  .lesson-meta span {
+    font-size: 12px;
+  }
+  .lesson-block {
+    padding: 38px 0;
+  }
+  .lesson-block-heading {
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .lesson-block-heading > span {
+    padding-top: 5px;
+    font-size: 13px;
+  }
+  .lesson-block-heading h3 {
+    font-size: 23px;
+  }
+  .lesson-block-heading p,
+  .number-set-card p,
+  .lesson-step p,
+  .comparison-examples p,
+  .parity-definition p,
+  .parity-grid p,
+  .concept-grid p,
+  .addition-grid p,
+  .addition-intro p,
+  .lesson-callout p,
+  .lesson-check > ol,
+  .lesson-answers ol {
+    font-size: 16px;
+  }
+  .set-hierarchy,
+  .number-set-grid,
+  .lesson-callout,
+  .concept-grid,
+  .lesson-step-grid,
+  .comparison-examples,
+  .math-strip,
+  .parity-definition,
+  .lesson-notation,
+  .parity-grid,
+  .addition-intro,
+  .addition-grid,
+  .lesson-check > ol,
+  .lesson-answers {
+    margin-left: 42px;
+  }
+  .number-set-card {
+    grid-template-columns: 62px minmax(0, 1fr);
+    padding: 19px 0;
+  }
+  .number-set-card h4,
+  .lesson-step h4,
+  .concept-grid h4,
+  .addition-grid h4 {
+    font-size: 18px;
+  }
+  .concept-grid section {
+    grid-template-columns: 56px minmax(0, 1fr);
+    padding: 19px 0;
+  }
+  .lesson-step {
+    grid-template-columns: 38px minmax(0, 1fr);
+    padding: 19px 0;
+  }
+  .lesson-step p {
+    grid-column: 2;
+  }
+  .comparison-examples {
+    grid-template-columns: 1fr;
+  }
+  .parity-definition section {
+    grid-template-columns: 82px minmax(0, 1fr);
+    padding: 19px 0;
+  }
+  .parity-definition p {
+    grid-column: 2;
+  }
+  .parity-grid section,
+  .addition-intro,
+  .addition-grid section {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+@media (max-width: 390px) {
+  .lesson-shell {
+    padding-inline: 16px;
+  }
+  .lesson-hero h1 {
+    font-size: 29px;
+  }
+  .lesson-block-heading {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+  .set-hierarchy,
+  .number-set-grid,
+  .lesson-callout,
+  .concept-grid,
+  .lesson-step-grid,
+  .comparison-examples,
+  .math-strip,
+  .parity-definition,
+  .lesson-notation,
+  .parity-grid,
+  .addition-intro,
+  .addition-grid,
+  .lesson-check > ol,
+  .lesson-answers {
+    margin-left: 0;
+  }
+  .set-hierarchy strong {
+    font-size: 22px;
+  }
+  .number-set-card {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 10px;
+  }
+  .number-set-symbol {
+    font-size: 21px;
+  }
+  .number-set-card:nth-child(4) .number-set-symbol {
+    font-size: 15px;
+    letter-spacing: -0.6px;
+  }
+  .number-set-card h4,
+  .number-set-card p,
+  .lesson-step h4,
+  .lesson-step p,
+  .concept-grid h4,
+  .concept-grid p,
+  .addition-grid h4,
+  .addition-grid p {
+    overflow-wrap: anywhere;
+  }
+}

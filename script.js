@@ -183,14 +183,12 @@
     ];
     const questions = Array.from({ length: 7 }, (_, index) => tr(`lesson-check-q${index + 1}`));
     const answers = Array.from({ length: 7 }, (_, index) => tr(`lesson-check-a${index + 1}`));
-    const outline = ["lesson-map-title", "lesson-signs-title", "lesson-compare-title", "lesson-parity-title", "lesson-add-title"];
     return `<div class="lesson-shell">
       <button class="lesson-back" type="button" data-action="back-to-topics">${icon("arrow-left")}<span>${esc(tr("lesson-back-topics"))}</span></button>
       <header class="lesson-hero">
-        <div class="lesson-hero-main"><span class="lesson-badge">${esc(tr("lesson-conspect-label"))} · ${esc(tr("lesson-label"))} 01</span><h2 id="lesson-view-title" tabindex="-1">${esc(tr("critical-topic-numbers"))}</h2><p>${esc(tr("lesson-number-intro"))}</p></div>
-        <div class="lesson-meta"><span>${icon("clock")} ${esc(tr("lesson-duration"))}</span><span>${icon("book")} ${esc(tr("lesson-parts"))}</span></div>
+        <span class="lesson-badge">${esc(tr("lesson-conspect-label"))} · ${esc(tr("lesson-label"))} 01</span><h1 id="lesson-view-title" tabindex="-1">${esc(tr("critical-topic-numbers"))}</h1>
       </header>
-      <nav class="lesson-outline" aria-label="${esc(tr("lesson-outline-title"))}"><strong>${esc(tr("lesson-outline-title"))}</strong><ol>${outline.map((key) => `<li>${esc(tr(key))}</li>`).join("")}</ol></nav>
+      <section class="lesson-introduction"><h2>${esc(tr("lesson-topic-heading"))}</h2><p>${esc(tr("lesson-number-intro"))}</p><p>${esc(tr("lesson-number-method"))}</p><div class="lesson-meta"><span>${icon("clock")} ${esc(tr("lesson-duration"))}</span><span>${icon("book")} ${esc(tr("lesson-parts"))}</span></div></section>
       <article class="lesson-block">
         <div class="lesson-block-heading"><span>01</span><div><h3>${esc(tr("lesson-map-title"))}</h3><p>${esc(tr("lesson-map-copy"))}</p></div></div>
         <div class="set-hierarchy" aria-label="${esc(tr("lesson-hierarchy-label"))}"><strong>ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ</strong><span>ℝ = ℚ ∪ (ℝ∖ℚ)</span></div>
@@ -628,6 +626,7 @@
     $("#hero").hidden = !home;
     $("#subjects-section").hidden = !home;
     $("#catalog").hidden = home;
+    $(".page-heading").hidden = false;
     $("#lesson-view").hidden = true;
     $(".catalog-heading").hidden = false;
     $("#practice-note").hidden = home || view === "history" || (!mock && view === "all");
@@ -714,6 +713,7 @@
     $("#hero").hidden = true;
     $("#subjects-section").hidden = true;
     $("#catalog").hidden = false;
+    $(".page-heading").hidden = true;
     $("#topic-program").hidden = true;
     $("#test-grid").hidden = true;
     $("#empty-state").hidden = true;
